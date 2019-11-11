@@ -10,7 +10,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-public class Gameview extends Application {
+public class Gameview extends Application implements Runnable{
     Button button;
     Button button2;
     Button button3;
@@ -24,22 +24,22 @@ public class Gameview extends Application {
     public void start(Stage stage) throws Exception {
         TextArea quizArea = new TextArea();
         quizArea.setEditable(false);
+        quizArea.setFocusTraversable(false);
         quizArea.setWrapText(true);
-        button = new Button("Answer1");
-        button.setMinSize(300.0,150.0);
+        button = createButton("Answer1");
+        button2 = createButton("Answer2");
+        button3 = createButton("Answer3");
+        button4 = createButton("Answer4");
+
         button.setOnAction(getActionEventEventHandler(quizArea, button.getText()));
-        button2 = new Button("Answer2");
-        button2.setMinSize(300.0,150.0);
         button2.setOnAction(getActionEventEventHandler(quizArea, button2.getText()));
-        button3 = new Button("Answer3");
-        button3.setMinSize(300.0,150.0);
         button3.setOnAction(getActionEventEventHandler(quizArea, button3.getText()));
-        button4 = new Button("Answer4");
-        button4.setMinSize(300.0,150.0);
         button4.setOnAction(getActionEventEventHandler(quizArea, button4.getText()));
+
         BorderPane borderPane = new BorderPane();
         borderPane.setPrefSize(400,600);
         Label player1 = new Label("Player 1");
+        player1.setMinSize(5,5);
         Label player2 = new Label("Player 2");
         HBox playerStatus = new HBox(10,player1,player2);
         playerStatus.setSpacing(400);
@@ -52,7 +52,11 @@ public class Gameview extends Application {
         stage.setScene(scene);
         stage.show();
     }
-
+    private Button createButton(String s){
+        Button button = new Button(s);
+        button.setMinSize(300.0,150.0);
+        return button;
+    }
     private GridPane createButtonLayout() {
         GridPane buttonLayout = new GridPane();
         buttonLayout.add(button,0,0);
@@ -66,4 +70,8 @@ public class Gameview extends Application {
         return actionEvent -> quizArea.appendText("Pushed " + s + "\n");
     }
 
+    @Override
+    public void run() {
+
+    }
 }
