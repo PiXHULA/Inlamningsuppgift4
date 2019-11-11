@@ -1,0 +1,40 @@
+
+.button{
+    -fx-focus-color: transparent;
+    -fx-focus-traversable: false;
+    -fx-pref-width: 200px;
+    -fx-pref-height: 120px;
+    -fx-font-size: 16px;
+}
+
+#correctAnswer{
+    -fx-background-color: #51CC39;
+    -fx-border-color: dodgerblue;
+    -fx-pref-width: 200;
+    -fx-pref-height: 120;
+}
+#wrongAnswer{
+    -fx-background-color: #FF7469;
+    -fx-border-color: dodgerblue;
+    -fx-pref-width: 200;
+    -fx-pref-height: 120;
+}
+
+.label{
+    -fx-font-size: 20;
+}
+
+.text-area .readonly{
+    -fx-wrap-text: true;
+    -fx-focus-traversable: false;
+}
+#highscoreArea{
+    -fx-min-height: 600;
+    -fx-pref-width: 200;
+    -fx-font-size: 20;
+}
+#onlineStatus{
+    -fx-pref-height: 600;
+    -fx-pref-width: 200;
+    -fx-font-size: 20;
+}
