@@ -1,6 +1,7 @@
 /*BUTTONS*/
 .root {
-   -fx-background-color: linear-gradient(from 41px 41px to 50px 50px, repeat,  #009EFF 50%, #0078C2 50%);
+   -fx-background-color: linear-gradient(from 40px 40px to 50px 50px, repeat,  #009EFF 50%, #0078C2 50%);
+    -fx-font: 20px 'Consolas';
 }
 @font-face {
     font-family: 'Gafata';
@@ -11,7 +12,6 @@
 
 .button{
     -fx-text-fill: white;
-    -fx-font-family: 'Georgia';
     -fx-focus-color: transparent;
     -fx-focus-traversable: false;
     -fx-background-color:
@@ -25,7 +25,6 @@
 }
 
 #correctAnswer{
-    -fx-font: 20px 'Consolas';
     -fx-background-color:
             #194012,
             linear-gradient(#51CC39, #3B9429);
@@ -36,7 +35,6 @@
     -fx-background-insets: 0, 1;
 }
 #wrongAnswer{
-    -fx-font: 20px 'Comic Sans MS';
     -fx-background-color:
             #401D1A,
             linear-gradient(#FF7369, #B04F48);
@@ -48,8 +46,6 @@
 }
 
 .label{
-    -fx-font-size: 20;
-    -font-family: "Times New Roman", Times, serif;
     -fx-font-weight: bold;
     -fx-text-fill: white;
 }

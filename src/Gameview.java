@@ -100,15 +100,6 @@ public class Gameview extends Application implements Runnable{
         return button;
     }
 
-    private TextArea createTextArea() {
-        TextArea textArea = new TextArea();
-        textArea.setPadding(new Insets(0, 0, 30, 0));
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-        textArea.setFocusTraversable(false);
-        textArea.setId("gameviewPane");
-        return textArea;
-    }
     private TextArea createTextArea(String label, String cssStyle) {
         TextArea textArea = new TextArea();
         textArea.setText(label);
