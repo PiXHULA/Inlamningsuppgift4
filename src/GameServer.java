@@ -37,12 +37,13 @@ public class GameServer {
                 Thread thread = new Thread(ssc);
                 thread.start();
             }
+            System.out.println("We now have 2 players.");
         }catch (IOException ex){
             System.out.println("IOException from acceptConnection");
         }
     }
 
-    //gives runnable object to both players
+    //gives runnable object to both players and differentiate the two players
     private class ServerSideConnection implements Runnable{
         private Socket socket;
         private DataInputStream dataInputStream;
@@ -66,7 +67,7 @@ public class GameServer {
                 dataOutputStream.writeInt(playerID);
                 dataOutputStream.flush();
                 while(true){
-
+                    //put in more later, so the server can send more stuff etc...
                 }
             }catch (IOException ex){
                 System.out.println("IOException from run() SSC");
