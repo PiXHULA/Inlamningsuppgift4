@@ -1,6 +1,6 @@
 interface IRules {
 
-    Boolean isItPlayersTurn();
+    boolean isItPlayersTurn();
 
     void startNewRound();
 

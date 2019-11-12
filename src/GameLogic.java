@@ -16,9 +16,9 @@ public class GameLogic implements IRules {
         this.gameState = gameState;
     }
 
-    //Spelarna ska turas om att få "svara" på frågorna
+    //Method to take turn on answering questions
     @Override
-    public Boolean isItPlayersTurn() {
+    public boolean isItPlayersTurn() {
         if (playerState == WAIT_ON_TURN) {
             setStateForPlayer(TURN_GRANTED);
             return true;
@@ -36,10 +36,12 @@ public class GameLogic implements IRules {
         if (gameState == ROUND_START) {
             System.out.println("Round 1 started!");
             setStateForGame(1);
+            //Launch quiz questions within a random category
 
         } else if (gameState == 1) {
             System.out.println("Round 2 started!");
             setStateForGame(2);
+            //Launch quiz question within same previous category
 
         } else if (gameState == ROUND_END) {
             setStateForGame(0);
@@ -49,22 +51,21 @@ public class GameLogic implements IRules {
 
         @Override
         public void startNewGame() {
-            //Launch quiz questions within same category
             System.out.println("NEW GAME!");
             startNewRound();
         }
 
     public static void main(String[] args) {
-        GameLogic test = new GameLogic();
+        GameLogic testLogic = new GameLogic();
 
-        System.out.println(test.isItPlayersTurn());
-        System.out.println(test.isItPlayersTurn());
-        System.out.println(test.isItPlayersTurn());
+        System.out.println(testLogic.isItPlayersTurn());
+        System.out.println(testLogic.isItPlayersTurn());
+        System.out.println(testLogic.isItPlayersTurn());
 
-        test.startNewGame();
-        test.startNewRound();
+        testLogic.startNewGame();
+        testLogic.startNewRound();
 
-        test.startNewRound();
-        test.startNewRound();
+        testLogic.startNewRound();
+        testLogic.startNewRound();
     }
 }
