@@ -145,9 +145,24 @@ public class Player extends Application{
         return actionEvent -> {
             if("Answer1".equals(s)){
                 quizArea.appendText("Pushed " + s + "\n");
+                this.button.setDisable(true);
                 button.setId("correctAnswer");
-            } else
-                button.setId("wrongAnswer");
+                this.button2.setDisable(true);
+                this.button2.setId("wrongAnswer");
+                this.button3.setDisable(true);
+                this.button3.setId("wrongAnswer");
+                this.button4.setDisable(true);
+                this.button4.setId("wrongAnswer");
+            } else{
+                this.button.setDisable(true);
+                this.button.setId("correctAnswer");
+                this.button2.setDisable(true);
+                this.button2.setId("wrongAnswer");
+                this.button3.setDisable(true);
+                this.button3.setId("wrongAnswer");
+                this.button4.setDisable(true);
+                this.button4.setId("wrongAnswer");
+            }
         };
     }
 

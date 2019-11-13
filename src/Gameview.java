@@ -11,6 +11,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class Gameview extends Application implements Runnable{
+
     Button button;
     Button button2;
     Button button3;
