@@ -8,6 +8,9 @@ public class GameServer {
     private int port = 51734;
     private ServerSideConnection player1;
     private ServerSideConnection player2;
+    private int turn; //so the server can "count" what turn/question it is on
+    private int playerOnePoints; // So the server can send the points to the other player
+    private int playerTwopoints; // so the server can send the points to the other player
 
 
     public GameServer(){
@@ -17,6 +20,7 @@ public class GameServer {
             serverSocket = new ServerSocket(port);
         }catch (IOException ex){
             System.out.println("IOException from GameServer Constructor");
+            ex.printStackTrace();
         }
     }
 
@@ -40,6 +44,7 @@ public class GameServer {
             System.out.println("We now have 2 players.");
         }catch (IOException ex){
             System.out.println("IOException from acceptConnection");
+            ex.printStackTrace();
         }
     }
 
@@ -58,6 +63,7 @@ public class GameServer {
                 dataOutputStream = new DataOutputStream((socket.getOutputStream()));
             }catch (IOException ex){
                 System.out.println("IOException from ServerSideConnection constructor");
+                ex.printStackTrace();
             }
         }
 
@@ -71,6 +77,7 @@ public class GameServer {
                 }
             }catch (IOException ex){
                 System.out.println("IOException from run() SSC");
+                ex.printStackTrace();
             }
         }
     }
