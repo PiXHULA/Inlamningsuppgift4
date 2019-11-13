@@ -21,6 +21,8 @@ public class Player extends Application{
     TextArea onlineStatus;
     TextArea highscoreArea;
     HBox displayPlayers;
+    private DataInputStream dataInputStream;
+    private DataOutputStream dataOutputStream;
     private ClientSideConnection csc;
     private int port = 51734;
     private int playerID;
@@ -46,6 +48,7 @@ public class Player extends Application{
 
     @Override
     public void start(Stage stage) throws Exception {
+        connectToServer();
         //VBox vert1 = new VBox();
         VBox vert2 = new VBox();
         //VBox vert3 = new VBox();
@@ -55,6 +58,7 @@ public class Player extends Application{
         //bottomPane = createBottomPane(vert1, vert2, vert3);
         GridPane bottomPane = new GridPane();
         bottomPane.add(vert2,0,0);
+
         quizArea = createTextArea(null, "gameviewPane");
         onlineStatus = createTextArea("Online: ","onlineStatus");
         highscoreArea = createTextArea("Highscore: ", "highscoreArea");
@@ -64,7 +68,7 @@ public class Player extends Application{
         button3 = createButton("Answer3", quizArea);
         button4 = createButton("Answer4", quizArea);
 
-        displayPlayers = displayNames("Player1", "Player2");
+        displayPlayers = displayNames("Player #" + playerID, "Player #" + otherPlayer);
         buttonLayout = createButtonLayout();
         gameView = createGameviewPane(quizArea, displayPlayers, buttonLayout);
         //vert1.getChildren().add(onlineStatus);
@@ -75,8 +79,7 @@ public class Player extends Application{
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
-
-        connectToServer();
+        stage.setTitle("Player #" +playerID);
     }
     private GridPane createBottomPane(VBox vert1, VBox vert2, VBox vert3) {
         GridPane collectedGui = new GridPane();
@@ -107,7 +110,7 @@ public class Player extends Application{
         Label first = new Label(player1);
         Label second = new Label(player2);
         HBox playerStatus = new HBox(10,first,second);
-        playerStatus.setSpacing(200);
+        playerStatus.setSpacing(50);
         playerStatus.setAlignment(Pos.CENTER);
         playerStatus.setPrefHeight(50);
         return playerStatus;
@@ -151,6 +154,14 @@ public class Player extends Application{
         };
     }
 
+    private void otherPlayer(){
+        if (playerID == 1){
+            otherPlayer = 2;
+        } else{
+            otherPlayer = 1;
+        }
+    }
+
     //method to call and run CSC
     public void connectToServer(){
         csc = new ClientSideConnection();
@@ -159,8 +170,6 @@ public class Player extends Application{
     //the "logic" for client connection to server
     private class ClientSideConnection {
         private Socket socket;
-        private DataInputStream dataInputStream;
-        private DataOutputStream dataOutputStream;
 
         public ClientSideConnection (){
             System.out.println("--CLIENT CONNECTING--");
@@ -170,6 +179,7 @@ public class Player extends Application{
                 dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 playerID = dataInputStream.readInt();
                 System.out.println("Connected to server as player #" + playerID + ".");
+                otherPlayer();
             }catch (IOException ex){
                 System.out.println("IOException from CSC constructor");
                 ex.printStackTrace();
