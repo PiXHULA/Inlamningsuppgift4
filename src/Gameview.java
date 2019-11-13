@@ -58,6 +58,7 @@ public class Gameview extends Application implements Runnable{
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+
     }
 
     private GridPane createBottomPane(VBox vert1, VBox vert2, VBox vert3) {
