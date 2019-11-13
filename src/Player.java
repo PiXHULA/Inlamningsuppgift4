@@ -182,8 +182,6 @@ public class Player extends Application{
         launch(args);
         //p.connectToServer();
         //p.setUpGUI();
-
-
         //p.userGameViewGui();
 
     }
