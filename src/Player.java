@@ -14,6 +14,7 @@ public class Player {
     private int turn; //so you can see / store points at diffrent "turns" of the game
     private boolean buttonsEnable; //so you can disable the buttons if its not your turn (if we want)
 
+    
 
     /**
      * somthing like this plus you set "buttonesEnable to true or false depending if its your turn or not
