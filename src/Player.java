@@ -44,6 +44,7 @@ public class Player extends Application{
      * }
      */
 
+
     @Override
     public void start(Stage stage) throws Exception {
         //VBox vert1 = new VBox();
