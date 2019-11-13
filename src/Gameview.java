@@ -29,14 +29,15 @@ public class Gameview extends Application implements Runnable{
 
     @Override
     public void start(Stage stage) throws Exception {
-        VBox vert1 = new VBox();
+        //VBox vert1 = new VBox();
         VBox vert2 = new VBox();
-        VBox vert3 = new VBox();
-        vert1.setMinSize(200,600);
+        //VBox vert3 = new VBox();
+        //vert1.setMinSize(200,600);
         vert2.setMinSize(400,600);
-        vert3.setMinSize(200,600);
-        bottomPane = createBottomPane(vert1, vert2, vert3);
-
+        //vert3.setMinSize(200,600);
+        //bottomPane = createBottomPane(vert1, vert2, vert3);
+        GridPane bottomPane = new GridPane();
+        bottomPane.add(vert2,0,0);
         quizArea = createTextArea(null, "gameviewPane");
         onlineStatus = createTextArea("Online: ","onlineStatus");
         highscoreArea = createTextArea("Highscore: ", "highscoreArea");
@@ -49,9 +50,9 @@ public class Gameview extends Application implements Runnable{
         displayPlayers = displayNames("Player1", "Player2");
         buttonLayout = createButtonLayout();
         gameView = createGameviewPane(quizArea, displayPlayers, buttonLayout);
-        vert1.getChildren().add(onlineStatus);
+        //vert1.getChildren().add(onlineStatus);
         vert2.getChildren().add(gameView);
-        vert3.getChildren().add(highscoreArea);
+        //vert3.getChildren().add(highscoreArea);
         Scene scene = new Scene(bottomPane);
         scene.getStylesheets().add("GameviewStyle.css");
         stage.setResizable(false);
