@@ -1,33 +1,88 @@
+/*BUTTONS*/
+.root {
+   -fx-background-color: linear-gradient(from 40px 40px to 50px 50px, repeat,  #009EFF 50%, #0078C2 50%);
+    -fx-font: 20px 'Consolas';
+}
+@font-face {
+    font-family: 'Gafata';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Gafata'), local('Gafata-Regular'), url(https://fonts.gstatic.com/s/gafata/v8/XRXV3I6Cn0VJKonIO-aBXso.woff2) format('woff2');
+}
 
 .button{
+    -fx-text-fill: white;
     -fx-focus-color: transparent;
     -fx-focus-traversable: false;
+    -fx-background-color:
+            #000000,
+            linear-gradient(#363230, #171515);
     -fx-pref-width: 200px;
     -fx-pref-height: 120px;
     -fx-font-size: 16px;
+    -fx-background-radius: 8, 7;
+    -fx-background-insets: 0, 1;
 }
 
 #correctAnswer{
-    -fx-background-color: #51CC39;
-    -fx-border-color: dodgerblue;
+    -fx-background-color:
+            #194012,
+            linear-gradient(#51CC39, #3B9429);
+    -fx-border-color: transparent;
     -fx-pref-width: 200;
     -fx-pref-height: 120;
+    -fx-background-radius: 8, 7;
+    -fx-background-insets: 0, 1;
 }
 #wrongAnswer{
-    -fx-background-color: #FF7469;
-    -fx-border-color: dodgerblue;
+    -fx-background-color:
+            #401D1A,
+            linear-gradient(#FF7369, #B04F48);
+    -fx-border-color: transparent;
     -fx-pref-width: 200;
     -fx-pref-height: 120;
+    -fx-background-radius: 8, 7;
+    -fx-background-insets: 0, 1;
 }
 
 .label{
-    -fx-font-size: 20;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
 }
 
-.text-area .readonly{
+/*TEXT AREAS*/
+.textarea{
+    -fx-min-height: 300;
+    -fx-pref-width: 200;
     -fx-wrap-text: true;
+    border: none;
+    overflow: auto;
+    outline: none;
+    box-shadow: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
     -fx-focus-traversable: false;
+    -fx-background-radius: 6, 5;
+    -fx-background-insets: 0, 1;
+
 }
+
+#questionArea{
+    -fx-min-height: 300;
+    -fx-pref-width: 200;
+    -fx-wrap-text: true;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    -fx-focus-traversable: false;
+
+    -fx-border-radius: 6, 5;
+    -fx-border-insets: 0, 1;
+}
+
 #highscoreArea{
     -fx-min-height: 600;
     -fx-pref-width: 200;
@@ -37,4 +92,7 @@
     -fx-pref-height: 600;
     -fx-pref-width: 200;
     -fx-font-size: 20;
+}
+
+#buttonLayout{
 }
