@@ -53,6 +53,7 @@ public class ClientQuiz extends Application{
     public void start(Stage stage) throws Exception {
         connectToServer();
         Protocol prot = new Protocol();
+        stage.setTitle("Player #" +playerID);
         VBox vert2 = new VBox();
         vert2.setMinSize(400,600);
         GridPane bottomPane = new GridPane();
@@ -61,12 +62,12 @@ public class ClientQuiz extends Application{
         quizArea.setText(prot.getRiddle(prot.getRiddles(),0));
         onlineStatus = createTextArea("Online: ","onlineStatus");
         highscoreArea = createTextArea("Highscore: ", "highscoreArea");
-
+        String playerName = stage.getTitle();
         this.buttonsEnable = false;
-        button = createButton(prot.getAnswer(prot.getAnswers(),0), quizArea);
-        button2 = createButton(prot.getAnswer(prot.getAnswers(),1), quizArea);
-        button3 = createButton(prot.getAnswer(prot.getAnswers(),2), quizArea);
-        button4 = createButton(prot.getAnswer(prot.getAnswers(),3), quizArea);
+        button = createButton(prot.getAnswer(prot.getAnswers(),0), quizArea, playerName);
+        button2 = createButton(prot.getAnswer(prot.getAnswers(),1), quizArea, playerName);
+        button3 = createButton(prot.getAnswer(prot.getAnswers(),2), quizArea, playerName);
+        button4 = createButton(prot.getAnswer(prot.getAnswers(),3), quizArea, playerName);
 
         displayPlayers = displayNames("Player #" + playerID, "Player #" + otherPlayer);
         buttonLayout = createButtonLayout();
@@ -77,7 +78,7 @@ public class ClientQuiz extends Application{
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
-        stage.setTitle("Player #" +playerID);
+
     }
     private GridPane createBottomPane(VBox vert1, VBox vert2, VBox vert3) {
         GridPane collectedGui = new GridPane();
@@ -114,10 +115,10 @@ public class ClientQuiz extends Application{
         return playerStatus;
     }
 
-    private Button createButton(String answer, TextArea quizArea) {
+    private Button createButton(String answer, TextArea quizArea, String playerName) {
         Button button = new Button (answer);
         button.setDisable(buttonsEnable);
-        button.setOnAction(getActionEventEventHandler(button, quizArea, button.getText()));
+        button.setOnAction(getActionEventEventHandler(quizArea, button.getText(), playerName));
         return button;
     }
 
@@ -143,7 +144,7 @@ public class ClientQuiz extends Application{
         return buttonLayout;
     }
 
-    private EventHandler<ActionEvent> getActionEventEventHandler(Button button, TextArea quizArea, String s) {
+    private EventHandler<ActionEvent> getActionEventEventHandler(TextArea quizArea, String answer, String playerName) {
         Protocol prot = new Protocol();
         Label svar = new Label();
         svar.setMinSize(20,20);
@@ -153,42 +154,28 @@ public class ClientQuiz extends Application{
             this.button2.setDisable(buttonsEnable);
             this.button3.setDisable(buttonsEnable);
             this.button4.setDisable(buttonsEnable);
+
             if(prot.getAnswer(prot.getAnswers(),0).equals(this.button.getText())){
                 this.button.setId("correctAnswer");
-                svar.setText("Rätt svar!");
-                quizArea.setText(svar.getText());
-            }else{
+                quizArea.setText(playerName + " pushed " + answer + "\n");
+            }else
                 this.button.setId("wrongAnswer");
-                svar.setText("Fel svar!");
-                quizArea.setText(svar.getText());
-            }
             if(prot.getAnswer(prot.getAnswers(),0).equals(this.button2.getText())){
                 this.button2.setId("correctAnswer");
-                svar.setText("Rätt svar!");
-                quizArea.setText(svar.getText());
-            }else{
+                quizArea.setText(playerName + " pushed " + answer + "\n");
+            }else
                 this.button2.setId("wrongAnswer");
-                svar.setText("Fel svar!");
-                quizArea.setText(svar.getText());
-            }
             if(prot.getAnswer(prot.getAnswers(),0).equals(this.button3.getText())){
                 this.button3.setId("correctAnswer");
-                svar.setText("Rätt svar!");
-                quizArea.setText(svar.getText());
-            }else{
+                quizArea.setText(playerName + " pushed " + answer + "\n");
+            }else
                 this.button3.setId("wrongAnswer");
-                svar.setText("Fel svar!");
-                quizArea.setText(svar.getText());
-            }
             if(prot.getAnswer(prot.getAnswers(),0).equals(this.button4.getText())){
                 this.button4.setId("correctAnswer");
-                svar.setText("Rätt svar!");
-                quizArea.setText(svar.getText());
-            }else{
+                quizArea.setText(playerName + " pushed " + answer + "\n");
+            }else
                 this.button4.setId("wrongAnswer");
-                svar.setText("Fel svar!");
-                quizArea.setText(svar.getText());
-            }
+            quizArea.appendText("Correct answer: " + prot.getAnswer(prot.getAnswers(),0) + "\n");
         };
     }
 
