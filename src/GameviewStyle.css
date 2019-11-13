@@ -96,3 +96,8 @@
 
 #buttonLayout{
 }
+.progress-bar > .bar {
+    /*-fx-background-color: linear-gradient(from 40px 40px to 50px 50px, repeat,  #009EFF 50%, #0078C2 50%);
+    -fx-background-color: linear-gradient(from 0px .75em to .75em 0px, repeat, -fx-accent 0%, -fx-accent 49%);*/
+    -fx-background-color: linear-gradient(from 0px .75em to .75em 0px, repeat,#009EFF 50%, #0078C2 50%);
+}
