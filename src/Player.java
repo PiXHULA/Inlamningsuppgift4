@@ -32,7 +32,7 @@ public class Player extends Application{
     private int enemyPoints; // so you can store points for enenmy
     private int enemyTotalPoints; // so you can store your enemy totalpoints
     private int turn; //so you can see / store points at diffrent "turns" of the game
-    private boolean buttonsEnable; //so you can disable the buttons if its not your turn (if we want)
+    private boolean buttonsEnable = false; //so you can disable the buttons if its not your turn (if we want)
 
 
 
@@ -50,16 +50,10 @@ public class Player extends Application{
     @Override
     public void start(Stage stage) throws Exception {
         connectToServer();
-        //VBox vert1 = new VBox();
         VBox vert2 = new VBox();
-        //VBox vert3 = new VBox();
-        //vert1.setMinSize(200,600);
         vert2.setMinSize(400,600);
-        //vert3.setMinSize(200,600);
-        //bottomPane = createBottomPane(vert1, vert2, vert3);
         GridPane bottomPane = new GridPane();
         bottomPane.add(vert2,0,0);
-
         quizArea = createTextArea(null, "gameviewPane");
         onlineStatus = createTextArea("Online: ","onlineStatus");
         highscoreArea = createTextArea("Highscore: ", "highscoreArea");
@@ -72,9 +66,7 @@ public class Player extends Application{
         displayPlayers = displayNames("Player #" + playerID, "Player #" + otherPlayer);
         buttonLayout = createButtonLayout();
         gameView = createGameviewPane(quizArea, displayPlayers, buttonLayout);
-        //vert1.getChildren().add(onlineStatus);
         vert2.getChildren().add(gameView);
-        //vert3.getChildren().add(highscoreArea);
         Scene scene = new Scene(bottomPane);
         scene.getStylesheets().add("GameviewStyle.css");
         stage.setResizable(false);
@@ -101,13 +93,12 @@ public class Player extends Application{
         Gameview.setCenter(quizArea);
 
         Insets insets = new Insets(10);
-        //BorderPane.setMargin(playerStatus, insets);
+        BorderPane.setMargin(playerStatus, insets);
         BorderPane.setMargin(quizArea, insets);
         BorderPane.setMargin(buttonLayout, insets);
         return Gameview;
     }
 
-    
     private HBox displayNames(String player1, String player2) {
         Label first = new Label(player1);
         Label second = new Label(player2);
@@ -120,6 +111,7 @@ public class Player extends Application{
 
     private Button createButton(String answer, TextArea quizArea) {
         Button button = new Button (answer);
+        button.setDisable(buttonsEnable);
         button.setOnAction(getActionEventEventHandler(button, quizArea, button.getText()));
         return button;
     }
@@ -148,26 +140,33 @@ public class Player extends Application{
 
     private EventHandler<ActionEvent> getActionEventEventHandler(Button button, TextArea quizArea, String s) {
         return actionEvent -> {
-            if("Answer1".equals(s)){
-                quizArea.appendText("Pushed " + s + "\n");
-                this.button.setDisable(true);
-                button.setId("correctAnswer");
-                this.button2.setDisable(true);
-                this.button2.setId("wrongAnswer");
-                this.button3.setDisable(true);
-                this.button3.setId("wrongAnswer");
-                this.button4.setDisable(true);
-                this.button4.setId("wrongAnswer");
-            } else{
-                this.button.setDisable(true);
+            buttonsEnable = true;
+            this.button.setDisable(buttonsEnable);
+            this.button2.setDisable(buttonsEnable);
+            this.button3.setDisable(buttonsEnable);
+            this.button4.setDisable(buttonsEnable);
+            if("Answer1".equals(this.button.getText())){
                 this.button.setId("correctAnswer");
-                this.button2.setDisable(true);
+                quizArea.appendText("Pushed " + s + "\n");
+            }else
+                this.button.setId("wrongAnswer");
+            if("Answer1".equals(this.button2.getText())){
+                this.button2.setId("correctAnswer");
+                quizArea.appendText("Pushed " + s + "\n");
+            }else
                 this.button2.setId("wrongAnswer");
-                this.button3.setDisable(true);
+            if("Answer1".equals(this.button3.getText())){
+                this.button3.setId("correctAnswer");
+                quizArea.appendText("Pushed " + s + "\n");
+            }else
                 this.button3.setId("wrongAnswer");
-                this.button4.setDisable(true);
+            if("Answer1".equals(this.button4.getText())){
+                this.button4.setId("correctAnswer");
+                quizArea.appendText("Pushed " + s + "\n");
+            }else
                 this.button4.setId("wrongAnswer");
-            }
+
+
         };
     }
 
@@ -207,10 +206,5 @@ public class Player extends Application{
     public static void main(String[] args) throws Exception {
         Player p = new Player();
         launch(args);
-        //p.connectToServer();
-        //p.setUpGUI();
-        //p.userGameViewGui();
-
     }
-
 }

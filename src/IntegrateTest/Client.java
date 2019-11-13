@@ -46,7 +46,8 @@ public class Client extends Application implements Runnable {
         monitor.setEditable(false);
         monitor.setWrapText(true);
         answerField = new TextField();
-        answerField.setOnAction(e -> { text = answerField.getText();
+        answerField.setOnAction(e -> {
+            //text = answerField.getText();
             if (!answerField.getText().equals("")) {
                 monitor.appendText("User: " + answerField.getText() + "\n");
                 if (answerField.getText() != null) {
