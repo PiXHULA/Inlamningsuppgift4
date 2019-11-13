@@ -107,6 +107,7 @@ public class Player extends Application{
         return Gameview;
     }
 
+    
     private HBox displayNames(String player1, String player2) {
         Label first = new Label(player1);
         Label second = new Label(player2);
