@@ -37,7 +37,7 @@ public class Protocol {
     public Protocol() {
         Properties p = new Properties();
         try {
-            p.load(new FileInputStream("C:\\Users\\wilhe\\Desktop\\Nackademin\\Java\\Kurs2\\Inlamningsuppgift4\\src\\Gaming.properties"));
+            p.load(new FileInputStream("src\\Gaming.properties"));
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -21,6 +21,7 @@ public class Player extends Application implements Runnable{
     TextArea onlineStatus;
     TextArea highscoreArea;
     HBox displayPlayers;
+    Stage stage;
     Thread thread = new Thread(this);
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
@@ -92,32 +93,16 @@ public class Player extends Application implements Runnable{
 
     @Override
     public void start(Stage stage) throws Exception {
-        loginView();
-        System.out.println(getPlayerName());
         connectToServer();
+        Player p = loginView();
+        while(true){
+        if (!p.getPlayerName().equals("")){
+            gameView(p);
+            break;
+        }
+        }
+        System.out.println(getPlayerName());
         this.thread.start();
-        gameView();
-    }
-
-    private String loginView(){
-        //login screen. Username input > transfer username to "player1 / player " in gameview.
-        GridPane loginView = new GridPane();
-        loginView.setMinSize(400,600);
-        TextField loginName = new TextField("Enter name");
-        Button submit = new Button ("Submit");
-        loginName.setOnAction(actionEvent -> {
-            setPlayerName(loginName.getText());
-            //stage.close();
-        });
-        loginName.setAlignment(Pos.CENTER);
-        loginView.add(loginName, 0,0);
-        loginView.add(submit, 0,1);
-        Scene scene = new Scene(loginView);
-        scene.getStylesheets().add("GameviewStyle.css");
-        Stage stage = new Stage();
-        stage.setScene(scene);
-        stage.show();
-        return playerName;
     }
 
     //Needed for loginView!
@@ -129,8 +114,31 @@ public class Player extends Application implements Runnable{
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
+    private Player loginView(){
+        Stage stage = new Stage();
+        Player player = new Player();
 
-    private void gameView() throws IOException {
+        //login screen. Username input > transfer username to "player1 / player " in gameview.
+        GridPane loginView = new GridPane();
+        loginView.setMinSize(400,600);
+        TextField loginName = new TextField("Enter name");
+        Button submit = new Button ("Submit");
+        submit.setOnAction(actionEvent -> {
+            player.setPlayerName(loginName.getText());
+            stage.close();
+        });
+        loginName.setAlignment(Pos.CENTER);
+        loginView.add(loginName, 0,0);
+        loginView.add(submit, 0,1);
+        Scene scene = new Scene(loginView);
+        scene.getStylesheets().add("GameviewStyle.css");
+        stage.setScene(scene);
+        stage.show();
+        return player;
+    }
+
+
+    private void gameView(Player player) throws IOException {
         //VBox vert1 = new VBox();
         VBox vert2 = new VBox();
         vert2.setMinSize(400,600);
@@ -145,7 +153,7 @@ public class Player extends Application implements Runnable{
         button3 = createButton(getAltText1_3(), quizArea);
         button4 = createButton(getAltText1_4(), quizArea);
 
-        displayPlayers = displayNames("Player #" + playerID, "Player #" + otherPlayer);
+        displayPlayers = displayNames(player.getPlayerName() + playerID, "Player #" + otherPlayer);
         buttonLayout = createButtonLayout();
         gameView = createGameviewPane(quizArea, displayPlayers, buttonLayout);
         vert2.getChildren().add(gameView);
