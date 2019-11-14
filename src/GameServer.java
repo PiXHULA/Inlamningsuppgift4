@@ -79,6 +79,7 @@ public class GameServer {
                 dataOutputStream.writeUTF(protocol.getAlt1_2());
                 dataOutputStream.writeUTF(protocol.getAlt1_3());
                 dataOutputStream.writeUTF(protocol.getAlt1_4());
+                dataOutputStream.writeUTF(protocol.getAnswer());
                 dataOutputStream.flush();
                 while (true) {
                     //put in more later, so the server can send more stuff etc...

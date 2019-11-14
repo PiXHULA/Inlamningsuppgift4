@@ -34,6 +34,7 @@ public class Player extends Application implements Runnable{
     private String altText1_2;
     private String altText1_3;
     private String altText1_4;
+    private String answerText;
 
 
     private int otherPlayer; //Control int so u can set "rules" later
@@ -72,9 +73,7 @@ public class Player extends Application implements Runnable{
         return altText1_3;
     }
 
-    public void setAltText1_3(String altText1_3) {
-        this.altText1_3 = altText1_3;
-    }
+    public void setAltText1_3(String altText1_3) { this.altText1_3 = altText1_3; }
 
     public String getAltText1_4() {
         return altText1_4;
@@ -83,6 +82,10 @@ public class Player extends Application implements Runnable{
     public void setAltText1_4(String altText1_4) {
         this.altText1_4 = altText1_4;
     }
+
+    public String getAnswerText() { return answerText; }
+
+    public void setAnswerText(String answerText) { this.answerText = answerText; }
 
     /**
      * somthing like this plus you set "buttonesEnable to true or false depending if its your turn or not
@@ -198,22 +201,22 @@ public class Player extends Application implements Runnable{
             this.button2.setDisable(buttonsEnable);
             this.button3.setDisable(buttonsEnable);
             this.button4.setDisable(buttonsEnable);
-            if("Answer1".equals(this.button.getText())){
+            if(getAnswerText().equals(this.button.getText())){
                 this.button.setId("correctAnswer");
                 quizArea.appendText("Pushed " + s + "\n");
             }else
                 this.button.setId("wrongAnswer");
-            if("Answer1".equals(this.button2.getText())){
+            if(getAnswerText().equals(this.button2.getText())){
                 this.button2.setId("correctAnswer");
                 quizArea.appendText("Pushed " + s + "\n");
             }else
                 this.button2.setId("wrongAnswer");
-            if("Answer1".equals(this.button3.getText())){
+            if(getAnswerText().equals(this.button3.getText())){
                 this.button3.setId("correctAnswer");
                 quizArea.appendText("Pushed " + s + "\n");
             }else
                 this.button3.setId("wrongAnswer");
-            if("Answer1".equals(this.button4.getText())){
+            if(getAnswerText().equals(this.button4.getText())){
                 this.button4.setId("correctAnswer");
                 quizArea.appendText("Pushed " + s + "\n");
             }else
@@ -266,6 +269,9 @@ public class Player extends Application implements Runnable{
 
                 String altText1_4 = dataInputStream.readUTF();
                 setAltText1_4(altText1_4);
+
+                String answerText = dataInputStream.readUTF();
+                setAnswerText(answerText);
 
                 System.out.println("Connected to server as player #" + playerID + ".");
                 otherPlayer();
