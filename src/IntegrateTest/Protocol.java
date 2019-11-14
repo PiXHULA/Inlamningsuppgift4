@@ -12,8 +12,22 @@ public class Protocol {
     private int state = BEGIN;
     private int currentRiddle = 0;
 
+    public String[] getRiddles() {
+        return riddles;
+    }
+    public String getRiddle(String[]riddles, int i) {
+        return riddles[i];
+    }
+
+    public String[] getAnswers() {
+        return answers;
+    }
+    public String getAnswer(String[]answers, int i) {
+        return answers[i];
+    }
+
     private String[] riddles = {
-            "Riddle 1: " + "\nI am not alive, but I grow; I don't have lungs, but I need air; I don't have a mouth, but water kills me. What am I?",
+            "Riddle 1: " + "\nI am not alive, but I grow; I don't have lungs, but I need air; I don't have a mouth, but water kills me. What am I?\n",
             "The more you take, the more you leave behind. What am I?",
             "What room do ghosts avoid?",
             "What belongs to you, but other people use it more than you?",

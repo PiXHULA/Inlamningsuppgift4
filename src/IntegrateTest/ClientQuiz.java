@@ -1,41 +1,17 @@
 package IntegrateTest;
 
+import java.net.*;
+import java.io.*;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
+import javafx.event.*;
+import javafx.geometry.*;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
+public class ClientQuiz extends Application{
 
-public class ClientQuiz extends Application implements Runnable {
-    String hostName = "127.0.0.1";
-    int portNumber = 55555;
-    Socket socket = new Socket(hostName, portNumber);
-    Stage window;
-    Scene scene;
-    Label responseFromServer;
-    Button connect;
-    Button exit;
-    TextArea monitor;
-    TextField answerField = new TextField();
-    BorderPane layout;
-    Listener server;
-    Thread thread = new Thread(this);
-    String text;
-    ActionEvent actionEvent = new ActionEvent();
-    //From GameView
     Button button;
     Button button2;
     Button button3;
@@ -47,64 +23,197 @@ public class ClientQuiz extends Application implements Runnable {
     TextArea onlineStatus;
     TextArea highscoreArea;
     HBox displayPlayers;
-    VBox vert2;
+    private DataInputStream dataInputStream;
+    private DataOutputStream dataOutputStream;
+    private ClientSideConnection csc;
+    private int port = 51734;
+    private int playerID;
+    private int otherPlayer; //Control int so u can set "rules" later
+    private int myPoints; // so you can store turn points for yourself
+    private int myTotalPoints; // so you can store your totalpoints
+    private int enemyPoints; // so you can store points for enenmy
+    private int enemyTotalPoints; // so you can store your enemy totalpoints
+    private int turn; //so you can see / store points at diffrent "turns" of the game
+    private boolean buttonsEnable; //so you can disable the buttons if its not your turn (if we want)
 
-    public ClientQuiz() throws IOException {
-    }
+
+
+    /**
+     * somthing like this plus you set "buttonesEnable to true or false depending if its your turn or not
+     * public void togglebuttons(){
+     *     button1.setEnable(buttonsEnable);
+     *     button2.setEnable(buttonsEnable);
+     *     button3.setEnable(buttonsEnable);
+     *     button4.setEnable(buttonsEnable);
+     * }
+     */
+
 
     @Override
     public void start(Stage stage) throws Exception {
+        connectToServer();
+        Protocol prot = new Protocol();
+        stage.setTitle("Player #" +playerID);
+        VBox vert2 = new VBox();
+        vert2.setMinSize(400,600);
+        GridPane bottomPane = new GridPane();
+        bottomPane.add(vert2,0,0);
+        quizArea = createTextArea(null, "gameviewPane");
+        quizArea.setText(prot.getRiddle(prot.getRiddles(),0));
+        onlineStatus = createTextArea("Online: ","onlineStatus");
+        highscoreArea = createTextArea("Highscore: ", "highscoreArea");
+        String playerName = stage.getTitle();
+        this.buttonsEnable = false;
+        button = createButton(prot.getAnswer(prot.getAnswers(),0), quizArea, playerName);
+        button2 = createButton(prot.getAnswer(prot.getAnswers(),1), quizArea, playerName);
+        button3 = createButton(prot.getAnswer(prot.getAnswers(),2), quizArea, playerName);
+        button4 = createButton(prot.getAnswer(prot.getAnswers(),3), quizArea, playerName);
 
-        window = stage;
-        vert2 = new VBox();
-        stage.setTitle("Riddler Client");
-        responseFromServer = new Label("Server: ");
-        monitor = new TextArea();
-        monitor.setEditable(false);
-        monitor.setWrapText(true);
-        answerField = new TextField();
-        answerField.setOnAction(e -> { text = answerField.getText();
-            if (!answerField.getText().equals("")) {
-                monitor.appendText("User: " + answerField.getText() + "\n");
-                if (answerField.getText() != null) {
-                    System.out.println("Client: " + answerField.getText());
-                    String inputFromUser = answerField.getText();
-                    PrintWriter out = null;
-                    try {
-                        out = new PrintWriter(
-                                socket.getOutputStream(), true);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                    out.println(inputFromUser);
-                }
-            } answerField.clear();});
-
-        layout = new BorderPane();
-        layout.setCenter(monitor);
-        layout.setBottom(answerField);
-        scene = new Scene(layout, 400, 400);
-        window.setScene(scene);
-        window.show();
-        this.thread.start();
+        displayPlayers = displayNames("Player #" + playerID, "Player #" + otherPlayer);
+        buttonLayout = createButtonLayout();
+        gameView = createGameviewPane(quizArea, displayPlayers, buttonLayout);
+        vert2.getChildren().add(gameView);
+        Scene scene = new Scene(bottomPane);
+        scene.getStylesheets().add("GameviewStyle.css");
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
 
     }
-
-    public static void main(String[] args) {
-        launch(args);
+    private GridPane createBottomPane(VBox vert1, VBox vert2, VBox vert3) {
+        GridPane collectedGui = new GridPane();
+        collectedGui.setMinSize(800,600);
+        collectedGui.add(vert1,0,0);
+        collectedGui.add(vert2,1,0);
+        collectedGui.add(vert3,2,0);
+        return collectedGui;
     }
 
-    @Override
-    public void run() {
-        try (BufferedReader in = new BufferedReader(
-                new InputStreamReader(this.socket.getInputStream()));
-        ) {
-            String message;
-            while ((message = in.readLine()) != null) {
-                monitor.appendText(message + "\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    private BorderPane createGameviewPane(TextArea quizArea, HBox playerStatus, GridPane buttonLayout) {
+        BorderPane Gameview = new BorderPane();
+
+        Gameview.setPrefSize(400,600);
+        Gameview.setPadding(new Insets(10, 10, 10, 10));
+        Gameview.setTop(playerStatus);
+        Gameview.setBottom(buttonLayout);
+        Gameview.setCenter(quizArea);
+
+        Insets insets = new Insets(10);
+        BorderPane.setMargin(playerStatus, insets);
+        BorderPane.setMargin(quizArea, insets);
+        BorderPane.setMargin(buttonLayout, insets);
+        return Gameview;
+    }
+
+    private HBox displayNames(String player1, String player2) {
+        Label first = new Label(player1);
+        Label second = new Label(player2);
+        HBox playerStatus = new HBox(10,first,second);
+        playerStatus.setSpacing(50);
+        playerStatus.setAlignment(Pos.CENTER);
+        playerStatus.setPrefHeight(50);
+        return playerStatus;
+    }
+
+    private Button createButton(String answer, TextArea quizArea, String playerName) {
+        Button button = new Button (answer);
+        button.setDisable(buttonsEnable);
+        button.setOnAction(getActionEventEventHandler(quizArea, button.getText(), playerName));
+        return button;
+    }
+
+    private TextArea createTextArea(String label, String cssStyle) {
+        TextArea textArea = new TextArea();
+        textArea.setText(label);
+        textArea.setId(cssStyle);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        textArea.setFocusTraversable(false);
+        return textArea;
+    }
+
+    private GridPane createButtonLayout() {
+        GridPane buttonLayout = new GridPane();
+        buttonLayout.setHgap(10.0);
+        buttonLayout.setVgap(10.0);
+        buttonLayout.add(button,0,0);
+        buttonLayout.add(button2,1,0);
+        buttonLayout.add(button3,0,1);
+        buttonLayout.add(button4,1,1);
+        buttonLayout.setId("buttonLayout");
+        return buttonLayout;
+    }
+
+    private EventHandler<ActionEvent> getActionEventEventHandler(TextArea quizArea, String answer, String playerName) {
+        Protocol prot = new Protocol();
+        Label svar = new Label();
+        svar.setMinSize(20,20);
+        return actionEvent -> {
+            buttonsEnable = true;
+            this.button.setDisable(buttonsEnable);
+            this.button2.setDisable(buttonsEnable);
+            this.button3.setDisable(buttonsEnable);
+            this.button4.setDisable(buttonsEnable);
+
+            if(prot.getAnswer(prot.getAnswers(),0).equals(this.button.getText())){
+                this.button.setId("correctAnswer");
+                quizArea.setText(playerName + " pushed " + answer + "\n");
+            }else
+                this.button.setId("wrongAnswer");
+            if(prot.getAnswer(prot.getAnswers(),0).equals(this.button2.getText())){
+                this.button2.setId("correctAnswer");
+                quizArea.setText(playerName + " pushed " + answer + "\n");
+            }else
+                this.button2.setId("wrongAnswer");
+            if(prot.getAnswer(prot.getAnswers(),0).equals(this.button3.getText())){
+                this.button3.setId("correctAnswer");
+                quizArea.setText(playerName + " pushed " + answer + "\n");
+            }else
+                this.button3.setId("wrongAnswer");
+            if(prot.getAnswer(prot.getAnswers(),0).equals(this.button4.getText())){
+                this.button4.setId("correctAnswer");
+                quizArea.setText(playerName + " pushed " + answer + "\n");
+            }else
+                this.button4.setId("wrongAnswer");
+            quizArea.appendText("Correct answer: " + prot.getAnswer(prot.getAnswers(),0) + "\n");
+        };
+    }
+
+    private void otherPlayer(){
+        if (playerID == 1){
+            otherPlayer = 2;
+        } else{
+            otherPlayer = 1;
         }
+    }
+
+    //method to call and run CSC
+    public void connectToServer(){
+        csc = new ClientSideConnection();
+    }
+
+    //the "logic" for client connection to server
+    private class ClientSideConnection {
+        private Socket socket;
+
+        public ClientSideConnection (){
+            System.out.println("--CLIENT CONNECTING--");
+            try{
+                socket = new Socket("localhost", port);
+                dataInputStream = new DataInputStream(socket.getInputStream());
+                dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                playerID = dataInputStream.readInt();
+                System.out.println("Connected to server as player #" + playerID + ".");
+                otherPlayer();
+            }catch (IOException ex){
+                System.out.println("IOException from CSC constructor");
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        ClientQuiz p = new ClientQuiz();
+        launch(args);
     }
 }
