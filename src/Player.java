@@ -8,7 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-public class Player extends Application{
+public class Player extends Application implements Runnable{
 
     Button button;
     Button button2;
@@ -21,11 +21,13 @@ public class Player extends Application{
     TextArea onlineStatus;
     TextArea highscoreArea;
     HBox displayPlayers;
+    Thread thread = new Thread(this);
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
     private ClientSideConnection csc;
     private int port = 51734;
     private int playerID;
+    private Socket socket;
     private int otherPlayer; //Control int so u can set "rules" later
     private int myPoints; // so you can store turn points for yourself
     private int myTotalPoints; // so you can store your totalpoints
@@ -50,6 +52,7 @@ public class Player extends Application{
     @Override
     public void start(Stage stage) throws Exception {
         connectToServer();
+        this.thread.start();
         //VBox vert1 = new VBox();
         VBox vert2 = new VBox();
         //VBox vert3 = new VBox();
@@ -107,7 +110,7 @@ public class Player extends Application{
         return Gameview;
     }
 
-    
+
     private HBox displayNames(String player1, String player2) {
         Label first = new Label(player1);
         Label second = new Label(player2);
@@ -184,9 +187,13 @@ public class Player extends Application{
         csc = new ClientSideConnection();
     }
 
+    @Override
+    public void run() {
+
+    }
+
     //the "logic" for client connection to server
     private class ClientSideConnection {
-        private Socket socket;
 
         public ClientSideConnection (){
             System.out.println("--CLIENT CONNECTING--");

@@ -8,60 +8,62 @@ public class GameServer {
     private int port = 51734;
     private ServerSideConnection player1;
     private ServerSideConnection player2;
+    private ServerSideConnection player3;
+    private boolean maxPlayersForOneGame = false;
     private int turn; //so the server can "count" what turn/question it is on
     private int playerOnePoints; // So the server can send the points to the other player
     private int playerTwopoints; // so the server can send the points to the other player
-
-
-    public GameServer(){
-        System.out.println("---Game Server Booting Up---");
+    
+    public GameServer() {
         numberOfPlayers = 0;
-        try{
+        System.out.println("---Game Server Booting Up---");
+        try {
             serverSocket = new ServerSocket(port);
-        }catch (IOException ex){
+        } catch (IOException ex) {
             System.out.println("IOException from GameServer Constructor");
             ex.printStackTrace();
         }
     }
 
     //accepts 2 player for quiz competition and starts Threads for the players
-    public void acceptConnection(){
-        try{
+    public void acceptConnection() {
+        try {
             System.out.println("Waiting for connections...");
-            while(numberOfPlayers < 2){
+            while (numberOfPlayers < 2) {
                 Socket socket = serverSocket.accept();
                 numberOfPlayers++;
                 System.out.println("Player #" + numberOfPlayers + " has connected.");
                 ServerSideConnection ssc = new ServerSideConnection(socket, numberOfPlayers);
-                if(numberOfPlayers == 1){
+                if (numberOfPlayers == 1) {
                     player1 = ssc;
-                }else{
+                } else {
                     player2 = ssc;
                 }
                 Thread thread = new Thread(ssc);
                 thread.start();
             }
             System.out.println("We now have 2 players.");
-        }catch (IOException ex){
+            maxPlayersForOneGame = true;
+        } catch (IOException ex) {
             System.out.println("IOException from acceptConnection");
             ex.printStackTrace();
         }
     }
 
     //gives runnable object to both players and differentiate the two players
-    private class ServerSideConnection implements Runnable{
+    private class ServerSideConnection implements Runnable {
         private Socket socket;
         private DataInputStream dataInputStream;
         private DataOutputStream dataOutputStream;
         private int playerID;
 
-        public ServerSideConnection(Socket socket, int id){
+        public ServerSideConnection(Socket socket, int id) {
             this.socket = socket;
             this.playerID = id;
-            try{
+            try {
                 dataInputStream = new DataInputStream(socket.getInputStream());
                 dataOutputStream = new DataOutputStream((socket.getOutputStream()));
-            }catch (IOException ex){
+            } catch (IOException ex) {
                 System.out.println("IOException from ServerSideConnection constructor");
                 ex.printStackTrace();
             }
@@ -69,13 +71,13 @@ public class GameServer {
 
         @Override
         public void run() {
-            try{
+            try {
                 dataOutputStream.writeInt(playerID);
                 dataOutputStream.flush();
-                while(true){
+                while (true) {
                     //put in more later, so the server can send more stuff etc...
                 }
-            }catch (IOException ex){
+            } catch (IOException ex) {
                 System.out.println("IOException from run() SSC");
                 ex.printStackTrace();
             }
