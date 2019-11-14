@@ -30,7 +30,7 @@ public class Protocol {
         return alt1_4;
     }
 
-    public String getCorrect() {
+    public String getAnswer() {
         return correct;
     }
 
