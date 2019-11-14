@@ -28,6 +28,14 @@ public class Player extends Application implements Runnable{
     private int port = 51734;
     private int playerID;
     private Socket socket;
+
+    private String questionText;
+    private String altText1_1;
+    private String altText1_2;
+    private String altText1_3;
+    private String altText1_4;
+
+
     private int otherPlayer; //Control int so u can set "rules" later
     private int myPoints; // so you can store turn points for yourself
     private int myTotalPoints; // so you can store your totalpoints
@@ -36,7 +44,45 @@ public class Player extends Application implements Runnable{
     private int turn; //so you can see / store points at diffrent "turns" of the game
     private boolean buttonsEnable = false; //so you can disable the buttons if its not your turn (if we want)
 
+    public void setQuestionText(String questionText) {
+        this.questionText = questionText;
+    }
 
+    public String getQuestionText() {
+        return questionText;
+    }
+
+    public String getAltText1_1() {
+        return altText1_1;
+    }
+
+    public void setAltText1_1(String altText1_1) {
+        this.altText1_1 = altText1_1;
+    }
+
+    public String getAltText1_2() {
+        return altText1_2;
+    }
+
+    public void setAltText1_2(String altText1_2) {
+        this.altText1_2 = altText1_2;
+    }
+
+    public String getAltText1_3() {
+        return altText1_3;
+    }
+
+    public void setAltText1_3(String altText1_3) {
+        this.altText1_3 = altText1_3;
+    }
+
+    public String getAltText1_4() {
+        return altText1_4;
+    }
+
+    public void setAltText1_4(String altText1_4) {
+        this.altText1_4 = altText1_4;
+    }
 
     /**
      * somthing like this plus you set "buttonesEnable to true or false depending if its your turn or not
@@ -47,6 +93,8 @@ public class Player extends Application implements Runnable{
      *     button4.setEnable(buttonsEnable);
      * }
      */
+
+
 
 
     @Override
@@ -62,10 +110,10 @@ public class Player extends Application implements Runnable{
         onlineStatus = createTextArea("Online: ","onlineStatus");
         highscoreArea = createTextArea("Highscore: ", "highscoreArea");
 
-        button = createButton("Answer1", quizArea);
-        button2 = createButton("Answer2", quizArea);
-        button3 = createButton("Answer3", quizArea);
-        button4 = createButton("Answer4", quizArea);
+        button = createButton(getAltText1_1(), quizArea);
+        button2 = createButton(getAltText1_2(), quizArea);
+        button3 = createButton(getAltText1_3(), quizArea);
+        button4 = createButton(getAltText1_4(), quizArea);
 
         displayPlayers = displayNames("Player #" + playerID, "Player #" + otherPlayer);
         buttonLayout = createButtonLayout();
@@ -121,9 +169,9 @@ public class Player extends Application implements Runnable{
         return button;
     }
 
-    private TextArea createTextArea(String label, String cssStyle) {
+    private TextArea createTextArea(String label, String cssStyle) throws IOException {
         TextArea textArea = new TextArea();
-        textArea.setText(label);
+        textArea.setText(getQuestionText());
         textArea.setId(cssStyle);
         textArea.setEditable(false);
         textArea.setWrapText(true);
@@ -203,6 +251,22 @@ public class Player extends Application implements Runnable{
                 dataInputStream = new DataInputStream(socket.getInputStream());
                 dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 playerID = dataInputStream.readInt();
+
+                String questionText = dataInputStream.readUTF();
+                setQuestionText(questionText);
+
+                String altText1_1 = dataInputStream.readUTF();
+                setAltText1_1(altText1_1);
+
+                String altText1_2 = dataInputStream.readUTF();
+                setAltText1_2(altText1_2);
+
+                String altText1_3 = dataInputStream.readUTF();
+                setAltText1_3(altText1_3);
+
+                String altText1_4 = dataInputStream.readUTF();
+                setAltText1_4(altText1_4);
+
                 System.out.println("Connected to server as player #" + playerID + ".");
                 otherPlayer();
             }catch (IOException ex){

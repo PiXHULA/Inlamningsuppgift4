@@ -50,7 +50,7 @@ public class Protocol {
         alt1_4 = p.getProperty("alt1.4");
         correct = p.getProperty("correct1");
 
-        System.out.println(question);
+     //   System.out.println(question);
     }
 
     public boolean isAltCorrect(String clientInput){

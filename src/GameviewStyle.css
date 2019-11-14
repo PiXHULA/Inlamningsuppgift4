@@ -19,7 +19,7 @@
             linear-gradient(#363230, #171515);
     -fx-pref-width: 200px;
     -fx-pref-height: 120px;
-    -fx-font-size: 16px;
+    -fx-font-size: 12px;
     -fx-background-radius: 8, 7;
     -fx-background-insets: 0, 1;
 }

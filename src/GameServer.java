@@ -3,6 +3,7 @@ import java.net.*;
 
 public class GameServer {
 
+    Protocol protocol = new Protocol();
     private ServerSocket serverSocket;
     private int numberOfPlayers;
     private int port = 51734;
@@ -73,9 +74,19 @@ public class GameServer {
         public void run() {
             try {
                 dataOutputStream.writeInt(playerID);
+                dataOutputStream.writeUTF(protocol.getQuestion());
+                dataOutputStream.writeUTF(protocol.getAlt1_1());
+                dataOutputStream.writeUTF(protocol.getAlt1_2());
+                dataOutputStream.writeUTF(protocol.getAlt1_3());
+                dataOutputStream.writeUTF(protocol.getAlt1_4());
                 dataOutputStream.flush();
                 while (true) {
                     //put in more later, so the server can send more stuff etc...
+
+                    //Testing
+                    String question = protocol.question;
+                    byte[] questionByte = question.getBytes();
+                    dataOutputStream.write(questionByte);
                 }
             } catch (IOException ex) {
                 System.out.println("IOException from run() SSC");
