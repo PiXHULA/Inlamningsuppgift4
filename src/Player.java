@@ -36,6 +36,9 @@ public class Player extends Application implements Runnable{
     private String altText1_4;
     private String answerText;
 
+    String playerName = "";
+    Stage playerNameWindow;
+
 
     private int otherPlayer; //Control int so u can set "rules" later
     private int myPoints; // so you can store turn points for yourself
@@ -87,23 +90,47 @@ public class Player extends Application implements Runnable{
 
     public void setAnswerText(String answerText) { this.answerText = answerText; }
 
-    /**
-     * somthing like this plus you set "buttonesEnable to true or false depending if its your turn or not
-     * public void togglebuttons(){
-     *     button1.setEnable(buttonsEnable);
-     *     button2.setEnable(buttonsEnable);
-     *     button3.setEnable(buttonsEnable);
-     *     button4.setEnable(buttonsEnable);
-     * }
-     */
-
-
-
-
     @Override
     public void start(Stage stage) throws Exception {
+        loginView();
+        System.out.println(getPlayerName());
         connectToServer();
         this.thread.start();
+        gameView();
+    }
+
+    private String loginView(){
+        //login screen. Username input > transfer username to "player1 / player " in gameview.
+        GridPane loginView = new GridPane();
+        loginView.setMinSize(400,600);
+        TextField loginName = new TextField("Enter name");
+        Button submit = new Button ("Submit");
+        loginName.setOnAction(actionEvent -> {
+            setPlayerName(loginName.getText());
+            //stage.close();
+        });
+        loginName.setAlignment(Pos.CENTER);
+        loginView.add(loginName, 0,0);
+        loginView.add(submit, 0,1);
+        Scene scene = new Scene(loginView);
+        scene.getStylesheets().add("GameviewStyle.css");
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.show();
+        return playerName;
+    }
+
+    //Needed for loginView!
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    //Needed for loginView!
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
+    private void gameView() throws IOException {
         //VBox vert1 = new VBox();
         VBox vert2 = new VBox();
         vert2.setMinSize(400,600);
@@ -124,11 +151,14 @@ public class Player extends Application implements Runnable{
         vert2.getChildren().add(gameView);
         Scene scene = new Scene(bottomPane);
         scene.getStylesheets().add("GameviewStyle.css");
+        Stage stage = new Stage();
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
         stage.setTitle("Player #" +playerID);
     }
+
+    //Needed for gameView?
     private GridPane createBottomPane(VBox vert1, VBox vert2, VBox vert3) {
         GridPane collectedGui = new GridPane();
         collectedGui.setMinSize(800,600);
@@ -138,6 +168,7 @@ public class Player extends Application implements Runnable{
         return collectedGui;
     }
 
+    //Needed for gameView!
     private BorderPane createGameviewPane(TextArea quizArea, HBox playerStatus, GridPane buttonLayout) {
         BorderPane Gameview = new BorderPane();
 
@@ -154,7 +185,7 @@ public class Player extends Application implements Runnable{
         return Gameview;
     }
 
-
+    //Needed for gameView!
     private HBox displayNames(String player1, String player2) {
         Label first = new Label(player1);
         Label second = new Label(player2);
@@ -165,6 +196,7 @@ public class Player extends Application implements Runnable{
         return playerStatus;
     }
 
+    //Needed for gameView!
     private Button createButton(String answer, TextArea quizArea) {
         Button button = new Button (answer);
         button.setDisable(buttonsEnable);
@@ -172,6 +204,7 @@ public class Player extends Application implements Runnable{
         return button;
     }
 
+    //Needed for gameView!
     private TextArea createTextArea(String label, String cssStyle) throws IOException {
         TextArea textArea = new TextArea();
         textArea.setText(getQuestionText());
@@ -182,6 +215,7 @@ public class Player extends Application implements Runnable{
         return textArea;
     }
 
+    //Needed for gameView!
     private GridPane createButtonLayout() {
         GridPane buttonLayout = new GridPane();
         buttonLayout.setHgap(10.0);
@@ -194,6 +228,7 @@ public class Player extends Application implements Runnable{
         return buttonLayout;
     }
 
+    //Needed for gameView!
     private EventHandler<ActionEvent> getActionEventEventHandler(Button button, TextArea quizArea, String s) {
         return actionEvent -> {
             buttonsEnable = true;
@@ -221,11 +256,10 @@ public class Player extends Application implements Runnable{
                 quizArea.appendText("Pushed " + s + "\n");
             }else
                 this.button4.setId("wrongAnswer");
-
-
         };
     }
 
+    //Needed for gameView!
     private void otherPlayer(){
         if (playerID == 1){
             otherPlayer = 2;
