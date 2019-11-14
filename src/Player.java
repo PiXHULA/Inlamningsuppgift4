@@ -94,15 +94,10 @@ public class Player extends Application implements Runnable{
     @Override
     public void start(Stage stage) throws Exception {
         connectToServer();
-        Player p = loginView();
-        while(true){
-        if (!p.getPlayerName().equals("")){
-            gameView(p);
-            break;
-        }
-        }
+        loginView();
         System.out.println(getPlayerName());
         this.thread.start();
+        gameView();
     }
 
     //Needed for loginView!
@@ -114,7 +109,7 @@ public class Player extends Application implements Runnable{
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
-    private Player loginView(){
+    private void loginView(){
         Stage stage = new Stage();
         Player player = new Player();
 
@@ -134,11 +129,10 @@ public class Player extends Application implements Runnable{
         scene.getStylesheets().add("GameviewStyle.css");
         stage.setScene(scene);
         stage.show();
-        return player;
     }
 
 
-    private void gameView(Player player) throws IOException {
+    private void gameView() throws IOException {
         //VBox vert1 = new VBox();
         VBox vert2 = new VBox();
         vert2.setMinSize(400,600);
@@ -153,7 +147,7 @@ public class Player extends Application implements Runnable{
         button3 = createButton(getAltText1_3(), quizArea);
         button4 = createButton(getAltText1_4(), quizArea);
 
-        displayPlayers = displayNames(player.getPlayerName() + playerID, "Player #" + otherPlayer);
+        displayPlayers = displayNames("Player #" + playerID, "Player #" + otherPlayer);
         buttonLayout = createButtonLayout();
         gameView = createGameviewPane(quizArea, displayPlayers, buttonLayout);
         vert2.getChildren().add(gameView);
