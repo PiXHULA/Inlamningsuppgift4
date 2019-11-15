@@ -42,7 +42,7 @@ public class Player extends Application implements Runnable{
 
 
     private int otherPlayer; //Control int so u can set "rules" later
-    private int myPoints; // so you can store turn points for yourself
+    private int myPoints = 0; // so you can store turn points for yourself
     private int myTotalPoints; // so you can store your totalpoints
     private int enemyPoints; // so you can store points for enenmy
     private int enemyTotalPoints; // so you can store your enemy totalpoints
@@ -142,8 +142,8 @@ public class Player extends Application implements Runnable{
         onlineStatus = createTextArea("Online: ","onlineStatus");
         highscoreArea = createTextArea("Highscore: ", "highscoreArea");
 
-        button = createButton(getAltText1_1(), quizArea);
-        button2 = createButton(getAltText1_2(), quizArea);
+        button = createButton(getAltText1_2(), quizArea);
+        button2 = createButton(getAltText1_1(), quizArea);
         button3 = createButton(getAltText1_3(), quizArea);
         button4 = createButton(getAltText1_4(), quizArea);
 
@@ -233,31 +233,29 @@ public class Player extends Application implements Runnable{
     //Needed for gameView!
     private EventHandler<ActionEvent> getActionEventEventHandler(Button button, TextArea quizArea, String s) {
         return actionEvent -> {
+            int i = 0;
             buttonsEnable = true;
             this.button.setDisable(buttonsEnable);
             this.button2.setDisable(buttonsEnable);
             this.button3.setDisable(buttonsEnable);
             this.button4.setDisable(buttonsEnable);
-            if(getAnswerText().equals(this.button.getText())){
-                this.button.setId("correctAnswer");
+            Button[] buttonlist = {button, button2, button3, button4};
+            if (getAnswerText().equals(button.getText())) {
+                button.setId("correctAnswer");
                 quizArea.appendText("Pushed " + s + "\n");
-            }else
-                this.button.setId("wrongAnswer");
-            if(getAnswerText().equals(this.button2.getText())){
-                this.button2.setId("correctAnswer");
-                quizArea.appendText("Pushed " + s + "\n");
-            }else
-                this.button2.setId("wrongAnswer");
-            if(getAnswerText().equals(this.button3.getText())){
-                this.button3.setId("correctAnswer");
-                quizArea.appendText("Pushed " + s + "\n");
-            }else
-                this.button3.setId("wrongAnswer");
-            if(getAnswerText().equals(this.button4.getText())){
-                this.button4.setId("correctAnswer");
-                quizArea.appendText("Pushed " + s + "\n");
-            }else
-                this.button4.setId("wrongAnswer");
+            } else
+                button.setId("wrongAnswer");
+
+            if (button.getId().equalsIgnoreCase("correctAnswer")){
+                myPoints++;
+                csc.sendMyPoints(myPoints);
+            }
+            if(!button.getId().equalsIgnoreCase("correctAnswer")){
+                for (int j = 1; j <4 ; j++) {
+                    buttonlist[j].setId("wrongAnswer");
+                }
+                csc.sendMyPoints(myPoints);
+            }
         };
     }
 
@@ -282,6 +280,15 @@ public class Player extends Application implements Runnable{
 
     //the "logic" for client connection to server
     private class ClientSideConnection {
+
+        public void sendMyPoints(int myPoints){
+            try{
+                dataOutputStream.writeInt(myPoints);
+                dataOutputStream.flush();
+            }catch (IOException ex){
+                System.out.println("IOException from sendMyPoints CSC");
+            }
+        }
 
         public ClientSideConnection (){
             System.out.println("--CLIENT CONNECTING--");
