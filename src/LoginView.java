@@ -35,7 +35,8 @@ public class LoginView extends Application {
         Button submit = new Button ("Submit");
         submit.setOnAction(actionEvent -> {
             setPlayerName(loginName.getText());
-                //stage.close();
+            System.out.println(playerName);
+            stage.close();
         });
         loginName.setAlignment(Pos.CENTER);
         loginView.add(loginName, 0,0);

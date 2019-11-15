@@ -11,9 +11,10 @@ public class Listener {
         while (true) {
             try {
                 final Socket socketToClient = serverSocket.accept();
-                MultiUserServer clientHandler =
-                        new MultiUserServer(socketToClient);
-                clientHandler.start();
+                MultiUserServer player1 = new MultiUserServer(socketToClient);
+                MultiUserServer player2 = new MultiUserServer(socketToClient);
+                player1.start();
+                player2.start();
             } catch (IOException e) {
                 e.printStackTrace();
             }

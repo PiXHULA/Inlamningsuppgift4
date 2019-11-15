@@ -26,7 +26,7 @@ public class ClientQuiz extends Application{
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
     private ClientSideConnection csc;
-    private int port = 51734;
+    private int port = 55555;
     private int playerID;
     private int otherPlayer; //Control int so u can set "rules" later
     private int myPoints; // so you can store turn points for yourself
@@ -36,17 +36,6 @@ public class ClientQuiz extends Application{
     private int turn; //so you can see / store points at diffrent "turns" of the game
     private boolean buttonsEnable; //so you can disable the buttons if its not your turn (if we want)
 
-
-
-    /**
-     * somthing like this plus you set "buttonesEnable to true or false depending if its your turn or not
-     * public void togglebuttons(){
-     *     button1.setEnable(buttonsEnable);
-     *     button2.setEnable(buttonsEnable);
-     *     button3.setEnable(buttonsEnable);
-     *     button4.setEnable(buttonsEnable);
-     * }
-     */
 
 
     @Override

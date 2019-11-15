@@ -55,8 +55,7 @@ public class Client extends Application implements Runnable {
                     String inputFromUser = answerField.getText();
                     PrintWriter out = null;
                     try {
-                        out = new PrintWriter(
-                                socket.getOutputStream(), true);
+                        out = new PrintWriter(socket.getOutputStream(), true);
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }

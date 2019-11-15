@@ -30,7 +30,6 @@ public class Gameview extends Application implements Runnable{
 
     @Override
     public void start(Stage stage) throws Exception {
-        //VBox vert1 = new VBox();
         VBox vert2 = new VBox();
         //VBox vert3 = new VBox();
         //vert1.setMinSize(200,600);
@@ -80,7 +79,6 @@ public class Gameview extends Application implements Runnable{
         Gameview.setCenter(quizArea);
 
         Insets insets = new Insets(10);
-        //BorderPane.setMargin(playerStatus, insets);
         BorderPane.setMargin(quizArea, insets);
         BorderPane.setMargin(buttonLayout, insets);
         return Gameview;
