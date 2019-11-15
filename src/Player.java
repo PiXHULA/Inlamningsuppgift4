@@ -325,7 +325,7 @@ public class Player extends Application implements Runnable{
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Player p = new Player();
         launch(args);
     }

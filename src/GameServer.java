@@ -15,7 +15,7 @@ public class GameServer {
     private int playerOnePoints; // So the server can send the points to the other player
     private int playerTwopoints; // so the server can send the points to the other player
     
-    public GameServer() {
+    public GameServer() throws IOException {
         numberOfPlayers = 0;
         System.out.println("---Game Server Booting Up---");
         try {
@@ -76,10 +76,10 @@ public class GameServer {
                 //state begin
                 dataOutputStream.writeInt(playerID);
                 dataOutputStream.writeUTF(protocol.getQuestion());
-                dataOutputStream.writeUTF(protocol.getAlt1_1());
-                dataOutputStream.writeUTF(protocol.getAlt1_2());
-                dataOutputStream.writeUTF(protocol.getAlt1_3());
-                dataOutputStream.writeUTF(protocol.getAlt1_4());
+                dataOutputStream.writeUTF(protocol.getAlt1());
+                dataOutputStream.writeUTF(protocol.getAlt2());
+                dataOutputStream.writeUTF(protocol.getAlt3());
+                dataOutputStream.writeUTF(protocol.getAlt4());
                 dataOutputStream.writeUTF(protocol.getAnswer());
 
                 dataOutputStream.flush();
@@ -103,7 +103,7 @@ public class GameServer {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         GameServer gameServer = new GameServer();
         gameServer.acceptConnection();
     }
