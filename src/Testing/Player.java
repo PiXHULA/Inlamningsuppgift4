@@ -33,9 +33,6 @@ public class Player {
     private String[] rightAnswer = new String[4];;
     private int altcounter = 0;
     private int counter = 0;
-    private int player1counter =0;
-    private int player2counter =0;
-
 
     private ClientSideConnection csc;
 
@@ -94,7 +91,6 @@ public class Player {
             buttonsEnable = true;
         } else {
             counter++;
-            player2counter++;
             message.setText("You are player #2. Wait for your turn.");
             labelQuestion.setText(questions[counter]);
             b1.setText(alt2[altcounter]);
@@ -151,8 +147,6 @@ public class Player {
                     altcounter++;
                     b4.setText(alt3[altcounter]);
                     altcounter =0;
-                    player1counter++;
-                    player1counter++;
                 }else {
                     labelQuestion.setText(questions[counter]);
                     b1.setText(alt4[altcounter]);
@@ -163,8 +157,6 @@ public class Player {
                     altcounter++;
                     b4.setText(alt4[altcounter]);
                     altcounter =0;
-                    player2counter++;
-                    player2counter++;
                 }
 
 

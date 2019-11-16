@@ -21,7 +21,6 @@ public class GameServer {
     private String[] alt3 = new String[4];;
     private String[] alt4 = new String[4];;
     private String[] rightAnswer = new String[4];;
-    private int counter = 0;
 
     public GameServer() {
         System.out.println("---GAME SERVER---");
