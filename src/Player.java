@@ -1,5 +1,6 @@
 import java.net.*;
 import java.io.*;
+
 import javafx.application.Application;
 import javafx.event.*;
 import javafx.geometry.*;
@@ -8,7 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-public class Player extends Application implements Runnable{
+public class Player extends Application implements Runnable {
 
     Button button;
     Button button2;
@@ -44,7 +45,7 @@ public class Player extends Application implements Runnable{
     private int otherPlayer; //Control int so u can set "rules" later
     private int myPoints = 0; // so you can store turn points for yourself
     private int myTotalPoints; // so you can store your totalpoints
-    private int enemyPoints; // so you can store points for enenmy
+    private int enemyPoints = 0; // so you can store points for enenmy
     private int enemyTotalPoints; // so you can store your enemy totalpoints
     private int turn; //so you can see / store points at diffrent "turns" of the game
     private boolean buttonsEnable = false; //so you can disable the buttons if its not your turn (if we want)
@@ -77,7 +78,9 @@ public class Player extends Application implements Runnable{
         return altText1_3;
     }
 
-    public void setAltText1_3(String altText1_3) { this.altText1_3 = altText1_3; }
+    public void setAltText1_3(String altText1_3) {
+        this.altText1_3 = altText1_3;
+    }
 
     public String getAltText1_4() {
         return altText1_4;
@@ -87,17 +90,22 @@ public class Player extends Application implements Runnable{
         this.altText1_4 = altText1_4;
     }
 
-    public String getAnswerText() { return answerText; }
+    public String getAnswerText() {
+        return answerText;
+    }
 
-    public void setAnswerText(String answerText) { this.answerText = answerText; }
+    public void setAnswerText(String answerText) {
+        this.answerText = answerText;
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
         connectToServer();
+        startRecevingPoints();
         loginView();
         System.out.println(getPlayerName());
-        this.thread.start();
         gameView();
+
     }
 
     //Needed for loginView!
@@ -109,22 +117,23 @@ public class Player extends Application implements Runnable{
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
-    private void loginView(){
+
+    private void loginView() {
         Stage stage = new Stage();
         Player player = new Player();
 
         //login screen. Username input > transfer username to "player1 / player " in gameview.
         GridPane loginView = new GridPane();
-        loginView.setMinSize(400,600);
+        loginView.setMinSize(400, 600);
         TextField loginName = new TextField("Enter name");
-        Button submit = new Button ("Submit");
+        Button submit = new Button("Submit");
         submit.setOnAction(actionEvent -> {
             player.setPlayerName(loginName.getText());
             stage.close();
         });
         loginName.setAlignment(Pos.CENTER);
-        loginView.add(loginName, 0,0);
-        loginView.add(submit, 0,1);
+        loginView.add(loginName, 0, 0);
+        loginView.add(submit, 0, 1);
         Scene scene = new Scene(loginView);
         scene.getStylesheets().add("GameviewStyle.css");
         stage.setScene(scene);
@@ -133,40 +142,40 @@ public class Player extends Application implements Runnable{
 
 
     private void gameView() throws IOException {
-        //VBox vert1 = new VBox();
-        VBox vert2 = new VBox();
-        vert2.setMinSize(400,600);
+
+        VBox groundBox = new VBox();
+        groundBox.setMinSize(400, 600);
         GridPane bottomPane = new GridPane();
-        bottomPane.add(vert2,0,0);
+        bottomPane.add(groundBox, 0, 0);
         quizArea = createTextArea(null, "gameviewPane");
-        onlineStatus = createTextArea("Online: ","onlineStatus");
-        highscoreArea = createTextArea("Highscore: ", "highscoreArea");
 
         button = createButton(getAltText1_2(), quizArea);
         button2 = createButton(getAltText1_1(), quizArea);
         button3 = createButton(getAltText1_3(), quizArea);
         button4 = createButton(getAltText1_4(), quizArea);
 
-        displayPlayers = displayNames("Player #" + playerID, "Player #" + otherPlayer);
+
+        displayPlayers = displayNames("Player #" + playerID + "\nScore: " + myPoints,
+                "Player #" + otherPlayer+ "\nScore: " + enemyPoints);
         buttonLayout = createButtonLayout();
         gameView = createGameviewPane(quizArea, displayPlayers, buttonLayout);
-        vert2.getChildren().add(gameView);
+        groundBox.getChildren().add(gameView);
         Scene scene = new Scene(bottomPane);
         scene.getStylesheets().add("GameviewStyle.css");
         Stage stage = new Stage();
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
-        stage.setTitle("Player #" +playerID);
+        stage.setTitle("Player #" + playerID);
     }
 
     //Needed for gameView?
     private GridPane createBottomPane(VBox vert1, VBox vert2, VBox vert3) {
         GridPane collectedGui = new GridPane();
-        collectedGui.setMinSize(800,600);
-        collectedGui.add(vert1,0,0);
-        collectedGui.add(vert2,1,0);
-        collectedGui.add(vert3,2,0);
+        collectedGui.setMinSize(800, 600);
+        collectedGui.add(vert1, 0, 0);
+        collectedGui.add(vert2, 1, 0);
+        collectedGui.add(vert3, 2, 0);
         return collectedGui;
     }
 
@@ -174,7 +183,7 @@ public class Player extends Application implements Runnable{
     private BorderPane createGameviewPane(TextArea quizArea, HBox playerStatus, GridPane buttonLayout) {
         BorderPane Gameview = new BorderPane();
 
-        Gameview.setPrefSize(400,600);
+        Gameview.setPrefSize(400, 600);
         Gameview.setPadding(new Insets(10, 10, 10, 10));
         Gameview.setTop(playerStatus);
         Gameview.setBottom(buttonLayout);
@@ -191,7 +200,7 @@ public class Player extends Application implements Runnable{
     private HBox displayNames(String player1, String player2) {
         Label first = new Label(player1);
         Label second = new Label(player2);
-        HBox playerStatus = new HBox(10,first,second);
+        HBox playerStatus = new HBox(10, first, second);
         playerStatus.setSpacing(50);
         playerStatus.setAlignment(Pos.CENTER);
         playerStatus.setPrefHeight(50);
@@ -200,7 +209,7 @@ public class Player extends Application implements Runnable{
 
     //Needed for gameView!
     private Button createButton(String answer, TextArea quizArea) {
-        Button button = new Button (answer);
+        Button button = new Button(answer);
         button.setDisable(buttonsEnable);
         button.setOnAction(getActionEventEventHandler(button, quizArea, button.getText()));
         return button;
@@ -222,10 +231,10 @@ public class Player extends Application implements Runnable{
         GridPane buttonLayout = new GridPane();
         buttonLayout.setHgap(10.0);
         buttonLayout.setVgap(10.0);
-        buttonLayout.add(button,0,0);
-        buttonLayout.add(button2,1,0);
-        buttonLayout.add(button3,0,1);
-        buttonLayout.add(button4,1,1);
+        buttonLayout.add(button, 0, 0);
+        buttonLayout.add(button2, 1, 0);
+        buttonLayout.add(button3, 0, 1);
+        buttonLayout.add(button4, 1, 1);
         buttonLayout.setId("buttonLayout");
         return buttonLayout;
     }
@@ -246,12 +255,12 @@ public class Player extends Application implements Runnable{
             } else
                 button.setId("wrongAnswer");
 
-            if (button.getId().equalsIgnoreCase("correctAnswer")){
+            if (button.getId().equalsIgnoreCase("correctAnswer")) {
                 myPoints++;
                 csc.sendMyPoints(myPoints);
             }
-            if(!button.getId().equalsIgnoreCase("correctAnswer")){
-                for (int j = 1; j <4 ; j++) {
+            if (!button.getId().equalsIgnoreCase("correctAnswer")) {
+                for (int j = 1; j < 4; j++) {
                     buttonlist[j].setId("wrongAnswer");
                 }
                 csc.sendMyPoints(myPoints);
@@ -260,39 +269,67 @@ public class Player extends Application implements Runnable{
     }
 
     //Needed for gameView!
-    private void otherPlayer(){
-        if (playerID == 1){
+    private void otherPlayer() {
+        if (playerID == 1) {
             otherPlayer = 2;
-        } else{
+        } else {
             otherPlayer = 1;
         }
     }
 
     //method to call and run CSC
-    public void connectToServer(){
+    public void connectToServer() {
         csc = new ClientSideConnection();
+    }
+
+    private void startRecevingPoints() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                  csc.recievedPointsFromServer();
+                  //System.out.println("testar här " + enemyPoints);
+                }
+            }
+        });
+        thread.start();
     }
 
     @Override
     public void run() {
+
 
     }
 
     //the "logic" for client connection to server
     private class ClientSideConnection {
 
-        public void sendMyPoints(int myPoints){
-            try{
+        public void sendMyPoints(int myPoints) {
+            try {
                 dataOutputStream.writeInt(myPoints);
                 dataOutputStream.flush();
-            }catch (IOException ex){
+            } catch (IOException ex) {
                 System.out.println("IOException from sendMyPoints CSC");
+                ex.printStackTrace();
             }
         }
 
-        public ClientSideConnection (){
+        public int recievedPointsFromServer() {
+            try {
+                enemyPoints = dataInputStream.readInt();
+                if(enemyPoints <5 ) {
+                    System.out.println("Player #" + otherPlayer + " has " + enemyPoints + " points");
+                }
+            } catch (IOException ex) {
+                System.out.println("IOException from recievedPointsFromServer CSC");
+                ex.printStackTrace();
+            }
+            return enemyPoints;
+        }
+
+        public ClientSideConnection() {
             System.out.println("--CLIENT CONNECTING--");
-            try{
+            try {
                 socket = new Socket("localhost", port);
                 dataInputStream = new DataInputStream(socket.getInputStream());
                 dataOutputStream = new DataOutputStream(socket.getOutputStream());
@@ -318,7 +355,7 @@ public class Player extends Application implements Runnable{
 
                 System.out.println("Connected to server as player #" + playerID + ".");
                 otherPlayer();
-            }catch (IOException ex){
+            } catch (IOException ex) {
                 System.out.println("IOException from CSC constructor");
                 ex.printStackTrace();
             }
