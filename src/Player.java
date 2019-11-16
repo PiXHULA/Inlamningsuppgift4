@@ -258,12 +258,15 @@ public class Player extends Application implements Runnable {
             if (button.getId().equalsIgnoreCase("correctAnswer")) {
                 myPoints++;
                 csc.sendMyPoints(myPoints);
+
+                gameView.requestLayout();
             }
             if (!button.getId().equalsIgnoreCase("correctAnswer")) {
                 for (int j = 1; j < 4; j++) {
                     buttonlist[j].setId("wrongAnswer");
                 }
                 csc.sendMyPoints(myPoints);
+
             }
         };
     }

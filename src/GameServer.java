@@ -83,6 +83,7 @@ public class GameServer {
                 dataOutputStream.writeUTF(protocol.getAlt4());
                 dataOutputStream.writeUTF(protocol.getAnswer());
 
+
                 dataOutputStream.flush();
                 while (true) {
                     if (playerID == 1) {
