@@ -20,7 +20,7 @@ public class GameServer {
     private String[] alt2 = new String[4];;
     private String[] alt3 = new String[4];;
     private String[] alt4 = new String[4];;
-    private String[] rightAnswer = new String[4];;
+    private String[] rightAnswer = new String[4];
 
     public GameServer() {
         System.out.println("---GAME SERVER---");
@@ -75,10 +75,10 @@ public class GameServer {
         try {
             System.out.println("Waiting for connections...");
 
-            while (true) {
-                while (numberOfPlayers < 2) {
+            while (true) { //makes it posible to have multibul gamesessions runing at the same time
+                while (numberOfPlayers < 2) { // connects 2 clients together
                     Socket socket = serverSocket.accept();
-                    numberOfPlayers++;
+                    numberOfPlayers++; // control number for how many players in one game
                     System.out.println("Player #" + numberOfPlayers + " has connected.");
                     ServerSideConnection ssc = new ServerSideConnection(socket, numberOfPlayers);
                     if (numberOfPlayers == 1) {
@@ -89,7 +89,7 @@ public class GameServer {
                     Thread thread = new Thread(ssc);
                     thread.start();
                 }
-                numberOfPlayers = 0;
+                numberOfPlayers = 0; //resets the number of players so other instances of the server can run
             System.out.println("We now have 2 players");
             }
         } catch (IOException e) {
