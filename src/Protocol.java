@@ -1,69 +1,77 @@
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Properties;
+import java.util.Random;
 
 public class Protocol {
 
+    Random random = new Random();
+
+    Properties p = new Properties();
+
+    FileInputStream[] f = {
+            new FileInputStream("src\\Properties\\Gaming.properties"),
+            new FileInputStream("src\\Properties\\History.properties"),
+            new FileInputStream("src\\Properties\\Sport.properties"),
+            new FileInputStream("src\\Properties\\Film.properties")};
+
     String question;
-    String alt1_1;
-    String alt1_2;
-    String alt1_3;
-    String alt1_4;
+    String alt1;
+    String alt2;
+    String alt3;
+    String alt4;
     String correct;
 
     public String getQuestion() {
         return question;
     }
 
-    public String getAlt1_1() {
-        return alt1_1;
+    public String getAlt1() {
+        return alt1;
     }
 
-    public String getAlt1_2() {
-        return alt1_2;
+    public String getAlt2() {
+        return alt2;
     }
 
-    public String getAlt1_3() {
-        return alt1_3;
+    public String getAlt3() {
+        return alt3;
     }
 
-    public String getAlt1_4() {
-        return alt1_4;
+    public String getAlt4() {
+        return alt4;
     }
 
     public String getAnswer() {
         return correct;
     }
 
-    public Protocol() {
-        Properties p = new Properties();
-        try {
-            p.load(new FileInputStream("src\\Gaming.properties"));
+    public Protocol() throws IOException {
+        newGame();
+    }
 
-        } catch (Exception e) {
+
+    public void newGame() {
+
+        int randomNumber = random.nextInt(20 - 16) + 1;
+
+        try {
+            p.load(f[randomNumber - 1]);
+
+            question = p.getProperty("question" + randomNumber);
+            alt1 = p.getProperty("alt" + randomNumber + ".1");
+            alt2 = p.getProperty("alt" + randomNumber + ".2");
+            alt3 = p.getProperty("alt" + randomNumber + ".3");
+            alt4 = p.getProperty("alt" + randomNumber + ".4");
+            correct = p.getProperty("correct" + randomNumber);
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
-        question = p.getProperty("question1");
-        alt1_1 = p.getProperty("alt1.1");
-        alt1_2 = p.getProperty("alt1.2");
-        alt1_3 = p.getProperty("alt1.3");
-        alt1_4 = p.getProperty("alt1.4");
-        correct = p.getProperty("correct1");
-
-     //   System.out.println(question);
     }
 
-    public boolean isAltCorrect(String clientInput){
-        if (clientInput.equals(correct)){
-            return true;
-        }
-        else {
-            return false;
-        }
+    public static void main(String[] args) throws IOException {
+        Protocol p = new Protocol();
     }
-
-    public static void main(String[] args) {
-        new Protocol();
-    }
-
 }

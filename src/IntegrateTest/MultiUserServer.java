@@ -23,17 +23,18 @@ public class MultiUserServer extends Thread{
         ) {
             String inputLine, outPutLine;
 
-            //Initiate conversation with client
-            Protocol prot = new Protocol();
-            outPutLine = prot.processInput(null);
-            out.println("Riddler: " + outPutLine);
+            QuestionProtocol prot = new QuestionProtocol();
+/*
+            outPutLine = prot.questionInput("HEJ");
+            out.println(outPutLine);
 
             while ((inputLine = in.readLine()) != null) {
-                outPutLine = prot.processInput(inputLine);
+                outPutLine = prot.questionInput(inputLine);
                 out.println(outPutLine);
                 if (outPutLine.equalsIgnoreCase("Bye"))
                     break;
             }
+ */
         } catch (IOException e) {
             e.printStackTrace();
         }

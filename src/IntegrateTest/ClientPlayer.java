@@ -1,4 +1,4 @@
-package newServer;
+package IntegrateTest;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -17,11 +17,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 
+public class ClientPlayer extends Application implements Runnable{
 
-
-public class PlayerClientTest extends Application implements Runnable {
     Button button;
     Button button2;
     Button button3;
@@ -34,17 +34,12 @@ public class PlayerClientTest extends Application implements Runnable {
     TextArea highscoreArea;
     HBox displayPlayers;
     Stage stage;
-
     Thread thread = new Thread(this);
-    private DataInputStream dataInputStream;
-    private DataOutputStream dataOutputStream;
-    private PlayerClientTest.ClientSideConnection csc;
 
-    String hostName = "127.0.0.1";
-    private int port = 51734;
-    private Socket socket = new Socket(hostName, port);
+    private int port = 49494;
+    private String localHost = "127.0.0.1";
     private int playerID;
-    private Scene gameviewScene;
+    private Socket socket = new Socket(InetAddress.getLocalHost(),port);
 
     private String questionText;
     private String altText1_1;
@@ -65,7 +60,7 @@ public class PlayerClientTest extends Application implements Runnable {
     private int turn; //so you can see / store points at diffrent "turns" of the game
     private boolean buttonsEnable = false; //so you can disable the buttons if its not your turn (if we want)
 
-    public PlayerClientTest(Socket socketToClient) throws IOException {
+    public ClientPlayer() throws IOException {
     }
 
     public void setQuestionText(String questionText) {
@@ -111,47 +106,30 @@ public class PlayerClientTest extends Application implements Runnable {
     public void setAnswerText(String answerText) { this.answerText = answerText; }
 
     @Override
-    public void start(Stage stage) throws IOException {
-        /*
-        GridPane loginView = new GridPane();
-        loginView.setMinSize(400,600);
-        TextField loginName = new TextField("Enter name");
-        Button submit = new Button ("Submit");
-        loginName.setAlignment(Pos.CENTER);
-        loginView.add(loginName, 0,0);
-        loginView.add(submit, 0,1);
-        Scene scene = new Scene(loginView);
-        scene.getStylesheets().add("GameviewStyle.css");
-        submit.setOnAction(actionEvent -> {
-            //PlayerClientTest.setPlayerName(loginName.getText());
-            stage.setScene(gameviewScene);
-            System.out.println("Clicked Submit");
-            //stage.setTitle("Player #1 - " + player.getPlayerName());
-        });
-
-         */
-
-        VBox groundVBox = new VBox();
-        groundVBox.setMinSize(400,600);
+    public void start(Stage stage) throws Exception {
+        VBox groundBox = new VBox();
+        groundBox.setMinSize(400,600);
         GridPane bottomPane = new GridPane();
-        bottomPane.add(groundVBox,0,0);
+        bottomPane.add(groundBox,0,0);
         quizArea = createTextArea(null, "gameviewPane");
+        onlineStatus = createTextArea("Online: ","onlineStatus");
+        highscoreArea = createTextArea("Highscore: ", "highscoreArea");
 
-        button = createButton(getAltText1_2(), quizArea);
-        button2 = createButton(getAltText1_1(), quizArea);
-        button3 = createButton(getAltText1_3(), quizArea);
-        button4 = createButton(getAltText1_4(), quizArea);
+        button = createButton("Fire", quizArea);
+        button2 = createButton("Counter Strike", quizArea);
+        button3 = createButton("Cerberus Starfish", quizArea);
+        button4 = createButton("Computer Science", quizArea);
 
         displayPlayers = displayNames("Player #" + playerID, "Player #" + otherPlayer);
         buttonLayout = createButtonLayout();
         gameView = createGameviewPane(quizArea, displayPlayers, buttonLayout);
-        groundVBox.getChildren().add(gameView);
-        Scene gameviewScene = new Scene(bottomPane);
-        gameviewScene.getStylesheets().add("GameviewStyle.css");
-//        stage.setScene(scene);
-        stage.setScene(gameviewScene);
-        stage.setTitle("QUIZKAMPEN 2.0");
+        groundBox.getChildren().add(gameView);
+        Scene scene = new Scene(bottomPane);
+        scene.getStylesheets().add("GameviewStyle.css");
+        stage.setResizable(false);
+        stage.setScene(scene);
         stage.show();
+        stage.setTitle("Player #" +playerID);
         this.thread.start();
     }
 
@@ -164,85 +142,7 @@ public class PlayerClientTest extends Application implements Runnable {
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
-    private void loginView() throws IOException {
-        //connectToServer();
-        Stage stage = new Stage();
-        //PlayerClientTest player = new PlayerClientTest();
-        VBox groundVBox = new VBox();
-        groundVBox.setMinSize(400,600);
-        GridPane bottomPane = new GridPane();
-        bottomPane.add(groundVBox,0,0);
-        quizArea = createTextArea(null, "gameviewPane");
 
-        button = createButton(getAltText1_2(), quizArea);
-        button2 = createButton(getAltText1_1(), quizArea);
-        button3 = createButton(getAltText1_3(), quizArea);
-        button4 = createButton(getAltText1_4(), quizArea);
-
-        //displayPlayers = displayNames(playerName, "Player #" + otherPlayer);
-        displayPlayers = displayNames("Player #" + playerID, "Player #" + otherPlayer);
-        buttonLayout = createButtonLayout();
-        gameView = createGameviewPane(quizArea, displayPlayers, buttonLayout);
-        groundVBox.getChildren().add(gameView);
-        GridPane loginView = new GridPane();
-        loginView.setMinSize(400,600);
-        TextField loginName = new TextField("Enter name");
-        Button submit = new Button ("Submit");
-        submit.setOnAction(actionEvent -> {
-            //player.setPlayerName(loginName.getText());
-            System.out.println("Clicked submit");
-            stage.setScene(gameviewScene);
-        });
-        loginName.setAlignment(Pos.CENTER);
-        loginView.add(loginName, 0,0);
-        loginView.add(submit, 0,1);
-        Scene scene = new Scene(loginView);
-        scene.getStylesheets().add("GameviewStyle.css");
-        stage.setScene(scene);
-        stage.setTitle("QUIZKAMPEN 2.0");
-        stage.show();
-        Scene gameviewScene = new Scene(bottomPane);
-        gameviewScene.getStylesheets().add("GameviewStyle.css");
-        this.thread.start();
-    }
-
-    private void gameView() throws IOException {
-        VBox groundVBox = new VBox();
-        groundVBox.setMinSize(400,600);
-        GridPane bottomPane = new GridPane();
-        bottomPane.add(groundVBox,0,0);
-        quizArea = createTextArea(null, "gameviewPane");
-
-        button = createButton(getAltText1_2(), quizArea);
-        button2 = createButton(getAltText1_1(), quizArea);
-        button3 = createButton(getAltText1_3(), quizArea);
-        button4 = createButton(getAltText1_4(), quizArea);
-
-        //displayPlayers = displayNames(playerName, "Player #" + otherPlayer);
-        displayPlayers = displayNames("Player #" + playerID, "Player #" + otherPlayer);
-        buttonLayout = createButtonLayout();
-        gameView = createGameviewPane(quizArea, displayPlayers, buttonLayout);
-        groundVBox.getChildren().add(gameView);
-        Scene gameviewScene = new Scene(bottomPane);
-        gameviewScene.getStylesheets().add("GameviewStyle.css");
-
-        Stage stage = new Stage();
-        stage.setResizable(false);
-        stage.setScene(gameviewScene);
-        stage.show();
-        stage.setTitle("Player #" +playerID);
-
-    }
-
-    //Needed for gameView?
-    private GridPane createBottomPane(VBox vert1, VBox vert2, VBox vert3) {
-        GridPane collectedGui = new GridPane();
-        collectedGui.setMinSize(800,600);
-        collectedGui.add(vert1,0,0);
-        collectedGui.add(vert2,1,0);
-        collectedGui.add(vert3,2,0);
-        return collectedGui;
-    }
 
     //Needed for gameView!
     private BorderPane createGameviewPane(TextArea quizArea, HBox playerStatus, GridPane buttonLayout) {
@@ -276,7 +176,7 @@ public class PlayerClientTest extends Application implements Runnable {
     private Button createButton(String answer, TextArea quizArea) {
         Button button = new Button (answer);
         button.setDisable(buttonsEnable);
-        button.setOnAction(getActionEventEventHandler(button, quizArea, button.getText()));
+        button.setOnAction(getActionEventEventHandler(quizArea, button.getText()));
         return button;
     }
 
@@ -305,46 +205,69 @@ public class PlayerClientTest extends Application implements Runnable {
     }
 
     //Needed for gameView!
-    private EventHandler<ActionEvent> getActionEventEventHandler(Button button, TextArea quizArea, String s) {
+    private EventHandler<ActionEvent> getActionEventEventHandler(TextArea quizArea, String s) {
         return actionEvent -> {
+            /*
             int i = 0;
             buttonsEnable = true;
             this.button.setDisable(buttonsEnable);
             this.button2.setDisable(buttonsEnable);
             this.button3.setDisable(buttonsEnable);
             this.button4.setDisable(buttonsEnable);
-            Button[] buttonlist = {button, button2, button3, button4};
-            if (getAnswerText().equals(button.getText())) {
-                button.setId("correctAnswer");
-                quizArea.appendText("Pushed " + s + "\n");
-            } else
-                button.setId("wrongAnswer");
+             */
+            String inputFromUser = this.button.getText();
+            PrintWriter out = null;
+            try {
+                out = new PrintWriter(socket.getOutputStream(), true);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            out.println(inputFromUser);
 
-            if (button.getId().equalsIgnoreCase("correctAnswer")){
-                myPoints++;
-             //   csc.sendMyPoints(myPoints);
+            Button[] buttonlist = {button, button2, button3, button4};
+            for (Button button : buttonlist){
+                if(button.getText().equals("Counter Strike"))
+                    button.setId("correctAnswer");
+                else
+                    button.setId("wrongAnswer");
             }
-            if(!button.getId().equalsIgnoreCase("correctAnswer")){
-                for (int j = 1; j <4 ; j++) {
-                    buttonlist[j].setId("wrongAnswer");
-                }
-            //    csc.sendMyPoints(myPoints);
-            }
+
         };
     }
 
-
     @Override
     public void run() {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));) {
+        try (BufferedReader in = new BufferedReader(
+                new InputStreamReader(this.socket.getInputStream()));
+        ) {
             String message;
+            int count = 0;
             while ((message = in.readLine()) != null) {
-                quizArea.appendText(message + "\n");
+               // if (count == 0)
+                    quizArea.appendText(message + "\n");
+                //else
+                    //quizArea.setText(message + "\n");
+                //count++;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    /*
+    //Needed for gameView!
+    private void otherPlayer(){
+        if (playerID == 1){
+            otherPlayer = 2;
+        } else{
+            otherPlayer = 1;
+        }
+    }
+
+    //method to call and run CSC
+    public void connectToServer(){
+        csc = new ClientSideConnection();
+    }
+
 
     //the "logic" for client connection to server
     private class ClientSideConnection {
@@ -391,27 +314,12 @@ public class PlayerClientTest extends Application implements Runnable {
                 ex.printStackTrace();
             }
         }
-        //Needed for gameView!
-        private void otherPlayer(){
-            if (playerID == 1){
-                otherPlayer = 2;
-            } else{
-                otherPlayer = 1;
-            }
-        }
-
-        //method to call and run CSC
-        public void connectToServer(){
-            csc = new PlayerClientTest.ClientSideConnection();
-        }
     }
 
 
+     */
     public static void main(String[] args) throws IOException {
-        //PlayerClientTest p = new PlayerClientTest();
+        ClientPlayer p = new ClientPlayer();
         launch(args);
     }
 }
-
-
-

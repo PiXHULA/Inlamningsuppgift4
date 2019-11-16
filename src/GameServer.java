@@ -15,7 +15,7 @@ public class GameServer {
     private int playerOnePoints; // So the server can send the points to the other player
     private int playerTwopoints; // so the server can send the points to the other player
     
-    public GameServer() {
+    public GameServer() throws IOException {
         numberOfPlayers = 0;
         System.out.println("---Game Server Booting Up---");
         try {
@@ -73,18 +73,25 @@ public class GameServer {
         @Override
         public void run() {
             try {
+                //state begin
                 dataOutputStream.writeInt(playerID);
                 dataOutputStream.writeUTF(protocol.getQuestion());
-                dataOutputStream.writeUTF(protocol.getAlt1_1());
-                dataOutputStream.writeUTF(protocol.getAlt1_2());
-                dataOutputStream.writeUTF(protocol.getAlt1_3());
-                dataOutputStream.writeUTF(protocol.getAlt1_4());
+                dataOutputStream.writeUTF(protocol.getAlt1());
+                dataOutputStream.writeUTF(protocol.getAlt2());
+                dataOutputStream.writeUTF(protocol.getAlt3());
+                dataOutputStream.writeUTF(protocol.getAlt4());
                 dataOutputStream.writeUTF(protocol.getAnswer());
+
                 dataOutputStream.flush();
                 while (true) {
-                    //put in more later, so the server can send more stuff etc...
-
-                    //Testing
+                    if(playerID == 1){
+                        playerOnePoints += dataInputStream.readInt();
+                        System.out.println("spelare 1 har" + playerOnePoints + "poäng");
+                    }
+                    if (playerID == 2){
+                        playerTwopoints += dataInputStream.readInt();
+                        System.out.println("spelare 2 har " + playerTwopoints + " poäng");
+                    }
                     String question = protocol.question;
                     byte[] questionByte = question.getBytes();
                     dataOutputStream.write(questionByte);
@@ -96,7 +103,7 @@ public class GameServer {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         GameServer gameServer = new GameServer();
         gameServer.acceptConnection();
     }
