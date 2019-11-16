@@ -12,9 +12,9 @@ public class GameServer {
     private ServerSideConnection player3;
     private boolean maxPlayersForOneGame = false;
     private int turn; //so the server can "count" what turn/question it is on
-    private int playerOnePoints; // So the server can send the points to the other player
-    private int playerTwopoints; // so the server can send the points to the other player
-    
+    private int playerOnePoints = 0; // So the server can send the points to the other player
+    private int playerTwopoints = 0; // so the server can send the points to the other player
+
     public GameServer() throws IOException {
         numberOfPlayers = 0;
         System.out.println("---Game Server Booting Up---");
@@ -30,7 +30,7 @@ public class GameServer {
     public void acceptConnection() {
         try {
             System.out.println("Waiting for connections...");
-            while (numberOfPlayers < 2) {
+            while (true) {
                 Socket socket = serverSocket.accept();
                 numberOfPlayers++;
                 System.out.println("Player #" + numberOfPlayers + " has connected.");
@@ -40,11 +40,12 @@ public class GameServer {
                 } else {
                     player2 = ssc;
                 }
+                if(numberOfPlayers == 2){
+                    numberOfPlayers = 0;
+                }
                 Thread thread = new Thread(ssc);
                 thread.start();
             }
-            System.out.println("We now have 2 players.");
-            maxPlayersForOneGame = true;
         } catch (IOException ex) {
             System.out.println("IOException from acceptConnection");
             ex.printStackTrace();
@@ -82,15 +83,18 @@ public class GameServer {
                 dataOutputStream.writeUTF(protocol.getAlt4());
                 dataOutputStream.writeUTF(protocol.getAnswer());
 
+
                 dataOutputStream.flush();
                 while (true) {
-                    if(playerID == 1){
-                        playerOnePoints += dataInputStream.readInt();
-                        System.out.println("spelare 1 har" + playerOnePoints + "poäng");
+                    if (playerID == 1) {
+                        playerOnePoints = dataInputStream.readInt();
+                        System.out.println("spelare 1 har " + playerOnePoints + " poäng");
+                        player2.sendPoints(playerOnePoints);
                     }
                     if (playerID == 2){
-                        playerTwopoints += dataInputStream.readInt();
+                        playerTwopoints = dataInputStream.readInt();
                         System.out.println("spelare 2 har " + playerTwopoints + " poäng");
+                        player1.sendPoints(playerTwopoints);
                     }
                     String question = protocol.question;
                     byte[] questionByte = question.getBytes();
@@ -98,6 +102,16 @@ public class GameServer {
                 }
             } catch (IOException ex) {
                 System.out.println("IOException from run() SSC");
+                ex.printStackTrace();
+            }
+        }
+
+        public void sendPoints(int points) {
+            try {
+                dataOutputStream.writeInt(points);
+                dataOutputStream.flush();
+            } catch (IOException ex) {
+                System.out.println("IOException from sendPoints SSC");
                 ex.printStackTrace();
             }
         }
