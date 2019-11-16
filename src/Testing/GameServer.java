@@ -7,7 +7,7 @@ public class GameServer {
 
     private ServerSocket serverSocket;
     private int numberOfPlayers;
-    private int port = 51734;
+    private int port = 51735;
     private ServerSideConnection player1;
     private ServerSideConnection player2;
     private int turnsMade;
@@ -74,20 +74,24 @@ public class GameServer {
     public void acceptConnection() {
         try {
             System.out.println("Waiting for connections...");
-            while (numberOfPlayers < 2) {
-                Socket socket = serverSocket.accept();
-                numberOfPlayers++;
-                System.out.println("Player #" + numberOfPlayers + " has connected.");
-                ServerSideConnection ssc = new ServerSideConnection(socket, numberOfPlayers);
-                if (numberOfPlayers == 1) {
-                    player1 = ssc;
-                } else {
-                    player2 = ssc;
+
+            while (true) {
+                while (numberOfPlayers < 2) {
+                    Socket socket = serverSocket.accept();
+                    numberOfPlayers++;
+                    System.out.println("Player #" + numberOfPlayers + " has connected.");
+                    ServerSideConnection ssc = new ServerSideConnection(socket, numberOfPlayers);
+                    if (numberOfPlayers == 1) {
+                        player1 = ssc;
+                    } else {
+                        player2 = ssc;
+                    }
+                    Thread thread = new Thread(ssc);
+                    thread.start();
                 }
-                Thread thread = new Thread(ssc);
-                thread.start();
-            }
+                numberOfPlayers = 0;
             System.out.println("We now have 2 players");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -165,8 +169,6 @@ public class GameServer {
                         break;
                     }
                 }
-                player1.closeConnection();
-                player2.closeConnection();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -181,6 +183,7 @@ public class GameServer {
             }
         }
 
+        /*
         public void closeConnection() {
             try {
                 socket.close();
@@ -189,6 +192,8 @@ public class GameServer {
                 e.printStackTrace();
             }
         }
+         */
+
     }
 
     public static void main(String[] args) {

@@ -227,13 +227,14 @@ public class Player {
         private Socket socket;
         private DataOutputStream dataOutputStream;
         private DataInputStream dataInputStream;
-        private int port = 51734;
+        private int port = 51735;
 
 
         public ClientSideConnection() {
             System.out.println("---CLIENT CONNECTING---");
             try {
                 socket = new Socket("localhost", port);
+                //if(socket.isConnected() == true)
                 dataInputStream = new DataInputStream(socket.getInputStream());
                 dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 playerID = dataInputStream.readInt();
