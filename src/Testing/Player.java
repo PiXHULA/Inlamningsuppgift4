@@ -198,7 +198,7 @@ public class Player {
     }
 
     //Client connection
-    private class ClientSideConnection {
+    public class ClientSideConnection {
 
         private Socket socket;
         private DataOutputStream dataOutputStream;

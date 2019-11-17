@@ -1,5 +1,6 @@
 package IntegrateTest;
 
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -9,40 +10,27 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.*;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class ClientPlayer extends Application {
+public class ClientPlayer extends Application implements Runnable {
 
-    int width;
-    int height;
-    Stage window;
-    GridPane bottomPane;
-    Scene gameScene;
-    TextArea quizArea;
-    TextArea messageArea;
-    Button button;
-    Button button2;
-    Button button3;
-    Button button4;
-    GridPane buttonLayout;
-    BorderPane gameView;
-    HBox displayPlayers;
+    private TextArea quizArea;
+    private Label message;
+    private Button button;
+    private Button button2;
+    private Button button3;
+    private Button button4;
 
     private int playerID;
     private int otherPlayer;
-
     private int values[];
     private int maxTurns;
     private int turnsMade;
@@ -50,9 +38,7 @@ public class ClientPlayer extends Application {
     private int enemyPoints;
     private boolean buttonsEnable;
 
-    private int port = 51735;
-    private String localHost = "127.0.0.1";
-    private Socket socket = new Socket(InetAddress.getLocalHost(),port);
+    private Thread thread;
 
     ///FRÅGOR+SVAR HAR LAGTS I VARSIN ARRAY ISTÄLLET FÖR 6 STK
     //String arrays med frågor och svar, layout: fråga, svar1, svar2, svar3, svar4, rättSvar;
@@ -64,16 +50,14 @@ public class ClientPlayer extends Application {
     private ClientSideConnection csc;
 
     public ClientPlayer(int w, int h) throws IOException {
-        width = w;
-        height = h;
-        window = new Stage();
-        messageArea = createTextArea("Message: ", "questionArea");
+
+        message = new Label();
         quizArea = createTextArea("Quiz: ", "questionArea");
         button = new Button("1");
         button2 = new Button("2");
         button3 = new Button("3");
         button4 = new Button("4");
-        values = new int[4];
+        int[] values = new int[4];
         myPoints = 0;
         enemyPoints = 0;
     }
@@ -81,44 +65,68 @@ public class ClientPlayer extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        ClientPlayer p = new ClientPlayer(400, 600);
         VBox groundBox = new VBox();
-        groundBox.setMinSize(400,600);
+        groundBox.setMinSize(400, 600);
         GridPane bottomPane = new GridPane();
-        bottomPane.add(groundBox,0,0);
-        quizArea = createTextArea(null, "gameviewPane");
+        bottomPane.add(groundBox, 0, 0);
+        quizArea = new TextArea();
+        message = new Label();
 
-        button = createButton("Fire", quizArea);
-        button2 = createButton("Counter Strike", quizArea);
-        button3 = createButton("Cerberus Starfish", quizArea);
-        button4 = createButton("Computer Science", quizArea);
+        Button button = new Button();
+        Button button2 = new Button();
+        Button button3 = new Button();
+        Button button4 = new Button();
+        GridPane buttonLayout = new GridPane();
+        BorderPane Gameview = new BorderPane();
+        Gameview.setPrefSize(400, 600);
+        Gameview.setPadding(new Insets(10, 10, 10, 10));
+        Gameview.setTop(message);
+        Gameview.setBottom(buttonLayout);
+        Gameview.setCenter(quizArea);
 
-        displayPlayers = displayNames("Player #" + playerID, "Player #" + otherPlayer);
-        buttonLayout = createButtonLayout();
-        gameView = createGameviewPane(quizArea, displayPlayers, buttonLayout);
-        groundBox.getChildren().add(gameView);
+        Insets insets = new Insets(10);
+        BorderPane.setMargin(message, insets);
+        BorderPane.setMargin(quizArea, insets);
+        BorderPane.setMargin(buttonLayout, insets);
+        groundBox.getChildren().add(Gameview);
         Scene scene = new Scene(bottomPane);
         scene.getStylesheets().add("GameviewStyle.css");
+
+        if (playerID == 1) {
+            message.setText("You are player #1. You go first!");
+            quizArea.setText(question1[0]);
+            button.setText(question1[1]);
+            button2.setText(question1[2]);
+            button3.setText(question1[3]);
+            button4.setText(question1[4]);
+            otherPlayer = 2;
+            buttonsEnable = true;
+        } else {
+            message.setText("You are player #2. Wait for your turn.");
+            quizArea.setText(question2[0]);
+            button.setText(question2[1]);
+            button2.setText(question2[2]);
+            button3.setText(question2[3]);
+            button4.setText(question2[4]);
+            otherPlayer = 1;
+            buttonsEnable = false;
+        }
+        toggleButtons();
         stage.setResizable(false);
         stage.setScene(scene);
+        stage.setTitle("ClientPlayer #" + playerID);
         stage.show();
-        stage.setTitle("ClientPlayer #" +playerID);
         this.thread.start();
     }
-
-    //Needed for loginView!
-    public String getPlayerName() {
-        return playerName;
-    }
-
-    //Needed for loginView!
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
+    public static void main(String[] args) throws IOException {
+        launch(args);
     }
 
     //Needed for gameView!
-    private BorderPane createGameviewPane(TextArea quizArea, HBox playerStatus, GridPane buttonLayout) {
+    private BorderPane createGameviewPane(TextArea quizArea, Label playerStatus, GridPane buttonLayout) {
         BorderPane Gameview = new BorderPane();
-        Gameview.setPrefSize(400,600);
+        Gameview.setPrefSize(400, 600);
         Gameview.setPadding(new Insets(10, 10, 10, 10));
         Gameview.setTop(playerStatus);
         Gameview.setBottom(buttonLayout);
@@ -135,7 +143,7 @@ public class ClientPlayer extends Application {
     private HBox displayNames(String player1, String player2) {
         Label first = new Label(player1);
         Label second = new Label(player2);
-        HBox playerStatus = new HBox(10,first,second);
+        HBox playerStatus = new HBox(10, first, second);
         playerStatus.setSpacing(50);
         playerStatus.setAlignment(Pos.CENTER);
         playerStatus.setPrefHeight(50);
@@ -144,16 +152,16 @@ public class ClientPlayer extends Application {
 
     //Needed for gameView!
     private Button createButton(String answer, TextArea quizArea) {
-        Button button = new Button (answer);
+        Button button = new Button(answer);
         button.setDisable(buttonsEnable);
-        button.setOnAction(getActionEventEventHandler(quizArea, button.getText()));
+        button.setOnAction(getActionEventEventHandler(button.getText()));
         return button;
     }
 
     //Needed for gameView!
     private TextArea createTextArea(String label, String cssStyle) throws IOException {
         TextArea textArea = new TextArea();
-        textArea.setText(getQuestionText());
+        textArea.setText("");
         textArea.setId(cssStyle);
         textArea.setEditable(false);
         textArea.setWrapText(true);
@@ -166,19 +174,18 @@ public class ClientPlayer extends Application {
         GridPane buttonLayout = new GridPane();
         buttonLayout.setHgap(10.0);
         buttonLayout.setVgap(10.0);
-        buttonLayout.add(button,0,0);
-        buttonLayout.add(button2,1,0);
-        buttonLayout.add(button3,0,1);
-        buttonLayout.add(button4,1,1);
+        buttonLayout.add(button, 0, 0);
+        buttonLayout.add(button2, 1, 0);
+        buttonLayout.add(button3, 0, 1);
+        buttonLayout.add(button4, 1, 1);
         buttonLayout.setId("buttonLayout");
         return buttonLayout;
     }
 
     //Needed for gameView!
-    private EventHandler<ActionEvent> getActionEventEventHandler(TextArea quizArea, String s) {
+    private EventHandler<ActionEvent> getActionEventEventHandler(String s) {
         return actionEvent -> {
 
-            int i = 0;
             buttonsEnable = true;
             this.button.setDisable(buttonsEnable);
             this.button2.setDisable(buttonsEnable);
@@ -186,8 +193,8 @@ public class ClientPlayer extends Application {
             this.button4.setDisable(buttonsEnable);
 
             Button[] buttonlist = {button, button2, button3, button4};
-            for (Button button : buttonlist){
-                if(button.getText().equals(getAnswerText()))
+            for (Button button : buttonlist) {
+                if (button.getText().equals("getAnswerText()"))
                     button.setId("correctAnswer");
                 else
                     button.setId("wrongAnswer");
@@ -196,16 +203,109 @@ public class ClientPlayer extends Application {
         };
     }
 
-    //Client connection
-    private class ClientSideConnection {
+    private void connectToServer() throws IOException {
+        csc = new ClientPlayer.ClientSideConnection();
+    }
 
-        private Socket socket;
+    private void setUpButtons() {
+        EventHandler<ActionEvent> al = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                Button b = (Button) actionEvent.getSource();
+                String bNum = b.getText();
+
+                message.setText("You clicked button. now wait for player #" + otherPlayer);
+                turnsMade++;
+                System.out.println("Turns made: " + turnsMade);
+
+                buttonsEnable = false;
+                toggleButtons();
+
+                if (playerID == 1) {
+                    quizArea.setText(question3[0]);
+                    button.setText(question3[1]);
+                    button2.setText(question3[2]);
+                    button3.setText(question3[3]);
+                    button4.setText(question3[4]);
+                } else {
+                    quizArea.setText(question4[0]);
+                    button.setText(question4[1]);
+                    button2.setText(question4[2]);
+                    button3.setText(question4[3]);
+                    button4.setText(question4[4]);
+                }
+
+                if (bNum.equalsIgnoreCase(question1[5])
+                        || bNum.equalsIgnoreCase(question2[5])
+                        || bNum.equalsIgnoreCase(question3[5])
+                        || bNum.equalsIgnoreCase(question4[5])) {
+                    myPoints++;
+                }
+
+
+                System.out.println("My points: " + myPoints);
+                csc.sendButtonsNum(myPoints);
+            }
+        };
+
+        button.setOnAction(al);
+        button2.setOnAction(al);
+        button3.setOnAction(al);
+        button4.setOnAction(al);
+    }
+
+    private void toggleButtons() {
+        button.setDisable(buttonsEnable);
+        button2.setDisable(buttonsEnable);
+        button3.setDisable(buttonsEnable);
+        button4.setDisable(buttonsEnable);
+    }
+
+    private void updateTurn() {
+        enemyPoints = csc.receiveButtonNum();
+        System.out.println("Your Enemy has " + enemyPoints + " points.");
+        buttonsEnable = true;
+        if (playerID == 1 && turnsMade == maxTurns) {
+            checkWinner();
+        } else {
+            buttonsEnable = true;
+        }
+        toggleButtons();
+    }
+
+    private void checkWinner() {
+        buttonsEnable = false;
+        if (myPoints > enemyPoints) {
+            message.setText("YOU WON!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
+        } else if (myPoints < enemyPoints) {
+            message.setText("YOU LOST!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
+        } else {
+            message.setText("YOU TIED!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
+        }
+        csc.closeConnection();
+    }
+
+    @Override
+    public void run() {
+        try {
+            connectToServer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        setUpButtons();
+        updateTurn();
+    }
+
+    //Client connection
+    class ClientSideConnection {
+        private int port = 51735;
+        private String localHost = "127.0.0.1";
+        private Socket socket = new Socket(localHost, port);
         private DataOutputStream dataOutputStream;
         private DataInputStream dataInputStream;
-        private int port = 51735;
 
 
-        public ClientSideConnection() {
+        private ClientSideConnection() throws IOException {
             System.out.println("---CLIENT CONNECTING---");
             try {
                 socket = new Socket("localhost", port);
@@ -250,7 +350,7 @@ public class ClientPlayer extends Application {
             }
         }
 
-        public void sendButtonsNum(int n) {
+        private void sendButtonsNum(int n) {
             try {
                 dataOutputStream.writeInt(n);
                 dataOutputStream.flush();
@@ -259,7 +359,7 @@ public class ClientPlayer extends Application {
             }
         }
 
-        public int receiveButtonNum() {
+        private int receiveButtonNum() {
             int n = -1;
             try {
                 n = dataInputStream.readInt();
@@ -269,7 +369,7 @@ public class ClientPlayer extends Application {
             return n;
         }
 
-        public void closeConnection() {
+        private void closeConnection() {
             try {
                 socket.close();
                 System.out.println("---Connection Closed---");
@@ -277,12 +377,5 @@ public class ClientPlayer extends Application {
                 e.printStackTrace();
             }
         }
-    }
-    public static void main(String[] args) throws IOException {
-        ClientPlayer p = new ClientPlayer(400,600);
-        //p.connectToServer();
-        //p.setUpGUI();
-        //p.setUpButtons();
-        launch(args);
     }
 }
