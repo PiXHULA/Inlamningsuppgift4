@@ -16,94 +16,68 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
-public class ClientPlayer extends Application implements Runnable{
+public class ClientPlayer extends Application {
 
+    int width;
+    int height;
+    Stage window;
+    GridPane bottomPane;
+    Scene gameScene;
+    TextArea quizArea;
+    TextArea messageArea;
     Button button;
     Button button2;
     Button button3;
     Button button4;
-    GridPane bottomPane;
     GridPane buttonLayout;
     BorderPane gameView;
-    TextArea quizArea;
-    TextArea onlineStatus;
-    TextArea highscoreArea;
     HBox displayPlayers;
-    Stage stage;
-    Thread thread = new Thread(this);
 
-    private int port = 49494;
-    private String localHost = "127.0.0.1";
     private int playerID;
+    private int otherPlayer;
+
+    private int values[];
+    private int maxTurns;
+    private int turnsMade;
+    private int myPoints;
+    private int enemyPoints;
+    private boolean buttonsEnable;
+
+    private int port = 51735;
+    private String localHost = "127.0.0.1";
     private Socket socket = new Socket(InetAddress.getLocalHost(),port);
 
-    private String questionText;
-    private String altText1_1;
-    private String altText1_2;
-    private String altText1_3;
-    private String altText1_4;
-    private String answerText;
+    ///FRÅGOR+SVAR HAR LAGTS I VARSIN ARRAY ISTÄLLET FÖR 6 STK
+    //String arrays med frågor och svar, layout: fråga, svar1, svar2, svar3, svar4, rättSvar;
+    private String[] question1 = new String[6];
+    private String[] question2 = new String[6];
+    private String[] question3 = new String[6];
+    private String[] question4 = new String[6];
 
-    String playerName = "";
-    Stage playerNameWindow;
+    private ClientSideConnection csc;
 
-
-    private int otherPlayer; //Control int so u can set "rules" later
-    private int myPoints = 0; // so you can store turn points for yourself
-    private int myTotalPoints; // so you can store your totalpoints
-    private int enemyPoints; // so you can store points for enenmy
-    private int enemyTotalPoints; // so you can store your enemy totalpoints
-    private int turn; //so you can see / store points at diffrent "turns" of the game
-    private boolean buttonsEnable = false; //so you can disable the buttons if its not your turn (if we want)
-
-    public ClientPlayer() throws IOException {
+    public ClientPlayer(int w, int h) throws IOException {
+        width = w;
+        height = h;
+        window = new Stage();
+        messageArea = createTextArea("Message: ", "questionArea");
+        quizArea = createTextArea("Quiz: ", "questionArea");
+        button = new Button("1");
+        button2 = new Button("2");
+        button3 = new Button("3");
+        button4 = new Button("4");
+        values = new int[4];
+        myPoints = 0;
+        enemyPoints = 0;
     }
 
-    public void setQuestionText(String questionText) {
-        this.questionText = questionText;
-    }
-
-    public String getQuestionText() {
-        return questionText;
-    }
-
-    public String getAltText1_1() {
-        return altText1_1;
-    }
-
-    public void setAltText1_1(String altText1_1) {
-        this.altText1_1 = altText1_1;
-    }
-
-    public String getAltText1_2() {
-        return altText1_2;
-    }
-
-    public void setAltText1_2(String altText1_2) {
-        this.altText1_2 = altText1_2;
-    }
-
-    public String getAltText1_3() {
-        return altText1_3;
-    }
-
-    public void setAltText1_3(String altText1_3) { this.altText1_3 = altText1_3; }
-
-    public String getAltText1_4() {
-        return altText1_4;
-    }
-
-    public void setAltText1_4(String altText1_4) {
-        this.altText1_4 = altText1_4;
-    }
-
-    public String getAnswerText() { return answerText; }
-
-    public void setAnswerText(String answerText) { this.answerText = answerText; }
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -112,8 +86,6 @@ public class ClientPlayer extends Application implements Runnable{
         GridPane bottomPane = new GridPane();
         bottomPane.add(groundBox,0,0);
         quizArea = createTextArea(null, "gameviewPane");
-        onlineStatus = createTextArea("Online: ","onlineStatus");
-        highscoreArea = createTextArea("Highscore: ", "highscoreArea");
 
         button = createButton("Fire", quizArea);
         button2 = createButton("Counter Strike", quizArea);
@@ -129,7 +101,7 @@ public class ClientPlayer extends Application implements Runnable{
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
-        stage.setTitle("Player #" +playerID);
+        stage.setTitle("ClientPlayer #" +playerID);
         this.thread.start();
     }
 
@@ -143,11 +115,9 @@ public class ClientPlayer extends Application implements Runnable{
         this.playerName = playerName;
     }
 
-
     //Needed for gameView!
     private BorderPane createGameviewPane(TextArea quizArea, HBox playerStatus, GridPane buttonLayout) {
         BorderPane Gameview = new BorderPane();
-
         Gameview.setPrefSize(400,600);
         Gameview.setPadding(new Insets(10, 10, 10, 10));
         Gameview.setTop(playerStatus);
@@ -207,26 +177,17 @@ public class ClientPlayer extends Application implements Runnable{
     //Needed for gameView!
     private EventHandler<ActionEvent> getActionEventEventHandler(TextArea quizArea, String s) {
         return actionEvent -> {
-            /*
+
             int i = 0;
             buttonsEnable = true;
             this.button.setDisable(buttonsEnable);
             this.button2.setDisable(buttonsEnable);
             this.button3.setDisable(buttonsEnable);
             this.button4.setDisable(buttonsEnable);
-             */
-            String inputFromUser = this.button.getText();
-            PrintWriter out = null;
-            try {
-                out = new PrintWriter(socket.getOutputStream(), true);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            out.println(inputFromUser);
 
             Button[] buttonlist = {button, button2, button3, button4};
             for (Button button : buttonlist){
-                if(button.getText().equals("Counter Strike"))
+                if(button.getText().equals(getAnswerText()))
                     button.setId("correctAnswer");
                 else
                     button.setId("wrongAnswer");
@@ -235,91 +196,93 @@ public class ClientPlayer extends Application implements Runnable{
         };
     }
 
-    @Override
-    public void run() {
-        try (BufferedReader in = new BufferedReader(
-                new InputStreamReader(this.socket.getInputStream()));
-        ) {
-            String message;
-            int count = 0;
-            while ((message = in.readLine()) != null) {
-               // if (count == 0)
-                    quizArea.appendText(message + "\n");
-                //else
-                    //quizArea.setText(message + "\n");
-                //count++;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    /*
-    //Needed for gameView!
-    private void otherPlayer(){
-        if (playerID == 1){
-            otherPlayer = 2;
-        } else{
-            otherPlayer = 1;
-        }
-    }
-
-    //method to call and run CSC
-    public void connectToServer(){
-        csc = new ClientSideConnection();
-    }
-
-
-    //the "logic" for client connection to server
+    //Client connection
     private class ClientSideConnection {
 
-        public void sendMyPoints(int myPoints){
-            try{
-                dataOutputStream.writeInt(myPoints);
-                dataOutputStream.flush();
-            }catch (IOException ex){
-                System.out.println("IOException from sendMyPoints CSC");
-            }
-        }
+        private Socket socket;
+        private DataOutputStream dataOutputStream;
+        private DataInputStream dataInputStream;
+        private int port = 51735;
 
-        public ClientSideConnection (){
-            System.out.println("--CLIENT CONNECTING--");
-            try{
+
+        public ClientSideConnection() {
+            System.out.println("---CLIENT CONNECTING---");
+            try {
                 socket = new Socket("localhost", port);
+                //if(socket.isConnected() == true)
                 dataInputStream = new DataInputStream(socket.getInputStream());
                 dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 playerID = dataInputStream.readInt();
-
-                String questionText = dataInputStream.readUTF();
-                setQuestionText(questionText);
-
-                String altText1_1 = dataInputStream.readUTF();
-                setAltText1_1(altText1_1);
-
-                String altText1_2 = dataInputStream.readUTF();
-                setAltText1_2(altText1_2);
-
-                String altText1_3 = dataInputStream.readUTF();
-                setAltText1_3(altText1_3);
-
-                String altText1_4 = dataInputStream.readUTF();
-                setAltText1_4(altText1_4);
-
-                String answerText = dataInputStream.readUTF();
-                setAnswerText(answerText);
-
                 System.out.println("Connected to server as player #" + playerID + ".");
-                otherPlayer();
-            }catch (IOException ex){
-                System.out.println("IOException from CSC constructor");
-                ex.printStackTrace();
+                maxTurns = dataInputStream.readInt() / 2;
+
+                question1[0] = dataInputStream.readUTF();
+                question2[0] = dataInputStream.readUTF();
+                question3[0] = dataInputStream.readUTF();
+                question4[0] = dataInputStream.readUTF();
+                for (int i = 1; i <= 4; i++) {
+                    question1[i] = dataInputStream.readUTF();
+                }
+                for (int i = 1; i <= 4; i++) {
+                    question2[i] = dataInputStream.readUTF();
+                }
+                for (int i = 1; i <= 4; i++) {
+                    question3[i] = dataInputStream.readUTF();
+                }
+                for (int i = 1; i <= 4; i++) {
+                    question4[i] = dataInputStream.readUTF();
+                }
+                question1[5] = dataInputStream.readUTF();
+                question2[5] = dataInputStream.readUTF();
+                question3[5] = dataInputStream.readUTF();
+                question4[5] = dataInputStream.readUTF();
+
+                System.out.println("MaxTurns:" + maxTurns);
+                System.out.println("Right answer #1 is : " + question1[5]);
+                System.out.println("Right answer #2 is : " + question2[5]);
+                System.out.println("Right answer #3 is : " + question3[5]);
+                System.out.println("Right answer #4 is : " + question4[5]);
+
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void sendButtonsNum(int n) {
+            try {
+                dataOutputStream.writeInt(n);
+                dataOutputStream.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public int receiveButtonNum() {
+            int n = -1;
+            try {
+                n = dataInputStream.readInt();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return n;
+        }
+
+        public void closeConnection() {
+            try {
+                socket.close();
+                System.out.println("---Connection Closed---");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
-
-
-     */
     public static void main(String[] args) throws IOException {
-        ClientPlayer p = new ClientPlayer();
+        ClientPlayer p = new ClientPlayer(400,600);
+        //p.connectToServer();
+        //p.setUpGUI();
+        //p.setUpButtons();
         launch(args);
     }
 }

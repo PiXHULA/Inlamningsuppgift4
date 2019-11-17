@@ -19,7 +19,7 @@ public class Player {
     private JButton b4;
     private int playerID;
     private int otherPlayer;
-    private int[] values;
+    private int values[];
     private int maxTurns;
     private int turnsMade;
     private int myPoints;
