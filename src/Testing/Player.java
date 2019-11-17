@@ -25,14 +25,13 @@ public class Player {
     private int myPoints;
     private int enemyPoints;
     private boolean buttonsEnable;
-    private String[] questions = new String[4];
-    private String[] alt1 = new String[4];;
-    private String[] alt2 = new String[4];;
-    private String[] alt3 = new String[4];;
-    private String[] alt4 = new String[4];;
-    private String[] rightAnswer = new String[4];;
-    private int altcounter = 0;
-    private int counter = 0;
+
+    ///FRÅGOR+SVAR HAR LAGTS I VARSIN ARRAY ISTÄLLET FÖR 6 STK
+    //String arrays med frågor och svar, layout: fråga, svar1, svar2, svar3, svar4, rättSvar;
+    private String[] question1 = new String[6];
+    private String[] question2 = new String[6];
+    private String[] question3 = new String[6];
+    private String[] question4 = new String[6];
 
     private ClientSideConnection csc;
 
@@ -54,7 +53,7 @@ public class Player {
 
     public void setUpGUI() {
         frame.setSize(width, height);
-        frame.setTitle("Player #: " + playerID);
+        frame.setTitle("Player # " + playerID);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         contentPane.setLayout(new GridLayout(1, 5));
@@ -76,33 +75,20 @@ public class Player {
 
         if (playerID == 1) {
             message.setText("You are player #1. You go first!");
-            labelQuestion.setText(questions[counter]);
-            b1.setText(alt1[altcounter]);
-            altcounter++;
-            b2.setText(alt1[altcounter]);
-            altcounter++;
-            b3.setText(alt1[altcounter]);
-            altcounter++;
-            b4.setText(alt1[altcounter]);
-            counter++;
-            counter++;
-            altcounter =0;
+            labelQuestion.setText(question1[0]);
+            b1.setText(question1[1]);
+            b2.setText(question1[2]);
+            b3.setText(question1[3]);
+            b4.setText(question1[4]);
             otherPlayer = 2;
             buttonsEnable = true;
         } else {
-            counter++;
             message.setText("You are player #2. Wait for your turn.");
-            labelQuestion.setText(questions[counter]);
-            b1.setText(alt2[altcounter]);
-            altcounter++;
-            b2.setText(alt2[altcounter]);
-            altcounter++;
-            b3.setText(alt2[altcounter]);
-            altcounter++;
-            b4.setText(alt2[altcounter]);
-            counter++;
-            counter++;
-            altcounter =0;
+            labelQuestion.setText(question2[0]);
+            b1.setText(question2[1]);
+            b2.setText(question2[2]);
+            b3.setText(question2[3]);
+            b4.setText(question2[4]);
             otherPlayer = 1;
             buttonsEnable = false;
             Thread t = new Thread(new Runnable() {
@@ -113,9 +99,7 @@ public class Player {
             });
             t.start();
         }
-
         toggleButtons();
-
         frame.setVisible(true);
     }
 
@@ -137,33 +121,25 @@ public class Player {
                 buttonsEnable = false;
                 toggleButtons();
 
-                if(playerID == 1){
-                    labelQuestion.setText(questions[counter]);
-                    b1.setText(alt3[altcounter]);
-                    altcounter++;
-                    b2.setText(alt3[altcounter]);
-                    altcounter++;
-                    b3.setText(alt3[altcounter]);
-                    altcounter++;
-                    b4.setText(alt3[altcounter]);
-                    altcounter =0;
-                }else {
-                    labelQuestion.setText(questions[counter]);
-                    b1.setText(alt4[altcounter]);
-                    altcounter++;
-                    b2.setText(alt4[altcounter]);
-                    altcounter++;
-                    b3.setText(alt4[altcounter]);
-                    altcounter++;
-                    b4.setText(alt4[altcounter]);
-                    altcounter =0;
+                if (playerID == 1) {
+                    labelQuestion.setText(question3[0]);
+                    b1.setText(question3[1]);
+                    b2.setText(question3[2]);
+                    b3.setText(question3[3]);
+                    b4.setText(question3[4]);
+                } else {
+                    labelQuestion.setText(question4[0]);
+                    b1.setText(question4[1]);
+                    b2.setText(question4[2]);
+                    b3.setText(question4[3]);
+                    b4.setText(question4[4]);
                 }
 
-
-                for (int i = 0; i <= 3; i++) {
-                    if(bNum.equalsIgnoreCase(rightAnswer[i])){
-                        myPoints++;
-                    }
+                if (bNum.equalsIgnoreCase(question1[5])
+                        || bNum.equalsIgnoreCase(question2[5])
+                        || bNum.equalsIgnoreCase(question3[5])
+                        || bNum.equalsIgnoreCase(question4[5])) {
+                    myPoints++;
                 }
 
 
@@ -241,42 +217,32 @@ public class Player {
                 System.out.println("Connected to server as player #" + playerID + ".");
                 maxTurns = dataInputStream.readInt() / 2;
 
-                questions[0] = dataInputStream.readUTF();
-                questions[1] = dataInputStream.readUTF();
-                questions[2] = dataInputStream.readUTF();
-                questions[3] = dataInputStream.readUTF();
-
-                alt1[0] = dataInputStream.readUTF();
-                alt1[1] = dataInputStream.readUTF();
-                alt1[2] = dataInputStream.readUTF();
-                alt1[3] = dataInputStream.readUTF();
-
-                alt2[0] = dataInputStream.readUTF();
-                alt2[1] = dataInputStream.readUTF();
-                alt2[2] = dataInputStream.readUTF();
-                alt2[3] = dataInputStream.readUTF();
-
-                alt3[0] = dataInputStream.readUTF();
-                alt3[1] = dataInputStream.readUTF();
-                alt3[2] = dataInputStream.readUTF();
-                alt3[3] = dataInputStream.readUTF();
-
-                alt4[0] = dataInputStream.readUTF();
-                alt4[1] = dataInputStream.readUTF();
-                alt4[2] = dataInputStream.readUTF();
-                alt4[3] = dataInputStream.readUTF();
-
-                rightAnswer[0] = dataInputStream.readUTF();
-                rightAnswer[1] = dataInputStream.readUTF();
-                rightAnswer[2] = dataInputStream.readUTF();
-                rightAnswer[3] = dataInputStream.readUTF();
+                question1[0] = dataInputStream.readUTF();
+                question2[0] = dataInputStream.readUTF();
+                question3[0] = dataInputStream.readUTF();
+                question4[0] = dataInputStream.readUTF();
+                for (int i = 1; i <= 4; i++) {
+                    question1[i] = dataInputStream.readUTF();
+                }
+                for (int i = 1; i <= 4; i++) {
+                    question2[i] = dataInputStream.readUTF();
+                }
+                for (int i = 1; i <= 4; i++) {
+                    question3[i] = dataInputStream.readUTF();
+                }
+                for (int i = 1; i <= 4; i++) {
+                    question4[i] = dataInputStream.readUTF();
+                }
+                question1[5] = dataInputStream.readUTF();
+                question2[5] = dataInputStream.readUTF();
+                question3[5] = dataInputStream.readUTF();
+                question4[5] = dataInputStream.readUTF();
 
                 System.out.println("MaxTurns:" + maxTurns);
-
-                System.out.println("Right answer #1 is : " + rightAnswer[0]);
-                System.out.println("Right answer #2 is : " + rightAnswer[1]);
-                System.out.println("Right answer #3 is : " + rightAnswer[2]);
-                System.out.println("Right answer #4 is : " + rightAnswer[3]);
+                System.out.println("Right answer #1 is : " + question1[5]);
+                System.out.println("Right answer #2 is : " + question2[5]);
+                System.out.println("Right answer #3 is : " + question3[5]);
+                System.out.println("Right answer #4 is : " + question4[5]);
 
             } catch (UnknownHostException e) {
                 e.printStackTrace();

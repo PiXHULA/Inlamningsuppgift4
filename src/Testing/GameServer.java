@@ -15,54 +15,29 @@ public class GameServer {
     private int[] values;
     private int player1ButtonNum;
     private int player2ButtonNum;
-    private String[] questions = new String[4];
-    private String[] alt1 = new String[4];;
-    private String[] alt2 = new String[4];;
-    private String[] alt3 = new String[4];;
-    private String[] alt4 = new String[4];;
-    private String[] rightAnswer = new String[4];
+
+    private String[] question1;
+    private String[] question2;
+    private String[] question3;
+    private String[] question4;
 
     public GameServer() {
         System.out.println("---GAME SERVER---");
         numberOfPlayers = 0;
         turnsMade = 0;
         maxTurns = 4;
-        values = new int[4];
 
-        questions[0] = "Vilket år skapades Java?";
-        questions[1] = "när är Mahmud född?";
-        questions[2] = "Vilket år var bäst för Pedram?";
-        questions[3] = "Vem skapade Java?";
+        //String arrays med frågor och svar, layout: fråga, svar1, svar2, svar3, svar4, rättSvar;
+        question1 = new String[]{"Vilket år skapades Java?","1995","2000","1972","1984", "1995"};
+        question2 = new String[]{"När är Mahmud född?","1980","1968","1973","1976","1973"};
+        question3 = new String[]{"Vilket år var bäst för Pedram?", "2003", "2005", "2007", "2001", "2003"};
+        question4 = new String[]{"Vem skapade Java?","Ryan Gosling","James Gosling","Bruce Wayne","Peter Parker","James Gosling"};
 
-        alt1[0] = "1995";
-        alt1[1] = "2000";
-        alt1[2] = "1972";
-        alt1[3] = "1984";
+        System.out.println("Question #1 is " + question1[0]);
+        System.out.println("Question #2 is " + question2[0]);
+        System.out.println("Question #3 is " + question3[0]);
+        System.out.println("Question #4 is " + question4[0]);
 
-        alt2[0] = "1980";
-        alt2[1] = "1968";
-        alt2[2] = "1973";
-        alt2[3] = "1976";
-
-        alt3[0] = "2003";
-        alt3[1] = "2005";
-        alt3[2] = "2007";
-        alt3[3] = "2001";
-
-        alt4[0] = "Ryan Gosling";
-        alt4[1] = "James Gosling";
-        alt4[2] = "Bruce Wayne";
-        alt4[3] = "Peter Parker";
-
-        rightAnswer[0] = "1995";
-        rightAnswer[1] = "1973";
-        rightAnswer[2] = "2003";
-        rightAnswer[3] = "James Gosling";
-
-
-        for (int i = 0; i < values.length; i++) {
-            System.out.println("Question # " + (i + 1) + " is " + questions[i]);
-        }
 
         try {
             serverSocket = new ServerSocket(port);
@@ -122,35 +97,27 @@ public class GameServer {
                 dataOutputStream.writeInt(playerID);
                 dataOutputStream.writeInt(maxTurns);
 
-                dataOutputStream.writeUTF(questions[0]);
-                dataOutputStream.writeUTF(questions[1]);
-                dataOutputStream.writeUTF(questions[2]);
-                dataOutputStream.writeUTF(questions[3]);
+                dataOutputStream.writeUTF(question1[0]);
+                dataOutputStream.writeUTF(question2[0]);
+                dataOutputStream.writeUTF(question3[0]);
+                dataOutputStream.writeUTF(question4[0]);
+                for(int i = 1; i < question1.length - 1; i++){
+                dataOutputStream.writeUTF(question1[i]);
+                }
+                for(int i = 1; i < question2.length - 1; i++){
+                dataOutputStream.writeUTF(question2[i]);
+                }
+                for(int i = 1; i < question3.length - 1; i++){
+                dataOutputStream.writeUTF(question3[i]);
+                }
+                for(int i = 1; i < question4.length - 1; i++){
+                dataOutputStream.writeUTF(question4[i]);
+                }
 
-                dataOutputStream.writeUTF(alt1[0]);
-                dataOutputStream.writeUTF(alt1[1]);
-                dataOutputStream.writeUTF(alt1[2]);
-                dataOutputStream.writeUTF(alt1[3]);
-
-                dataOutputStream.writeUTF(alt2[0]);
-                dataOutputStream.writeUTF(alt2[1]);
-                dataOutputStream.writeUTF(alt2[2]);
-                dataOutputStream.writeUTF(alt2[3]);
-
-                dataOutputStream.writeUTF(alt3[0]);
-                dataOutputStream.writeUTF(alt3[1]);
-                dataOutputStream.writeUTF(alt3[2]);
-                dataOutputStream.writeUTF(alt3[3]);
-
-                dataOutputStream.writeUTF(alt4[0]);
-                dataOutputStream.writeUTF(alt4[1]);
-                dataOutputStream.writeUTF(alt4[2]);
-                dataOutputStream.writeUTF(alt4[3]);
-
-                dataOutputStream.writeUTF(rightAnswer[0]);
-                dataOutputStream.writeUTF(rightAnswer[1]);
-                dataOutputStream.writeUTF(rightAnswer[2]);
-                dataOutputStream.writeUTF(rightAnswer[3]);
+                dataOutputStream.writeUTF(question1[5]);
+                dataOutputStream.writeUTF(question2[5]);
+                dataOutputStream.writeUTF(question3[5]);
+                dataOutputStream.writeUTF(question4[5]);
 
                 dataOutputStream.flush();
                 while (true) {
@@ -179,6 +146,7 @@ public class GameServer {
                 dataOutputStream.writeInt(n);
                 dataOutputStream.flush();
             } catch (IOException e) {
+                System.out.println("Player #" + playerID + " disconnected.");
                 e.printStackTrace();
             }
         }

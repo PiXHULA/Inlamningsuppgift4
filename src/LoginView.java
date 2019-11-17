@@ -23,7 +23,6 @@ public class LoginView extends Application {
     public static void main(String[] args) {
         launch(args);
         LoginView g = new LoginView();
-        System.out.println(g.getPlayerName());
     }
 
     @Override
