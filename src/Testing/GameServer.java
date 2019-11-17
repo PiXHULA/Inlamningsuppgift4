@@ -5,6 +5,7 @@ import java.net.*;
 
 public class GameServer {
 
+    Protocol protocol = new Protocol();
     private ServerSocket serverSocket;
     private int numberOfPlayers;
     private int port = 51735;
@@ -22,7 +23,7 @@ public class GameServer {
     private String[] alt4 = new String[4];;
     private String[] rightAnswer = new String[4];
 
-    public GameServer() {
+    public GameServer() throws IOException {
         System.out.println("---GAME SERVER---");
         numberOfPlayers = 0;
         turnsMade = 0;
@@ -90,7 +91,7 @@ public class GameServer {
                     thread.start();
                 }
                 numberOfPlayers = 0; //resets the number of players so other instances of the server can run
-            System.out.println("We now have 2 players");
+                System.out.println("We now have 2 players");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -122,35 +123,35 @@ public class GameServer {
                 dataOutputStream.writeInt(playerID);
                 dataOutputStream.writeInt(maxTurns);
 
-                dataOutputStream.writeUTF(questions[0]);
-                dataOutputStream.writeUTF(questions[1]);
-                dataOutputStream.writeUTF(questions[2]);
-                dataOutputStream.writeUTF(questions[3]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryQuestions()[0]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryQuestions()[1]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryQuestions()[2]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryQuestions()[3]);
 
-                dataOutputStream.writeUTF(alt1[0]);
-                dataOutputStream.writeUTF(alt1[1]);
-                dataOutputStream.writeUTF(alt1[2]);
-                dataOutputStream.writeUTF(alt1[3]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts1()[0]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts2()[0]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts3()[0]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts4()[0]);
 
-                dataOutputStream.writeUTF(alt2[0]);
-                dataOutputStream.writeUTF(alt2[1]);
-                dataOutputStream.writeUTF(alt2[2]);
-                dataOutputStream.writeUTF(alt2[3]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts1()[1]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts2()[1]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts3()[1]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts4()[1]);
 
-                dataOutputStream.writeUTF(alt3[0]);
-                dataOutputStream.writeUTF(alt3[1]);
-                dataOutputStream.writeUTF(alt3[2]);
-                dataOutputStream.writeUTF(alt3[3]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts1()[2]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts2()[2]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts3()[2]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts4()[2]);
 
-                dataOutputStream.writeUTF(alt4[0]);
-                dataOutputStream.writeUTF(alt4[1]);
-                dataOutputStream.writeUTF(alt4[2]);
-                dataOutputStream.writeUTF(alt4[3]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts1()[3]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts2()[3]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts3()[3]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts4()[3]);
 
-                dataOutputStream.writeUTF(rightAnswer[0]);
-                dataOutputStream.writeUTF(rightAnswer[1]);
-                dataOutputStream.writeUTF(rightAnswer[2]);
-                dataOutputStream.writeUTF(rightAnswer[3]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAnswers()[0]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAnswers()[1]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAnswers()[2]);
+                dataOutputStream.writeUTF(protocol.getSortedHistoryAnswers()[3]);
 
                 dataOutputStream.flush();
                 while (true) {
@@ -196,7 +197,7 @@ public class GameServer {
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         GameServer gameServer = new GameServer();
         gameServer.acceptConnection();
     }
