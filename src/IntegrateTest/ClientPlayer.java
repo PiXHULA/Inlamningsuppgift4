@@ -24,11 +24,12 @@ public class ClientPlayer extends Application implements Runnable {
 
     private TextArea quizArea;
     private Label message;
+    GridPane buttonLayout;
     private Button button;
     private Button button2;
     private Button button3;
     private Button button4;
-
+    private BorderPane gameView;
     private int playerID;
     private int otherPlayer;
     private int values[];
@@ -48,7 +49,7 @@ public class ClientPlayer extends Application implements Runnable {
     private String[] question4 = new String[6];
 
     private ClientSideConnection csc;
-
+    public ClientPlayer(){}
     public ClientPlayer(int w, int h) throws IOException {
 
         message = new Label();
@@ -65,36 +66,28 @@ public class ClientPlayer extends Application implements Runnable {
 
     @Override
     public void start(Stage stage) throws Exception {
-        ClientPlayer p = new ClientPlayer(400, 600);
         VBox groundBox = new VBox();
         groundBox.setMinSize(400, 600);
         GridPane bottomPane = new GridPane();
         bottomPane.add(groundBox, 0, 0);
-        quizArea = new TextArea();
-        message = new Label();
+        TextArea quizArea = new TextArea();
+        Label message = new Label();
+        message.setWrapText(true);
 
-        Button button = new Button();
-        Button button2 = new Button();
-        Button button3 = new Button();
-        Button button4 = new Button();
-        GridPane buttonLayout = new GridPane();
-        BorderPane Gameview = new BorderPane();
-        Gameview.setPrefSize(400, 600);
-        Gameview.setPadding(new Insets(10, 10, 10, 10));
-        Gameview.setTop(message);
-        Gameview.setBottom(buttonLayout);
-        Gameview.setCenter(quizArea);
+        button = createButton();
+        button2 = createButton();
+        button3 = createButton();
+        button4 = createButton();
+        buttonLayout = createButtonLayout();
 
-        Insets insets = new Insets(10);
-        BorderPane.setMargin(message, insets);
-        BorderPane.setMargin(quizArea, insets);
-        BorderPane.setMargin(buttonLayout, insets);
-        groundBox.getChildren().add(Gameview);
+        gameView = createGameviewPane(quizArea, message, buttonLayout);
+        groundBox.getChildren().add(gameView);
+
         Scene scene = new Scene(bottomPane);
         scene.getStylesheets().add("GameviewStyle.css");
 
         if (playerID == 1) {
-            message.setText("You are player #1. You go first!");
+            message.setText("You are player #1.\nYou go first!");
             quizArea.setText(question1[0]);
             button.setText(question1[1]);
             button2.setText(question1[2]);
@@ -103,7 +96,7 @@ public class ClientPlayer extends Application implements Runnable {
             otherPlayer = 2;
             buttonsEnable = true;
         } else {
-            message.setText("You are player #2. Wait for your turn.");
+            message.setText("You are player #2.\nWait for your turn.");
             quizArea.setText(question2[0]);
             button.setText(question2[1]);
             button2.setText(question2[2]);
@@ -112,12 +105,10 @@ public class ClientPlayer extends Application implements Runnable {
             otherPlayer = 1;
             buttonsEnable = false;
         }
-        toggleButtons();
         stage.setResizable(false);
         stage.setScene(scene);
         stage.setTitle("ClientPlayer #" + playerID);
         stage.show();
-        this.thread.start();
     }
     public static void main(String[] args) throws IOException {
         launch(args);
@@ -154,7 +145,13 @@ public class ClientPlayer extends Application implements Runnable {
     private Button createButton(String answer, TextArea quizArea) {
         Button button = new Button(answer);
         button.setDisable(buttonsEnable);
-        button.setOnAction(getActionEventEventHandler(button.getText()));
+        button.setOnAction(getActionEventEventHandler());
+        return button;
+    }
+    private Button createButton() {
+        Button button = new Button();
+        button.setDisable(buttonsEnable);
+        button.setOnAction(getActionEventEventHandler());
         return button;
     }
 
@@ -183,7 +180,7 @@ public class ClientPlayer extends Application implements Runnable {
     }
 
     //Needed for gameView!
-    private EventHandler<ActionEvent> getActionEventEventHandler(String s) {
+    private EventHandler<ActionEvent> getActionEventEventHandler() {
         return actionEvent -> {
 
             buttonsEnable = true;
