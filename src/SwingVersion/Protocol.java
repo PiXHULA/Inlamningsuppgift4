@@ -194,7 +194,7 @@ public class Protocol {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (property.equals("src\\Properties\\Gaming.properties")) {
+            if (property.equals("src\\SwingVersion\\Properties\\Gaming.properties")) {
                 for (int i = 1; i <= 4; i++) {
                     question = p.getProperty("question" + i);
                     alt1 = p.getProperty("alt" + i + ".1");
