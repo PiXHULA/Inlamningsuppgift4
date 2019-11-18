@@ -1,7 +1,6 @@
+package JavaFXVersion;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -41,7 +40,7 @@ public class LoginView extends Application {
         loginView.add(loginName, 0,0);
         loginView.add(submit, 0,1);
         Scene scene = new Scene(loginView);
-        scene.getStylesheets().add("GameviewStyle.css");
+        scene.getStylesheets().add("JavaFXVersion/GameviewStyle.css");
         stage.setScene(scene);
         stage.show();
     }

@@ -1,4 +1,4 @@
-package Testing;
+package SwingVersion;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

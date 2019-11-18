@@ -1,3 +1,5 @@
+package JavaFXVersion;
+
 import java.net.*;
 import java.io.*;
 
@@ -10,6 +12,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class Player extends Application implements Runnable {
+
 
     Button button;
     Button button2;
@@ -135,7 +138,7 @@ public class Player extends Application implements Runnable {
         loginView.add(loginName, 0, 0);
         loginView.add(submit, 0, 1);
         Scene scene = new Scene(loginView);
-        scene.getStylesheets().add("GameviewStyle.css");
+        scene.getStylesheets().add("JavaFXVersion/GameviewStyle.css");
         stage.setScene(scene);
         stage.show();
     }
@@ -161,7 +164,7 @@ public class Player extends Application implements Runnable {
         gameView = createGameviewPane(quizArea, displayPlayers, buttonLayout);
         groundBox.getChildren().add(gameView);
         Scene scene = new Scene(bottomPane);
-        scene.getStylesheets().add("GameviewStyle.css");
+        scene.getStylesheets().add("JavaFXVersion/GameviewStyle.css");
         Stage stage = new Stage();
         stage.setResizable(false);
         stage.setScene(scene);
@@ -356,7 +359,7 @@ public class Player extends Application implements Runnable {
                 String answerText = dataInputStream.readUTF();
                 setAnswerText(answerText);
 
-                System.out.println("Connected to server as player #" + playerID + ".");
+                System.out.println("Connected to server as player #" + playerID + "");
                 otherPlayer();
             } catch (IOException ex) {
                 System.out.println("IOException from CSC constructor");

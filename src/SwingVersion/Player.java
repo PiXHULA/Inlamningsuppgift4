@@ -1,4 +1,4 @@
-package Testing;
+package SwingVersion;
 
 import javax.swing.*;
 import java.awt.*;

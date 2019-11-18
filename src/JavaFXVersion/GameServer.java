@@ -1,3 +1,5 @@
+package JavaFXVersion;
+
 import java.io.*;
 import java.net.*;
 

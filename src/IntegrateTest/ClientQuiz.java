@@ -74,7 +74,7 @@ public class ClientQuiz extends Application{
         gameView = createGameviewPane(quizArea, displayPlayers, buttonLayout);
         vert2.getChildren().add(gameView);
         Scene scene = new Scene(bottomPane);
-        scene.getStylesheets().add("GameviewStyle.css");
+        scene.getStylesheets().add("JavaFXVersion/GameviewStyle.css");
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();

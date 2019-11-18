@@ -1,4 +1,4 @@
-package Testing;
+package SwingVersion;
 
 import java.io.*;
 import java.net.*;
