@@ -33,6 +33,10 @@ public class Player {
     private String[] rightAnswer = new String[4];;
     private int altcounter = 0;
     private int counter = 0;
+    private int player1counter =0;
+    private int player2counter =0;
+    private int playerNumber;
+
 
     private ClientSideConnection csc;
 
@@ -91,6 +95,7 @@ public class Player {
             buttonsEnable = true;
         } else {
             counter++;
+            player2counter++;
             message.setText("You are player #2. Wait for your turn.");
             labelQuestion.setText(questions[counter]);
             b1.setText(alt2[altcounter]);
@@ -115,7 +120,6 @@ public class Player {
         }
 
         toggleButtons();
-
         frame.setVisible(true);
     }
 
@@ -147,6 +151,8 @@ public class Player {
                     altcounter++;
                     b4.setText(alt3[altcounter]);
                     altcounter =0;
+                    player1counter++;
+                    player1counter++;
                 }else {
                     labelQuestion.setText(questions[counter]);
                     b1.setText(alt4[altcounter]);
@@ -157,8 +163,9 @@ public class Player {
                     altcounter++;
                     b4.setText(alt4[altcounter]);
                     altcounter =0;
+                    player2counter++;
+                    player2counter++;
                 }
-
 
                 for (int i = 0; i <= 3; i++) {
                     if(bNum.equalsIgnoreCase(rightAnswer[i])){
@@ -168,7 +175,7 @@ public class Player {
 
 
                 System.out.println("My points: " + myPoints);
-                csc.sendButtonsNum(myPoints);
+                csc.sendPoints(myPoints, playerNumber);
 
                 if (playerID == 2 && turnsMade == maxTurns) {
                     checkWinner();
@@ -198,7 +205,7 @@ public class Player {
     }
 
     public void updateTurn() {
-        enemyPoints = csc.receiveButtonNum();
+        enemyPoints = csc.receiveEnemyPoints();
         System.out.println("Your Enemy has " + enemyPoints + " points.");
         buttonsEnable = true;
         if (playerID == 1 && turnsMade == maxTurns) {
@@ -227,17 +234,17 @@ public class Player {
         private Socket socket;
         private DataOutputStream dataOutputStream;
         private DataInputStream dataInputStream;
-        private int port = 51735;
+        private int port = 51730;
 
 
         public ClientSideConnection() {
             System.out.println("---CLIENT CONNECTING---");
             try {
                 socket = new Socket("localhost", port);
-                //if(socket.isConnected() == true)
                 dataInputStream = new DataInputStream(socket.getInputStream());
                 dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 playerID = dataInputStream.readInt();
+                playerNumber = dataInputStream.readInt();
                 System.out.println("Connected to server as player #" + playerID + ".");
                 maxTurns = dataInputStream.readInt() / 2;
 
@@ -285,26 +292,27 @@ public class Player {
             }
         }
 
-        public void sendButtonsNum(int n) {
+        public void sendPoints(int points, int playerIDPosition) {
             try {
-                dataOutputStream.writeInt(n);
+                dataOutputStream.writeInt(playerIDPosition);
+                dataOutputStream.writeInt(points);
                 dataOutputStream.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        public int receiveButtonNum() {
-            int n = -1;
+        public int receiveEnemyPoints() {
+            int EnemyPoints = -1; //-1 för att få den att fungera, fattar inte!
             try {
-                n = dataInputStream.readInt();
+                EnemyPoints = dataInputStream.readInt();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return n;
+            return EnemyPoints;
         }
 
-        public void closeConnection() {
+        public void closeConnection() { //ifall vi behöver lägga till "nytt spel" eller liknade... ersätt denna!
             try {
                 socket.close();
                 System.out.println("---Connection Closed---");

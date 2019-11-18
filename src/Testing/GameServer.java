@@ -7,20 +7,20 @@ public class GameServer {
 
     private ServerSocket serverSocket;
     private int numberOfPlayers;
-    private int port = 51735;
-    private ServerSideConnection player1;
-    private ServerSideConnection player2;
+    private int port = 51730;
+    private ServerSideConnection[] otherPlayer = new ServerSideConnection[100];
     private int turnsMade;
     private int maxTurns;
     private int[] values;
-    private int player1ButtonNum;
-    private int player2ButtonNum;
+    private int player1Points;
+    private int player2Points;
     private String[] questions = new String[4];
     private String[] alt1 = new String[4];;
     private String[] alt2 = new String[4];;
     private String[] alt3 = new String[4];;
     private String[] alt4 = new String[4];;
-    private String[] rightAnswer = new String[4];
+    private String[] rightAnswer = new String[4];;
+    private int playerIDPosition = 0;
 
     public GameServer() {
         System.out.println("---GAME SERVER---");
@@ -59,10 +59,13 @@ public class GameServer {
         rightAnswer[2] = "2003";
         rightAnswer[3] = "James Gosling";
 
+        System.out.println("Checking Data...");
 
         for (int i = 0; i < values.length; i++) {
             System.out.println("Question # " + (i + 1) + " is " + questions[i]);
         }
+
+        System.out.println("Data checked!");
 
         try {
             serverSocket = new ServerSocket(port);
@@ -74,39 +77,44 @@ public class GameServer {
     public void acceptConnection() {
         try {
             System.out.println("Waiting for connections...");
-
-            while (true) { //makes it posible to have multibul gamesessions runing at the same time
-                while (numberOfPlayers < 2) { // connects 2 clients together
+            while (true) {
+                while (numberOfPlayers < 2) {
                     Socket socket = serverSocket.accept();
-                    numberOfPlayers++; // control number for how many players in one game
+                    numberOfPlayers++;
                     System.out.println("Player #" + numberOfPlayers + " has connected.");
-                    ServerSideConnection ssc = new ServerSideConnection(socket, numberOfPlayers);
+                    playerIDPosition++;
                     if (numberOfPlayers == 1) {
-                        player1 = ssc;
+                        otherPlayer[playerIDPosition] = new ServerSideConnection(socket, numberOfPlayers, playerIDPosition);
+                        System.out.println(playerIDPosition + "acceptConnection player1");
+                        otherPlayer[playerIDPosition].start();
                     } else {
-                        player2 = ssc;
+                        otherPlayer[playerIDPosition] = new ServerSideConnection(socket, numberOfPlayers, playerIDPosition);
+                        System.out.println(playerIDPosition + "acceptConnection player2");
+                        otherPlayer[playerIDPosition].start();
                     }
-                    Thread thread = new Thread(ssc);
-                    thread.start();
                 }
-                numberOfPlayers = 0; //resets the number of players so other instances of the server can run
-            System.out.println("We now have 2 players");
+                numberOfPlayers = 0;
+                System.out.println("We now have 2 players");
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }catch (NullPointerException ex){
+            ex.printStackTrace();
         }
     }
 
-    private class ServerSideConnection implements Runnable {
+    private class ServerSideConnection extends Thread {
 
         private Socket socket;
         private DataInputStream dataInputStream;
         private DataOutputStream dataOutputStream;
         private int playerID;
+        private int playerIDposition;
 
-        public ServerSideConnection(Socket s, int ID) {
+        public ServerSideConnection(Socket s, int ID, int PlayerIDPosition ) {
             socket = s;
             playerID = ID;
+            playerIDposition = PlayerIDPosition;
             try {
                 dataInputStream = new DataInputStream(socket.getInputStream());
                 dataOutputStream = new DataOutputStream(socket.getOutputStream());
@@ -115,12 +123,14 @@ public class GameServer {
             }
         }
 
-
         @Override
         public void run() {
             try {
                 dataOutputStream.writeInt(playerID);
+                dataOutputStream.writeInt(playerIDposition);
                 dataOutputStream.writeInt(maxTurns);
+
+                //här borde vara möjligheten att fixa en dataInputStream för att usern ska välja kategori
 
                 dataOutputStream.writeUTF(questions[0]);
                 dataOutputStream.writeUTF(questions[1]);
@@ -153,15 +163,19 @@ public class GameServer {
                 dataOutputStream.writeUTF(rightAnswer[3]);
 
                 dataOutputStream.flush();
+
+                //här är sammankopplingen av två olika clienter samt poäng skickandet emellan
                 while (true) {
                     if (playerID == 1) {
-                        player1ButtonNum = dataInputStream.readInt();
-                        System.out.println("Player 1 clicked button #" + player1ButtonNum);
-                        player2.sendButtonNum(player1ButtonNum);
+                        int playerIDposition = dataInputStream.readInt();
+                        player1Points = dataInputStream.readInt();
+                        System.out.println("Player 1 has " + player1Points + "points");
+                        otherPlayer[playerIDposition+1].sendPoints(player1Points);
                     } else {
-                        player2ButtonNum = dataInputStream.readInt();
-                        System.out.println("player 2 clicked button #" + player2ButtonNum);
-                        player1.sendButtonNum(player2ButtonNum);
+                        int playerIDposition = dataInputStream.readInt();
+                        player2Points = dataInputStream.readInt();
+                        System.out.println("player 2 has #" + player2Points + "points");
+                        otherPlayer[playerIDposition-1].sendPoints(player2Points);
                     }
                     turnsMade++;
                     if (turnsMade == maxTurns) {
@@ -174,32 +188,22 @@ public class GameServer {
             }
         }
 
-        public void sendButtonNum(int n) {
+        public void sendPoints(int points) {
             try {
-                dataOutputStream.writeInt(n);
+                dataOutputStream.writeInt(points);
                 dataOutputStream.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
-        /*
-        public void closeConnection() {
-            try {
-                socket.close();
-                System.out.println("---Connection Closed---");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-         */
-
     }
 
     public static void main(String[] args) {
         GameServer gameServer = new GameServer();
-        gameServer.acceptConnection();
+        try {
+            gameServer.acceptConnection();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
-
-
 }
