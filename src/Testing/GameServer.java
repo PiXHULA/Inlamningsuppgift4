@@ -5,6 +5,7 @@ import java.net.*;
 
 public class GameServer {
 
+    //Protocol protocol = new Protocol();
     Protocol protocol = new Protocol();
     private ServerSocket serverSocket;
     private int numberOfPlayers;
@@ -23,7 +24,7 @@ public class GameServer {
     private String[] rightAnswer = new String[4];;
     private int playerIDPosition = 0;
 
-    public GameServer() {
+    public GameServer() throws IOException {
         System.out.println("---GAME SERVER---");
         numberOfPlayers = 0;
         turnsMade = 0;
@@ -134,10 +135,6 @@ public class GameServer {
 
                 //här borde vara möjligheten att fixa en dataInputStream för att usern ska välja kategori
 
-                dataOutputStream.writeUTF(questions[0]);
-                dataOutputStream.writeUTF(questions[1]);
-                dataOutputStream.writeUTF(questions[2]);
-                dataOutputStream.writeUTF(questions[3]);
                 dataOutputStream.writeUTF(protocol.getSortedHistoryQuestions()[0]);
                 dataOutputStream.writeUTF(protocol.getSortedHistoryQuestions()[1]);
                 dataOutputStream.writeUTF(protocol.getSortedHistoryQuestions()[2]);
@@ -204,7 +201,7 @@ public class GameServer {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         GameServer gameServer = new GameServer();
         try {
             gameServer.acceptConnection();
