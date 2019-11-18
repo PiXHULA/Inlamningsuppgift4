@@ -70,8 +70,12 @@ public class Protocol {
 
     Properties p = new Properties();
 
-    String[] properties =
-            {"src\\Gaming.properties", "src\\History.properties", "src\\Sport.properties", "src\\Film.properties"};
+    String[] properties = {
+                    "src\\SwingVersion\\Properties\\Gaming.properties",
+                    "src\\SwingVersion\\Properties\\History.properties",
+                    "src\\SwingVersion\\Properties\\Sport.properties",
+                    "src\\SwingVersion\\Properties\\Film.properties"};
+
     String question;
     String alt1;
     String alt2;
@@ -190,7 +194,7 @@ public class Protocol {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (property.equals("src\\Gaming.properties")) {
+            if (property.equals("src\\Properties\\Gaming.properties")) {
                 for (int i = 1; i <= 4; i++) {
                     question = p.getProperty("question" + i);
                     alt1 = p.getProperty("alt" + i + ".1");
@@ -227,7 +231,7 @@ public class Protocol {
 
                 emptyTempVariables();
             }
-            if (property.equals("src\\Film.properties")) {
+            if (property.equals("src\\SwingVersion\\Properties\\Film.properties")) {
                 for (int i = 1; i <= 4; i++) {
                     question = p.getProperty("question" + i);
                     alt1 = p.getProperty("alt" + i + ".1");
@@ -264,7 +268,7 @@ public class Protocol {
 
                 emptyTempVariables();
             }
-            if (property.equals("src\\History.properties")) {
+            if (property.equals("src\\SwingVersion\\Properties\\History.properties")) {
                 for (int i = 1; i <= 4; i++) {
                     question = p.getProperty("question" + i);
                     alt1 = p.getProperty("alt" + i + ".1");
@@ -301,7 +305,7 @@ public class Protocol {
 
                 emptyTempVariables();
             }
-            if (property.equals("src\\Sport.properties")) {
+            if (property.equals("src\\SwingVersion\\Properties\\Sport.properties")) {
                 for (int i = 1; i <= 4; i++) {
                     question = p.getProperty("question" + i);
                     alt1 = p.getProperty("alt" + i + ".1");

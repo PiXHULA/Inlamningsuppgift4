@@ -12,10 +12,10 @@ public class Protocol {
     Properties p = new Properties();
 
     FileInputStream[] f = {
-            new FileInputStream("src\\Gaming.properties"),
-            new FileInputStream("src\\History.properties"),
-            new FileInputStream("src\\Sport.properties"),
-            new FileInputStream("src\\Film.properties")};
+            new FileInputStream("src\\JavaFXVersion\\Properties\\Gaming.properties"),
+            new FileInputStream("src\\JavaFXVersion\\Properties\\History.properties"),
+            new FileInputStream("src\\JavaFXVersion\\Properties\\Sport.properties"),
+            new FileInputStream("src\\JavaFXVersion\\Properties\\Film.properties")};
 
     String question;
     String alt1;
