@@ -36,6 +36,12 @@ public class Player {
     private int player1counter =0;
     private int player2counter =0;
     private int playerNumber;
+    JButton historyButton = new JButton("Historia");
+    JButton sportButton = new JButton("Sport");
+    JButton filmButton = new JButton("Film");
+    JButton gamingButton = new JButton("Gaming");
+    private int categori;
+    JFrame startFrame;
 
 
     private ClientSideConnection csc;
@@ -57,10 +63,10 @@ public class Player {
     }
 
     public void setUpStartGUI() {
-        //try {
-            while (true) {
+        setUpStartButtons();
+            //while (true) {
                 if (playerID == 1) {
-                    JFrame startFrame = new JFrame();
+                    startFrame = new JFrame();
                     startFrame.setSize(600, 150);
                     startFrame.setTitle("Player #: " + playerID);
                     startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,10 +74,6 @@ public class Player {
                     Container startContentPane = new Container();
                     startContentPane.setLayout(new GridLayout(1, 4));
                     JTextArea infoArea = new JTextArea();
-                    JButton historyButton = new JButton("Historia");
-                    JButton sportButton = new JButton("Sport");
-                    JButton filmButton = new JButton("Film");
-                    JButton gamingButton = new JButton("Gaming");
                     startContentPane.add(historyButton);
                     startContentPane.add(sportButton);
                     startContentPane.add(filmButton);
@@ -84,7 +86,8 @@ public class Player {
                     infoArea.setEditable(false);
                     startFrame.setVisible(true);
                 } else {
-                    JFrame startFrame = new JFrame();
+                    questions[0] = "empty";
+                    startFrame = new JFrame();
                     startFrame.setSize(600, 150);
                     startFrame.setTitle("Player #: " + playerID);
                     startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -96,26 +99,70 @@ public class Player {
                     infoArea.setLineWrap(true);
                     infoArea.setEditable(false);
                     startFrame.setVisible(true);
+                    csc.getQuestion();
+                    while (true){
+                        if(!questions[0].equalsIgnoreCase("empty")){
+                            startFrame.dispose();
+                            setUpGUI();
+                            setUpButtons();
+                            break;
+                        }
+                    }
                 }
 
+                //setUpGUI();
+                //setUpButtons();
+           // }
+    }
 
+    public void setUpStartButtons() {
+        ActionListener actionListener = new ActionListener() {
 
-
-
-
-                if (!questions[0].isEmpty()) {
-                    setUpGUI();
-                    setUpButtons();
-                    break;
-                }
-
-
-
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                   if(ae.getSource().equals(historyButton)){
+                       System.out.println("Categori selected: History");
+                       categori = 1;
+                       System.out.println(categori);
+                       csc.sendCategori(categori, playerNumber);
+                       startFrame.dispose();
+                       csc.getQuestion();
+                       setUpGUI();
+                       setUpButtons();
+                   }else if(ae.getSource().equals(sportButton)){
+                       System.out.println("Categori selected: Sport");
+                       categori = 2;
+                       System.out.println(categori);
+                       csc.sendCategori(categori, playerNumber);
+                       startFrame.dispose();
+                       csc.getQuestion();
+                       setUpGUI();
+                       setUpButtons();
+                   }else if(ae.getSource().equals(filmButton)){
+                       System.out.println("Categori selected: Film");
+                       categori = 3;
+                       System.out.println(categori);
+                       csc.sendCategori(categori, playerNumber);
+                       startFrame.dispose();
+                       csc.getQuestion();
+                       setUpGUI();
+                       setUpButtons();
+                   }else if(ae.getSource().equals(gamingButton)){
+                       System.out.println("Categori selected: Gaming");
+                       categori = 4;
+                       System.out.println(categori);
+                       csc.sendCategori(categori, playerNumber);
+                       startFrame.dispose();
+                       csc.getQuestion();
+                       setUpGUI();
+                       setUpButtons();
+                   }
             }
-        //}catch (NullPointerException ex){
-        //    System.out.println("NullPointerException from setUpStartGUI");
-        //    ex.printStackTrace();
-        //}
+        };
+                   historyButton.addActionListener(actionListener);
+                   sportButton.addActionListener(actionListener);
+                   filmButton.addActionListener(actionListener);
+                   gamingButton.addActionListener(actionListener);
     }
 
     public void setUpGUI() {
@@ -311,45 +358,6 @@ public class Player {
                 System.out.println("Connected to server as player #" + playerID + ".");
                 maxTurns = dataInputStream.readInt() / 2;
 
-
-
-                questions[0] = dataInputStream.readUTF();
-                questions[1] = dataInputStream.readUTF();
-                questions[2] = dataInputStream.readUTF();
-                questions[3] = dataInputStream.readUTF();
-
-                alt1[0] = dataInputStream.readUTF();
-                alt1[1] = dataInputStream.readUTF();
-                alt1[2] = dataInputStream.readUTF();
-                alt1[3] = dataInputStream.readUTF();
-
-                alt2[0] = dataInputStream.readUTF();
-                alt2[1] = dataInputStream.readUTF();
-                alt2[2] = dataInputStream.readUTF();
-                alt2[3] = dataInputStream.readUTF();
-
-                alt3[0] = dataInputStream.readUTF();
-                alt3[1] = dataInputStream.readUTF();
-                alt3[2] = dataInputStream.readUTF();
-                alt3[3] = dataInputStream.readUTF();
-
-                alt4[0] = dataInputStream.readUTF();
-                alt4[1] = dataInputStream.readUTF();
-                alt4[2] = dataInputStream.readUTF();
-                alt4[3] = dataInputStream.readUTF();
-
-                rightAnswer[0] = dataInputStream.readUTF();
-                rightAnswer[1] = dataInputStream.readUTF();
-                rightAnswer[2] = dataInputStream.readUTF();
-                rightAnswer[3] = dataInputStream.readUTF();
-
-                System.out.println("MaxTurns:" + maxTurns);
-
-                System.out.println("Right answer #1 is : " + rightAnswer[0]);
-                System.out.println("Right answer #2 is : " + rightAnswer[1]);
-                System.out.println("Right answer #3 is : " + rightAnswer[2]);
-                System.out.println("Right answer #4 is : " + rightAnswer[3]);
-
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -357,9 +365,58 @@ public class Player {
             }
         }
 
-        public void sendCategori (int categori){
+        public void getQuestion(){
+            try {
+            questions[0] = dataInputStream.readUTF();
+            questions[1] = dataInputStream.readUTF();
+            questions[2] = dataInputStream.readUTF();
+            questions[3] = dataInputStream.readUTF();
 
+            alt1[0] = dataInputStream.readUTF();
+            alt1[1] = dataInputStream.readUTF();
+            alt1[2] = dataInputStream.readUTF();
+            alt1[3] = dataInputStream.readUTF();
 
+            alt2[0] = dataInputStream.readUTF();
+            alt2[1] = dataInputStream.readUTF();
+            alt2[2] = dataInputStream.readUTF();
+            alt2[3] = dataInputStream.readUTF();
+
+            alt3[0] = dataInputStream.readUTF();
+            alt3[1] = dataInputStream.readUTF();
+            alt3[2] = dataInputStream.readUTF();
+            alt3[3] = dataInputStream.readUTF();
+
+            alt4[0] = dataInputStream.readUTF();
+            alt4[1] = dataInputStream.readUTF();
+            alt4[2] = dataInputStream.readUTF();
+            alt4[3] = dataInputStream.readUTF();
+
+            rightAnswer[0] = dataInputStream.readUTF();
+            rightAnswer[1] = dataInputStream.readUTF();
+            rightAnswer[2] = dataInputStream.readUTF();
+            rightAnswer[3] = dataInputStream.readUTF();
+
+            System.out.println("MaxTurns:" + maxTurns);
+
+            System.out.println("Right answer #1 is : " + rightAnswer[0]);
+            System.out.println("Right answer #2 is : " + rightAnswer[1]);
+            System.out.println("Right answer #3 is : " + rightAnswer[2]);
+            System.out.println("Right answer #4 is : " + rightAnswer[3]);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        }
+
+        public void sendCategori (int categori, int playerIDPosition){
+            try {
+                dataOutputStream.writeInt(playerIDPosition);
+                dataOutputStream.writeInt(categori);
+                dataOutputStream.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         public void sendPoints(int points, int playerIDPosition) {
@@ -394,8 +451,10 @@ public class Player {
 
     public static void main(String[] args) {
         Player p = new Player(600, 150);
+        p.connectToServer();
+        System.out.println("connecting");
         p.setUpStartGUI();
-        //p.connectToServer();
+        System.out.println("Choosing categori");
         //p.setUpGUI();
         //p.setUpButtons();
     }
