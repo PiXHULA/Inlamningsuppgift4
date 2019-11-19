@@ -138,29 +138,32 @@ public class GameServer {
                 playerIDposition = dataInputStream.readInt();
                 categori = dataInputStream.readInt();
 
+                if(categori != 0){
+                    sendQuestion(categori);
+                    categori=0;
+                }
+
                 //här är den konstanta sammankopplingen av två olika clienter samt poäng skickandet emellan
                 while (true) {
-                    if(categori != 0){
-                        sendQuestion(categori);
-                        categori=0;
-                    }
-
                     if (playerID == 1) {
                         playerIDposition = dataInputStream.readInt();
                         player1Points = dataInputStream.readInt();
-                        System.out.println("Player 1 has " + player1Points + "points");
+                        System.out.println("Player 1 has " + player1Points + " points");
                         otherPlayer[playerIDposition+1].sendPoints(player1Points);
                     } else {
                         playerIDposition = dataInputStream.readInt();
                         player2Points = dataInputStream.readInt();
-                        System.out.println("player 2 has #" + player2Points + "points");
+                        System.out.println("player 2 has #" + player2Points + " points");
                         otherPlayer[playerIDposition-1].sendPoints(player2Points);
                     }
+                    /*
                     turnsMade++;
                     if (turnsMade == maxTurns) {
                         System.out.println("Max Turns have been reached.");
                         break;
                     }
+
+                     */
                 }
             } catch (IOException e) {
                 e.printStackTrace();

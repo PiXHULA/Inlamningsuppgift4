@@ -455,7 +455,5 @@ public class Player {
         System.out.println("connecting");
         p.setUpStartGUI();
         System.out.println("Choosing categori");
-        //p.setUpGUI();
-        //p.setUpButtons();
     }
 }
