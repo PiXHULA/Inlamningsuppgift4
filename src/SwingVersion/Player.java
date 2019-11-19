@@ -56,6 +56,68 @@ public class Player {
         enemyPoints = 0;
     }
 
+    public void setUpStartGUI() {
+        //try {
+            while (true) {
+                if (playerID == 1) {
+                    JFrame startFrame = new JFrame();
+                    startFrame.setSize(600, 150);
+                    startFrame.setTitle("Player #: " + playerID);
+                    startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    startFrame.setLayout(new BorderLayout());
+                    Container startContentPane = new Container();
+                    startContentPane.setLayout(new GridLayout(1, 4));
+                    JTextArea infoArea = new JTextArea();
+                    JButton historyButton = new JButton("Historia");
+                    JButton sportButton = new JButton("Sport");
+                    JButton filmButton = new JButton("Film");
+                    JButton gamingButton = new JButton("Gaming");
+                    startContentPane.add(historyButton);
+                    startContentPane.add(sportButton);
+                    startContentPane.add(filmButton);
+                    startContentPane.add(gamingButton);
+                    infoArea.setText("Välj kategori!");
+                    startFrame.add(infoArea, BorderLayout.CENTER);
+                    startFrame.add(startContentPane, BorderLayout.SOUTH);
+                    infoArea.setWrapStyleWord(true);
+                    infoArea.setLineWrap(true);
+                    infoArea.setEditable(false);
+                    startFrame.setVisible(true);
+                } else {
+                    JFrame startFrame = new JFrame();
+                    startFrame.setSize(600, 150);
+                    startFrame.setTitle("Player #: " + playerID);
+                    startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    startFrame.setLayout(new BorderLayout());
+                    JTextArea infoArea = new JTextArea();
+                    infoArea.setText("Spelare #2 väljer kategori, vänligen vänta!");
+                    startFrame.add(infoArea, BorderLayout.CENTER);
+                    infoArea.setWrapStyleWord(true);
+                    infoArea.setLineWrap(true);
+                    infoArea.setEditable(false);
+                    startFrame.setVisible(true);
+                }
+
+
+
+
+
+
+                if (!questions[0].isEmpty()) {
+                    setUpGUI();
+                    setUpButtons();
+                    break;
+                }
+
+
+
+            }
+        //}catch (NullPointerException ex){
+        //    System.out.println("NullPointerException from setUpStartGUI");
+        //    ex.printStackTrace();
+        //}
+    }
+
     public void setUpGUI() {
         frame.setSize(width, height);
         frame.setTitle("Player #: " + playerID);
@@ -77,6 +139,7 @@ public class Player {
         contentPane.add(b3);
         contentPane.add(b4);
         frame.add(contentPane, BorderLayout.SOUTH);
+        frame.setVisible(true);
 
         if (playerID == 1) {
             message.setText("You are player #1. You go first!");
@@ -248,6 +311,8 @@ public class Player {
                 System.out.println("Connected to server as player #" + playerID + ".");
                 maxTurns = dataInputStream.readInt() / 2;
 
+
+
                 questions[0] = dataInputStream.readUTF();
                 questions[1] = dataInputStream.readUTF();
                 questions[2] = dataInputStream.readUTF();
@@ -292,6 +357,11 @@ public class Player {
             }
         }
 
+        public void sendCategori (int categori){
+
+
+        }
+
         public void sendPoints(int points, int playerIDPosition) {
             try {
                 dataOutputStream.writeInt(playerIDPosition);
@@ -323,9 +393,10 @@ public class Player {
     }
 
     public static void main(String[] args) {
-        Player p = new Player(500, 100);
-        p.connectToServer();
-        p.setUpGUI();
-        p.setUpButtons();
+        Player p = new Player(600, 150);
+        p.setUpStartGUI();
+        //p.connectToServer();
+        //p.setUpGUI();
+        //p.setUpButtons();
     }
 }
