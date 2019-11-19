@@ -85,6 +85,7 @@ public class Player {
                     infoArea.setLineWrap(true);
                     infoArea.setEditable(false);
                     startFrame.setVisible(true);
+                    System.out.println("Choosing categori");
                 } else {
                     questions[0] = "empty";
                     startFrame = new JFrame();
@@ -99,19 +100,18 @@ public class Player {
                     infoArea.setLineWrap(true);
                     infoArea.setEditable(false);
                     startFrame.setVisible(true);
+                    System.out.println("Waiting for opponent to choose categori");
                     csc.getQuestion();
                     while (true){
                         if(!questions[0].equalsIgnoreCase("empty")){
                             startFrame.dispose();
-                            setUpGUI();
-                            setUpButtons();
                             break;
                         }
                     }
+                setUpGUI();
+                setUpButtons();
                 }
 
-                //setUpGUI();
-                //setUpButtons();
            // }
     }
 
@@ -203,6 +203,15 @@ public class Player {
             altcounter =0;
             otherPlayer = 2;
             buttonsEnable = true;
+            //var tvungen att kalla på den en gång till för att få den att hämta korrekt men nu körs den 2 ggr
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateTurn();
+                    }
+                });
+                t.start();
+
         } else {
             counter++;
             player2counter++;
@@ -228,7 +237,6 @@ public class Player {
             });
             t.start();
         }
-
         toggleButtons();
         frame.setVisible(true);
     }
@@ -275,6 +283,8 @@ public class Player {
                     altcounter =0;
                     player2counter++;
                     player2counter++;
+                    csc.sendPoints(myPoints, playerNumber); //testar att sätta den här också. det löste buggen men skapade en ny
+                    //spelare 1 stänger av sig själv innan han har fått poängen från spelare 2
                 }
 
                 for (int i = 0; i <= 3; i++) {
@@ -283,22 +293,24 @@ public class Player {
                     }
                 }
 
-
                 System.out.println("My points: " + myPoints);
-                csc.sendPoints(myPoints, playerNumber);
+                csc.sendPoints(myPoints, playerNumber); //player2 verkar inte skicka sina points
+
 
                 if (playerID == 2 && turnsMade == maxTurns) {
                     checkWinner();
                 } else {
-                    Thread t = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateTurn();
-                        }
-                    });
-                    t.start();
+                        //denna uppdaterar inte player 1 som den ska sista frågan....
+                        Thread t = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateTurn();
+                            }
+                        });
+                        t.start();
+                    }
                 }
-            }
+
         };
 
         b1.addActionListener(al);
@@ -314,6 +326,9 @@ public class Player {
         b4.setEnabled(buttonsEnable);
     }
 
+    //En bugg med denna, som är halvlöst, jag var tvungen att kalla på denna metod på en till plats för att få den att
+    //göra rätt, men iochmed det så sätter den sig 2 ggr så att säga
+    //den kör checkWinner() två gånger men uppdaterar inte första gången
     public void updateTurn() {
         enemyPoints = csc.receiveEnemyPoints();
         System.out.println("Your Enemy has " + enemyPoints + " points.");
@@ -335,7 +350,6 @@ public class Player {
         } else {
             message.setText("YOU TIED!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
         }
-        csc.closeConnection();
     }
 
     //Client connection
@@ -355,8 +369,8 @@ public class Player {
                 dataOutputStream = new DataOutputStream(socket.getOutputStream());
                 playerID = dataInputStream.readInt();
                 playerNumber = dataInputStream.readInt();
-                System.out.println("Connected to server as player #" + playerID + ".");
                 maxTurns = dataInputStream.readInt() / 2;
+                System.out.println("MaxTurns:" + maxTurns);
 
             } catch (UnknownHostException e) {
                 e.printStackTrace();
@@ -397,8 +411,6 @@ public class Player {
             rightAnswer[2] = dataInputStream.readUTF();
             rightAnswer[3] = dataInputStream.readUTF();
 
-            System.out.println("MaxTurns:" + maxTurns);
-
             System.out.println("Right answer #1 is : " + rightAnswer[0]);
             System.out.println("Right answer #2 is : " + rightAnswer[1]);
             System.out.println("Right answer #3 is : " + rightAnswer[2]);
@@ -419,9 +431,9 @@ public class Player {
             }
         }
 
-        public void sendPoints(int points, int playerIDPosition) {
+        public void sendPoints(int points, int playeridPosition) {
             try {
-                dataOutputStream.writeInt(playerIDPosition);
+                dataOutputStream.writeInt(playeridPosition);
                 dataOutputStream.writeInt(points);
                 dataOutputStream.flush();
             } catch (IOException e) {
@@ -430,7 +442,7 @@ public class Player {
         }
 
         public int receiveEnemyPoints() {
-            int EnemyPoints = -1; //-1 för att få den att fungera, fattar inte!
+            int EnemyPoints = 0; //-1 för att få den att fungera, fattar inte! //testar med 0
             try {
                 EnemyPoints = dataInputStream.readInt();
             } catch (IOException e) {
@@ -452,8 +464,6 @@ public class Player {
     public static void main(String[] args) {
         Player p = new Player(600, 150);
         p.connectToServer();
-        System.out.println("connecting");
         p.setUpStartGUI();
-        System.out.println("Choosing categori");
     }
 }
