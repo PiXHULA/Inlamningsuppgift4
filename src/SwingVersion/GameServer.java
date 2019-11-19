@@ -17,15 +17,10 @@ public class GameServer {
     private int[] values;
     private String[] questions = new String[4];
     private String[] alt1 = new String[4];
-    ;
     private String[] alt2 = new String[4];
-    ;
     private String[] alt3 = new String[4];
-    ;
     private String[] alt4 = new String[4];
-    ;
     private String[] rightAnswer = new String[4];
-    ;
     private int playerIDPosition = 0;
     private int categori = 0;
 
