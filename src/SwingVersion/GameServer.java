@@ -112,6 +112,7 @@ public class GameServer {
         private DataOutputStream dataOutputStream;
         private int playerID;
         private int playerIDposition;
+        private int categoryState;
 
         public ServerSideConnection(Socket s, int ID, int PlayerIDPosition ) {
             socket = s;
@@ -134,37 +135,143 @@ public class GameServer {
                 dataOutputStream.writeInt(maxTurns);
 
                 //här borde vara möjligheten att fixa en dataInputStream för att usern ska välja kategori
+                categoryState = dataInputStream.readInt();
 
-                dataOutputStream.writeUTF(protocol.getSortedHistoryQuestions()[0]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryQuestions()[1]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryQuestions()[2]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryQuestions()[3]);
+                if (categoryState == 1) {
+                    dataOutputStream.writeUTF(protocol.getSortedGamingQuestions()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingQuestions()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingQuestions()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingQuestions()[3]);
 
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts1()[0]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts2()[0]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts3()[0]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts4()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAlts1()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAlts2()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAlts3()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAlts4()[0]);
 
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts1()[1]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts2()[1]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts3()[1]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts4()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAlts1()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAlts2()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAlts3()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAlts4()[1]);
 
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts1()[2]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts2()[2]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts3()[2]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts4()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAlts1()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAlts2()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAlts3()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAlts4()[2]);
 
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts1()[3]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts2()[3]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts3()[3]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAlts4()[3]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAlts1()[3]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAlts2()[3]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAlts3()[3]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAlts4()[3]);
 
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAnswers()[0]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAnswers()[1]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAnswers()[2]);
-                dataOutputStream.writeUTF(protocol.getSortedHistoryAnswers()[3]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAnswers()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAnswers()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAnswers()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedGamingAnswers()[3]);
 
+                    categoryState = 0;
+                }
+
+                if (categoryState == 2) {
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryQuestions()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryQuestions()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryQuestions()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryQuestions()[3]);
+
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAlts1()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAlts2()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAlts3()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAlts4()[0]);
+
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAlts1()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAlts2()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAlts3()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAlts4()[1]);
+
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAlts1()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAlts2()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAlts3()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAlts4()[2]);
+
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAlts1()[3]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAlts2()[3]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAlts3()[3]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAlts4()[3]);
+
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAnswers()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAnswers()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAnswers()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedHistoryAnswers()[3]);
+
+                    categoryState = 0;
+                }
+
+                if (categoryState == 3) {
+                    dataOutputStream.writeUTF(protocol.getSortedSportQuestions()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportQuestions()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportQuestions()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportQuestions()[3]);
+
+                    dataOutputStream.writeUTF(protocol.getSortedSportAlts1()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportAlts2()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportAlts3()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportAlts4()[0]);
+
+                    dataOutputStream.writeUTF(protocol.getSortedSportAlts1()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportAlts2()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportAlts3()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportAlts4()[1]);
+
+                    dataOutputStream.writeUTF(protocol.getSortedSportAlts1()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportAlts2()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportAlts3()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportAlts4()[2]);
+
+                    dataOutputStream.writeUTF(protocol.getSortedSportAlts1()[3]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportAlts2()[3]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportAlts3()[3]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportAlts4()[3]);
+
+                    dataOutputStream.writeUTF(protocol.getSortedSportAnswers()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportAnswers()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportAnswers()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedSportAnswers()[3]);
+
+                    categoryState = 0;
+                }
+
+                if (categoryState == 4) {
+                    dataOutputStream.writeUTF(protocol.getSortedFilmQuestions()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmQuestions()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmQuestions()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmQuestions()[3]);
+
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAlts1()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAlts2()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAlts3()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAlts4()[0]);
+
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAlts1()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAlts2()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAlts3()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAlts4()[1]);
+
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAlts1()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAlts2()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAlts3()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAlts4()[2]);
+
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAlts1()[3]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAlts2()[3]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAlts3()[3]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAlts4()[3]);
+
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAnswers()[0]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAnswers()[1]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAnswers()[2]);
+                    dataOutputStream.writeUTF(protocol.getSortedFilmAnswers()[3]);
+
+                    categoryState = 0;
+                }
                 dataOutputStream.flush();
 
                 //här är sammankopplingen av två olika clienter samt poäng skickandet emellan

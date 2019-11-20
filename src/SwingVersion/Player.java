@@ -248,6 +248,7 @@ public class Player {
                 System.out.println("Connected to server as player #" + playerID + ".");
                 maxTurns = dataInputStream.readInt() / 2;
 
+                dataOutputStream.writeInt(3);
                 questions[0] = dataInputStream.readUTF();
                 questions[1] = dataInputStream.readUTF();
                 questions[2] = dataInputStream.readUTF();
