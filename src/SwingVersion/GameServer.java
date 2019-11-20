@@ -135,6 +135,7 @@ public class GameServer {
                 playerIDposition = dataInputStream.readInt();
                 categori = dataInputStream.readInt();
 
+                //här skickar playerID 1 in data för att välja kategori
                 if (playerID == 1) {
                     if (categori != 0) {
                         System.out.println("getting request for <T> fil");
@@ -430,7 +431,6 @@ public class GameServer {
                     ex.printStackTrace();
                 }
             }
-
         }
 
         public void sendLine(String sortedQuestion) {

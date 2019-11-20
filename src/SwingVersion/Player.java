@@ -1,4 +1,5 @@
 package SwingVersion;
+
 import javax.swing.*;
 import java.awt.*;
 import java.net.*;
@@ -278,7 +279,6 @@ public class Player {
 
                 System.out.println("My points: " + myPoints);
                 csc.sendPoints(myPoints, playerNumber);
-                System.out.println("playerID: " + playerID + " is here");
                 if (playerID == 2 && turnsMade == maxTurns) {
                     checkWinner();
                 } else {
@@ -286,7 +286,6 @@ public class Player {
                     Thread t = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            System.out.println("playerID: " + playerID + " is here2");
                             updateTurn();
                         }
                     });
@@ -309,11 +308,8 @@ public class Player {
     }
 
     public void updateTurn() {
-
         System.out.println("playerID: " + playerID + " is here3 " + "turnsMade " + turnsMade);
-            System.out.println("playerID: " + playerID + " is here 4");
-            enemyPoints = csc.receiveEnemyPoints();
-            System.out.println("playerID: " + playerID + " is here 5");
+        enemyPoints = csc.receiveEnemyPoints();
         System.out.println("Your Enemy has " + enemyPoints + " points.");
         buttonsEnable = true;
         if (playerID == 1 && turnsMade == maxTurns) {
@@ -413,27 +409,27 @@ public class Player {
             }
         }
 
+
         public void sendPoints(int points, int playeridPosition) {
             try {
                 if (playerID == 1) {
-
                     dataOutputStream.writeInt(playeridPosition);
                     dataOutputStream.writeInt(points);
                     dataOutputStream.flush();
-                }else if(playerID == 2) {
-                    if(turnsMade == 1) {
+                } else if (playerID == 2) {
+                    if (turnsMade == 1) { //anledningen till detta är att pga av att playerID 1 väljer kategori så hamnar det "skräp" i pipen hos playerID2 vilket gör att vi måste skicka dubbelt upp första turnen
                         dataOutputStream.writeInt(playeridPosition);
                         dataOutputStream.writeInt(points);
                         dataOutputStream.writeInt(playeridPosition);
                         dataOutputStream.writeInt(points);
                         dataOutputStream.flush();
-                    }else{
+                    } else {
                         dataOutputStream.writeInt(playeridPosition);
                         dataOutputStream.writeInt(points);
                         dataOutputStream.flush();
                     }
                 }
-                System.out.println("points sent "+points + " " + playeridPosition );
+                System.out.println("points sent " + points + " " + playeridPosition);
             } catch (IOException e) {
                 e.printStackTrace();
             }
