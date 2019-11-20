@@ -1,6 +1,7 @@
 package SwingVersion;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.net.*;
 import java.io.*;
@@ -43,6 +44,11 @@ public class Player {
     private int categori;
     JFrame startFrame;
     private ClientSideConnection csc;
+
+    public int totalPointsOfPlayer1 = 0;
+    public int totalPointsOfPlayer2 = 0;
+    public int roundPointsOfPlayer1 = 0;
+    public int roundPointsOfPlayer2 = 0;
 
     public Player(int w, int h) {
         width = w;
@@ -219,6 +225,7 @@ public class Player {
                 @Override
                 public void run() {
                     updateTurn();
+                    checkRoundWinner();
                 }
             });
             t.start();
@@ -274,6 +281,7 @@ public class Player {
                 for (int i = 0; i <= 3; i++) {
                     if (bNum.equalsIgnoreCase(rightAnswer[i])) {
                         myPoints++;
+                        b.setBackground(Color.green); //Få turns att ske efter att motsvarande spelare svarat??
                     }
                 }
 
@@ -287,6 +295,7 @@ public class Player {
                         @Override
                         public void run() {
                             updateTurn();
+                            checkRoundWinner();
                         }
                     });
                     t.start();
@@ -309,6 +318,9 @@ public class Player {
 
     public void updateTurn() {
         System.out.println("playerID: " + playerID + " is here3 " + "turnsMade " + turnsMade);
+       if (playerID == 2 && turnsMade == 1) {
+           checkRoundWinner();
+       }
         enemyPoints = csc.receiveEnemyPoints();
         System.out.println("Your Enemy has " + enemyPoints + " points.");
         buttonsEnable = true;
@@ -320,6 +332,28 @@ public class Player {
         toggleButtons();
     }
 
+    private void checkRoundWinner() {
+        buttonsEnable = true;
+
+        if (playerID == 1 && turnsMade == 1) {
+            roundPointsOfPlayer1 = myPoints;
+            roundPointsOfPlayer2 = enemyPoints;
+            System.out.println("Player 1 finishes this round with the score: " + roundPointsOfPlayer1);
+            System.out.println("Player 2 finishes this round with the score: " + roundPointsOfPlayer2);
+        }
+        //Hur faaan få turnsMade 1 att ske en gång för Player2
+            if (playerID == 2 && turnsMade == 1) {
+                roundPointsOfPlayer1 = myPoints;
+                roundPointsOfPlayer2 = enemyPoints;
+                System.out.println("Player 1 finishes this round with the score: " + roundPointsOfPlayer1);
+                System.out.println("Player 2 finishes this round with the score: " + roundPointsOfPlayer2);
+            }
+
+
+        roundPointsOfPlayer1 = 0;
+        roundPointsOfPlayer2 = 0;
+    }
+
     private void checkWinner() {
         buttonsEnable = false;
         if (myPoints > enemyPoints) {
@@ -329,6 +363,14 @@ public class Player {
         } else {
             message.setText("YOU TIED!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
         }
+
+        //In med dessa på en sidebar GUI?
+        totalPointsOfPlayer1 += myPoints;
+        totalPointsOfPlayer2 += enemyPoints;
+        System.out.println("Player 1 total standing: " + totalPointsOfPlayer1);
+        System.out.println("Player 2 total standing: " + totalPointsOfPlayer2);
+
+        //Samt resetta myPoints och enemyPoints vid newgame!
     }
 
     //Client connection
