@@ -134,14 +134,19 @@ public class GameServer {
 
                 playerIDposition = dataInputStream.readInt();
                 categori = dataInputStream.readInt();
+
+                if (playerID == 1) {
+                    if (categori != 0) {
+                        System.out.println("getting request for <T> fil");
+                        sendQuestion(categori, playerIDposition);
+                        categori = 0;
+                    }
+                }
+
                 //här är den konstanta sammankopplingen av två olika clienter samt poäng skickandet emellan
                 while (true) {
+
                     if (playerID == 1) {
-                        if (categori != 0) {
-                            System.out.println("getting request for <T> fil");
-                            sendQuestion(categori, playerIDposition);
-                            categori = 0;
-                        }
                         int player1IDposition = dataInputStream.readInt();
                         int player1Points = dataInputStream.readInt();
                         System.out.println("player id position " + player1IDposition + " has sent data");
@@ -234,8 +239,6 @@ public class GameServer {
                 }
             } else if (categorieNumber == 2) {
                 //Sends all sport question to 2 specific players and so on and so on...
-                //BUGGAD!!! kan ej köras! felsök... den återskapar ej buggen från clienterna samt så ibland så fastarna
-                //enbart denna kategori efter en fråga var hos clienten
                 try {
                     otherPlayer[playerposition].sendLine(protocol.getSortedSportQuestions()[0]);
                     otherPlayer[playerposition + 1].sendLine(protocol.getSortedSportQuestions()[0]);

@@ -1,7 +1,4 @@
 package SwingVersion;
-
-import com.sun.tools.javac.Main;
-
 import javax.swing.*;
 import java.awt.*;
 import java.net.*;
@@ -200,15 +197,6 @@ public class Player {
             altcounter = 0;
             otherPlayer = 2;
             buttonsEnable = true;
-            //var tvungen att kalla på den en gång till för att få den att hämta korrekt men nu körs den 2 ggr
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    updateTurn();
-                }
-            });
-            t.start();
-
         } else {
             counter++;
             player2counter++;
@@ -280,8 +268,6 @@ public class Player {
                     altcounter = 0;
                     player2counter++;
                     player2counter++;
-                    csc.sendPoints(myPoints, playerNumber); //testar att sätta den här också. det löste buggen men skapade en ny
-                    //spelare 1 stänger av sig själv innan han har fått poängen från spelare 2
                 }
 
                 for (int i = 0; i <= 3; i++) {
@@ -292,13 +278,15 @@ public class Player {
 
                 System.out.println("My points: " + myPoints);
                 csc.sendPoints(myPoints, playerNumber);
+                System.out.println("playerID: " + playerID + " is here");
                 if (playerID == 2 && turnsMade == maxTurns) {
                     checkWinner();
                 } else {
-                    //denna uppdaterar inte player 1 som den ska sista frågan....
+                    System.out.println();
                     Thread t = new Thread(new Runnable() {
                         @Override
                         public void run() {
+                            System.out.println("playerID: " + playerID + " is here2");
                             updateTurn();
                         }
                     });
@@ -320,19 +308,12 @@ public class Player {
         b4.setEnabled(buttonsEnable);
     }
 
-    //En bugg med denna, som är halvlöst, jag var tvungen att kalla på denna metod på en till plats för att få den att
-    //göra rätt, men iochmed det så sätter den sig 2 ggr så att säga
-    //den kör checkWinner() två gånger men uppdaterar inte första gången
-    //hittat en till sak, om man kör history och alltid trycker på knapp "1" så funkar det felfritt
-    //samma sak om bara trycker på knapp "3" eller bara knapp "4"
-    //när man bara trycker på knapp "2" så buggar den sig
-    //när båda får alla rätt så buggar den sig
-    //ibland så buggar sig server verkar det som
-    //när båda får alla fel med random svar så buggar den sig
-    //när man båda svarar rätt på första frågan och sen båda trycker fel via knapp "4" så funkar den felfritt
-    //den verkar funka felfritt om man spelar för 1-1
     public void updateTurn() {
-        enemyPoints = csc.receiveEnemyPoints();
+
+        System.out.println("playerID: " + playerID + " is here3 " + "turnsMade " + turnsMade);
+            System.out.println("playerID: " + playerID + " is here 4");
+            enemyPoints = csc.receiveEnemyPoints();
+            System.out.println("playerID: " + playerID + " is here 5");
         System.out.println("Your Enemy has " + enemyPoints + " points.");
         buttonsEnable = true;
         if (playerID == 1 && turnsMade == maxTurns) {
@@ -434,16 +415,32 @@ public class Player {
 
         public void sendPoints(int points, int playeridPosition) {
             try {
-                dataOutputStream.writeInt(playeridPosition);
-                dataOutputStream.writeInt(points);
-                dataOutputStream.flush();
+                if (playerID == 1) {
+
+                    dataOutputStream.writeInt(playeridPosition);
+                    dataOutputStream.writeInt(points);
+                    dataOutputStream.flush();
+                }else if(playerID == 2) {
+                    if(turnsMade == 1) {
+                        dataOutputStream.writeInt(playeridPosition);
+                        dataOutputStream.writeInt(points);
+                        dataOutputStream.writeInt(playeridPosition);
+                        dataOutputStream.writeInt(points);
+                        dataOutputStream.flush();
+                    }else{
+                        dataOutputStream.writeInt(playeridPosition);
+                        dataOutputStream.writeInt(points);
+                        dataOutputStream.flush();
+                    }
+                }
+                System.out.println("points sent "+points + " " + playeridPosition );
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         public int receiveEnemyPoints() {
-            int EnemyPoints = 0; //-1 för att få den att fungera, fattar inte! //testar med 0
+            int EnemyPoints = -1; //-1 för att få den att fungera, fattar inte!
             try {
                 EnemyPoints = dataInputStream.readInt();
             } catch (IOException e) {
