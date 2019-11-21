@@ -45,6 +45,8 @@ public class Player {
     private JPanel panel;
     private JTextArea scoreBord;
 
+    private JButton tempButton;
+
     private ClientSideConnection csc;
 
     public Player(int w, int h) {
@@ -257,34 +259,10 @@ public class Player {
                 buttonsEnable = false;
                 toggleButtons();
 
-                if (playerID == 1) {
-                    labelQuestion.setText(questions[counter]);
-                    b1.setText(alt3[altcounter]);
-                    altcounter++;
-                    b2.setText(alt3[altcounter]);
-                    altcounter++;
-                    b3.setText(alt3[altcounter]);
-                    altcounter++;
-                    b4.setText(alt3[altcounter]);
-                    altcounter = 0;
-                    player1counter++;
-                    player1counter++;
-                } else {
-                    labelQuestion.setText(questions[counter]);
-                    b1.setText(alt4[altcounter]);
-                    altcounter++;
-                    b2.setText(alt4[altcounter]);
-                    altcounter++;
-                    b3.setText(alt4[altcounter]);
-                    altcounter++;
-                    b4.setText(alt4[altcounter]);
-                    altcounter = 0;
-                    player2counter++;
-                    player2counter++;
-                }
-
                 for (int i = 0; i <= 3; i++) {
                     if (bNum.equalsIgnoreCase(rightAnswer[i])) {
+                        b.setBackground(Color.green);
+                        tempButton = (JButton) ae.getSource();
                         myPoints++;
                     }
                 }
@@ -308,6 +286,7 @@ public class Player {
                     t.start();
                 }
             }
+
         };
 
         b1.addActionListener(al);
@@ -316,11 +295,63 @@ public class Player {
         b4.addActionListener(al);
     }
 
+/*
+    public void changeButtonColor(){
+        JButton[]buttons = new JButton[]{b1,b2,b3,b4};
+        for (JButton button : buttons)
+            if(button.getText().equalsIgnoreCase(rightAnswer[0])
+        || button.getText().equalsIgnoreCase(rightAnswer[1])
+        || button.getText().equalsIgnoreCase(rightAnswer[2])
+                || button.getText().equalsIgnoreCase(rightAnswer[3])){
+            button.setBackground(Color.GREEN);
+            System.out.println("Färg bytt till grön");
+        }else{
+            button.setBackground(Color.RED);
+            System.out.println("Färg bytt till röd");
+        }
+    }
+
+ */
+
     public void toggleButtons() {
         b1.setEnabled(buttonsEnable);
         b2.setEnabled(buttonsEnable);
         b3.setEnabled(buttonsEnable);
         b4.setEnabled(buttonsEnable);
+    }
+
+    public void test() {
+
+        b1.setBackground(null);
+        b2.setBackground(null);
+        b3.setBackground(null);
+        b4.setBackground(null);
+
+        if (playerID == 1) {
+            labelQuestion.setText(questions[counter]);
+            b1.setText(alt3[altcounter]);
+            altcounter++;
+            b2.setText(alt3[altcounter]);
+            altcounter++;
+            b3.setText(alt3[altcounter]);
+            altcounter++;
+            b4.setText(alt3[altcounter]);
+            altcounter = 0;
+            player1counter++;
+            player1counter++;
+        } else {
+            labelQuestion.setText(questions[counter]);
+            b1.setText(alt4[altcounter]);
+            altcounter++;
+            b2.setText(alt4[altcounter]);
+            altcounter++;
+            b3.setText(alt4[altcounter]);
+            altcounter++;
+            b4.setText(alt4[altcounter]);
+            altcounter = 0;
+            player2counter++;
+            player2counter++;
+        }
     }
 
     public void updateTurn() {
@@ -330,6 +361,13 @@ public class Player {
             scoreBord.append("\nTurn: " + turnsMade + "\n My points: " + myPoints + " My enemy Points: " + enemyPoints);
         }
         System.out.println("Your Enemy has " + enemyPoints + " points.");
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        test();
         buttonsEnable = true;
         if (playerID == 1 && turnsMade == maxTurns) {
             checkWinner();
