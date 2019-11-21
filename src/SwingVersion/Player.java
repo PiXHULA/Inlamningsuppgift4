@@ -263,23 +263,9 @@ public class Player {
 
                 buttonsEnable = false;
                 toggleButtons();
-                /*
-                int temp = 0;
-                for (int i = 0; i <= 3; i++) {
-                    if (bNum.equalsIgnoreCase(rightAnswer[i]))
-                        temp++;
-                }
-                if (temp > 0) {
-                    b.setBackground(Color.green);
-                    tempButton = (JButton) ae.getSource();
-                    myPoints++;
-                } else {
-                    b.setBackground(Color.red);
-                    tempButton = (JButton) ae.getSource();
-                }
-
-                 */
+                checkCorrectButton(b, bNum, ae);
                 changeButtonColor();
+
                 System.out.println("My points: " + myPoints);
                 csc.sendPoints(myPoints, playerNumber);
                 if (playerID == 2) {
@@ -308,20 +294,30 @@ public class Player {
         b4.addActionListener(al);
     }
 
-    public void changeButtonColor(){
-        JButton[]buttons = new JButton[]{b1,b2,b3,b4};
-        for (JButton button : buttons)
-            if(button.getText().equalsIgnoreCase(rightAnswer[0])
-        || button.getText().equalsIgnoreCase(rightAnswer[1])
-        || button.getText().equalsIgnoreCase(rightAnswer[2])
-                || button.getText().equalsIgnoreCase(rightAnswer[3])){
-            button.setBackground(Color.GREEN);
-            System.out.println("Färg bytt till grön");
-            myPoints++;
-        }else{
-            button.setBackground(Color.RED);
-            System.out.println("Färg bytt till röd");
+    public void checkCorrectButton(JButton b, String answer, ActionEvent ae) {
+        int temp = 0;
+        for (int i = 0; i <= 3; i++) {
+            if (answer.equalsIgnoreCase(rightAnswer[i]))
+                temp++;
         }
+        if (temp > 0) {
+            b.setBackground(Color.green);
+            tempButton = (JButton) ae.getSource();
+            myPoints++;
+        } else {
+            b.setBackground(Color.red);
+            tempButton = (JButton) ae.getSource();
+        }
+    }
+
+    public void changeButtonColor() {
+        JButton[] buttons = new JButton[]{b1, b2, b3, b4};
+        for (JButton button : buttons)
+            if (button.getText().equalsIgnoreCase(rightAnswer[0])
+                    || button.getText().equalsIgnoreCase(rightAnswer[1])
+                    || button.getText().equalsIgnoreCase(rightAnswer[2])
+                    || button.getText().equalsIgnoreCase(rightAnswer[3]))
+                button.setBackground(Color.GREEN);
     }
 
     public void toggleButtons() {
@@ -457,7 +453,6 @@ public class Player {
                 alt2[3] = dataInputStream.readUTF();
                 alt3[3] = dataInputStream.readUTF();
                 alt4[3] = dataInputStream.readUTF();
-
 
 
                 rightAnswer[0] = dataInputStream.readUTF();
