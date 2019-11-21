@@ -370,50 +370,42 @@ public class GameServer {
             } else if (categorieNumber == 4) {
                 //Sends all gaming question to 2 specific players and so on and so on...
                 try {
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingQuestions()[0]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingQuestions()[0]);
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingQuestions()[1]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingQuestions()[1]);
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingQuestions()[2]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingQuestions()[2]);
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingQuestions()[3]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingQuestions()[3]);
+                    for(int i = 0; i < protocol.getSortedGamingQuestions().length; i++){
+                        //Player1
+                        otherPlayer[playerposition].sendLine(protocol.getSortedGamingQuestions()[i]);
+                        //Player2
+                        otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingQuestions()[i]);
+                        dataOutputStream.flush();
+                    }
 
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts1()[0]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts1()[0]);
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts2()[0]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts2()[0]);
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts3()[0]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts3()[0]);
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts4()[0]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts4()[0]);
-
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts1()[1]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts1()[1]);
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts2()[1]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts2()[1]);
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts3()[1]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts3()[1]);
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts4()[1]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts4()[1]);
-
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts1()[2]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts1()[2]);
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts2()[2]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts2()[2]);
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts3()[2]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts3()[2]);
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts4()[2]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts4()[2]);
-
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts1()[3]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts1()[3]);
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts2()[3]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts2()[3]);
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts3()[3]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts3()[3]);
-                    otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts4()[3]);
-                    otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts4()[3]);
+                    for(int i = 0; i < protocol.getSortedGamingAlts1().length; i++){
+                        //Player1
+                         otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts1()[i]);
+                        //Player2
+                        otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts1()[i]);
+                        dataOutputStream.flush();
+                    }
+                    for(int i = 0; i < protocol.getSortedGamingAlts2().length; i++){
+                        //Player1
+                         otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts2()[i]);
+                        //Player2
+                        otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts2()[i]);
+                        dataOutputStream.flush();
+                    }
+                    for(int i = 0; i < protocol.getSortedGamingAlts3().length; i++){
+                        //Player1
+                         otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts3()[i]);
+                        //Player2
+                        otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts3()[i]);
+                        dataOutputStream.flush();
+                    }
+                    for(int i = 0; i < protocol.getSortedGamingAlts4().length; i++){
+                        //Player1
+                         otherPlayer[playerposition].sendLine(protocol.getSortedGamingAlts4()[i]);
+                        //Player2
+                        otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAlts4()[i]);
+                        dataOutputStream.flush();
+                    }
 
                     otherPlayer[playerposition].sendLine(protocol.getSortedGamingAnswers()[0]);
                     otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAnswers()[0]);
@@ -424,8 +416,9 @@ public class GameServer {
                     otherPlayer[playerposition].sendLine(protocol.getSortedGamingAnswers()[3]);
                     otherPlayer[playerposition + 1].sendLine(protocol.getSortedGamingAnswers()[3]);
 
-                    dataOutputStream.flush();
+
                     System.out.println("Sending gaming file...");
+                    //dataOutputStream.flush();
                 } catch (IOException ex) {
                     System.out.println("IOException from sendQuestion gaming section");
                     ex.printStackTrace();
