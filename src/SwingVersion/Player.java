@@ -339,7 +339,7 @@ public class Player {
             altcounter = 0;
             player1counter++;
             player1counter++;
-        } else {
+        } else if (playerID == 2 && turnsMade == 1) {
             labelQuestion.setText(questions[counter]);
             b1.setText(alt4[altcounter]);
             altcounter++;
@@ -355,7 +355,6 @@ public class Player {
     }
 
     public void updateTurn() {
-        System.out.println("playerID: " + playerID + " is here3 " + "turnsMade " + turnsMade);
         enemyPoints = csc.receiveEnemyPoints();
         if(playerID == 1){
             scoreBord.append("\nTurn: " + turnsMade + "\n My points: " + myPoints + " My enemy Points: " + enemyPoints);
@@ -363,7 +362,10 @@ public class Player {
         System.out.println("Your Enemy has " + enemyPoints + " points.");
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(2000);
+            if(playerID == 1 && turnsMade == 2){
+                Thread.sleep(20000);
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
