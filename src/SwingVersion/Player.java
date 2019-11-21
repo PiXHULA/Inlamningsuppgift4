@@ -60,6 +60,8 @@ public class Player {
         enemyPoints = 0;
     }
 
+
+    //välja kategori GUI
     public void setUpStartGUI() {
         setUpStartButtons();
         if (playerID == 1) {
@@ -99,7 +101,7 @@ public class Player {
             startFrame.setVisible(true);
             System.out.println("Waiting for opponent to choose categori");
             csc.getQuestion();
-            while (true) {
+            while (true) { //gör så att player2 är i sin "loading" screen tills player 1 har valt kategori
                 if (!questions[0].equalsIgnoreCase("empty")) {
                     startFrame.dispose();
                     break;
@@ -110,6 +112,7 @@ public class Player {
         }
     }
 
+    //Välja kategori knappars funktioner
     public void setUpStartButtons() {
         ActionListener actionListener = new ActionListener() {
 
@@ -160,6 +163,7 @@ public class Player {
         gamingButton.addActionListener(actionListener);
     }
 
+    //gameView GUI
     public void setUpGUI() {
         frame.setSize(width, height);
         frame.setTitle("Player #: " + playerID);
@@ -231,6 +235,7 @@ public class Player {
         csc = new ClientSideConnection();
     }
 
+    //gameView knappars funktioner
     public void setUpButtons() {
         ActionListener al = new ActionListener() {
             @Override
@@ -416,8 +421,10 @@ public class Player {
                     dataOutputStream.writeInt(playeridPosition);
                     dataOutputStream.writeInt(points);
                     dataOutputStream.flush();
+                    //anledningen till detta är att pga av att när playerID 1 väljer kategori så hamnar det "skräp"
+                    // i pipen hos playerID2 vilket gör att vi måste skicka dubbelt upp första turnen
                 } else if (playerID == 2) {
-                    if (turnsMade == 1) { //anledningen till detta är att pga av att playerID 1 väljer kategori så hamnar det "skräp" i pipen hos playerID2 vilket gör att vi måste skicka dubbelt upp första turnen
+                    if (turnsMade == 1) {
                         dataOutputStream.writeInt(playeridPosition);
                         dataOutputStream.writeInt(points);
                         dataOutputStream.writeInt(playeridPosition);
