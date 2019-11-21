@@ -263,42 +263,56 @@ public class Player {
 
                 buttonsEnable = false;
                 toggleButtons();
-
+                int temp = 0;
                 for (int i = 0; i <= 3; i++) {
-                    if (bNum.equalsIgnoreCase(rightAnswer[i])) {
-                        b.setBackground(Color.green);
-                        tempButton = (JButton) ae.getSource();
-                        myPoints++;
-                    }
+                    if (bNum.equalsIgnoreCase(rightAnswer[i]))
+                        temp++;
                 }
-
-                System.out.println("My points: " + myPoints);
-                csc.sendPoints(myPoints, playerNumber);
-                if(playerID == 2){
-                    scoreBord.append("\nTurn: " + turnsMade + "\n My points: " + myPoints +
-                            " My enemy Points: " + enemyPoints);
-                }
-                if (playerID == 2 && turnsMade == maxTurns) {
-                    checkWinner();
+                if (temp > 0){
+                b.setBackground(Color.green);
+                tempButton = (JButton) ae.getSource();
+                myPoints++;
                 } else {
-                    System.out.println();
-                    Thread t = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateTurn();
-                        }
-                    });
-                    t.start();
+                b.setBackground(Color.red);
+                tempButton = (JButton) ae.getSource();
                 }
-            }
 
-        };
+
+                System.out.println("My points: "+myPoints);
+                csc.sendPoints(myPoints,playerNumber);
+                if(playerID ==2)
+
+            {
+                scoreBord.append("\nTurn: " + turnsMade + "\n My points: " + myPoints +
+                        " My enemy Points: " + enemyPoints);
+            }
+                if(playerID ==2&&turnsMade ==maxTurns)
+
+            {
+                checkWinner();
+            } else
+
+            {
+                System.out.println();
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateTurn();
+                    }
+                });
+                t.start();
+            }
+        }
+
+    }
+
+    ;
 
         b1.addActionListener(al);
         b2.addActionListener(al);
         b3.addActionListener(al);
         b4.addActionListener(al);
-    }
+}
 
 /*
     public void changeButtonColor(){
@@ -361,15 +375,15 @@ public class Player {
 
     public void updateTurn() {
         enemyPoints = csc.receiveEnemyPoints();
-        if(playerID == 1){
+        if (playerID == 1) {
             scoreBord.append("\nTurn: " + turnsMade + "\n My points: " + myPoints + " My enemy Points: " + enemyPoints);
         }
         System.out.println("Your Enemy has " + enemyPoints + " points.");
 
         try {
             Thread.sleep(2000);
-            if(playerID == 1 && turnsMade == 2){
-                Thread.sleep(20000);
+            if (playerID == 1 && turnsMade == 2) {
+                Thread.sleep(3000);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -398,131 +412,132 @@ public class Player {
         }
     }
 
-    //Client connection
-    private class ClientSideConnection {
+//Client connection
+private class ClientSideConnection {
 
-        private Socket socket;
-        private DataOutputStream dataOutputStream;
-        private DataInputStream dataInputStream;
-        private int port = 51730;
+    private Socket socket;
+    private DataOutputStream dataOutputStream;
+    private DataInputStream dataInputStream;
+    private int port = 51730;
 
 
-        public ClientSideConnection() {
-            System.out.println("---CLIENT CONNECTING---");
-            try {
-                socket = new Socket("localhost", port);
-                dataInputStream = new DataInputStream(socket.getInputStream());
-                dataOutputStream = new DataOutputStream(socket.getOutputStream());
-                playerID = dataInputStream.readInt();
-                playerNumber = dataInputStream.readInt();
-                maxTurns = dataInputStream.readInt() / 2;
-                System.out.println("MaxTurns:" + maxTurns);
+    public ClientSideConnection() {
+        System.out.println("---CLIENT CONNECTING---");
+        try {
+            socket = new Socket("localhost", port);
+            dataInputStream = new DataInputStream(socket.getInputStream());
+            dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            playerID = dataInputStream.readInt();
+            playerNumber = dataInputStream.readInt();
+            maxTurns = dataInputStream.readInt() / 2;
+            System.out.println("MaxTurns:" + maxTurns);
 
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
 
-        public void getQuestion() {
-            try {
-                questions[0] = dataInputStream.readUTF();
-                questions[1] = dataInputStream.readUTF();
-                questions[2] = dataInputStream.readUTF();
-                questions[3] = dataInputStream.readUTF();
+    public void getQuestion() {
+        try {
+            questions[0] = dataInputStream.readUTF();
+            questions[1] = dataInputStream.readUTF();
+            questions[2] = dataInputStream.readUTF();
+            questions[3] = dataInputStream.readUTF();
 
-                alt1[0] = dataInputStream.readUTF();
-                alt1[1] = dataInputStream.readUTF();
-                alt1[2] = dataInputStream.readUTF();
-                alt1[3] = dataInputStream.readUTF();
+            alt1[0] = dataInputStream.readUTF();
+            alt1[1] = dataInputStream.readUTF();
+            alt1[2] = dataInputStream.readUTF();
+            alt1[3] = dataInputStream.readUTF();
 
-                alt2[0] = dataInputStream.readUTF();
-                alt2[1] = dataInputStream.readUTF();
-                alt2[2] = dataInputStream.readUTF();
-                alt2[3] = dataInputStream.readUTF();
+            alt2[0] = dataInputStream.readUTF();
+            alt2[1] = dataInputStream.readUTF();
+            alt2[2] = dataInputStream.readUTF();
+            alt2[3] = dataInputStream.readUTF();
 
-                alt3[0] = dataInputStream.readUTF();
-                alt3[1] = dataInputStream.readUTF();
-                alt3[2] = dataInputStream.readUTF();
-                alt3[3] = dataInputStream.readUTF();
+            alt3[0] = dataInputStream.readUTF();
+            alt3[1] = dataInputStream.readUTF();
+            alt3[2] = dataInputStream.readUTF();
+            alt3[3] = dataInputStream.readUTF();
 
-                alt4[0] = dataInputStream.readUTF();
-                alt4[1] = dataInputStream.readUTF();
-                alt4[2] = dataInputStream.readUTF();
-                alt4[3] = dataInputStream.readUTF();
+            alt4[0] = dataInputStream.readUTF();
+            alt4[1] = dataInputStream.readUTF();
+            alt4[2] = dataInputStream.readUTF();
+            alt4[3] = dataInputStream.readUTF();
 
-                rightAnswer[0] = dataInputStream.readUTF();
-                rightAnswer[1] = dataInputStream.readUTF();
-                rightAnswer[2] = dataInputStream.readUTF();
-                rightAnswer[3] = dataInputStream.readUTF();
+            rightAnswer[0] = dataInputStream.readUTF();
+            rightAnswer[1] = dataInputStream.readUTF();
+            rightAnswer[2] = dataInputStream.readUTF();
+            rightAnswer[3] = dataInputStream.readUTF();
 
-                System.out.println("Right answer #1 is : " + rightAnswer[0]);
-                System.out.println("Right answer #2 is : " + rightAnswer[1]);
-                System.out.println("Right answer #3 is : " + rightAnswer[2]);
-                System.out.println("Right answer #4 is : " + rightAnswer[3]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            System.out.println("Right answer #1 is : " + rightAnswer[0]);
+            System.out.println("Right answer #2 is : " + rightAnswer[1]);
+            System.out.println("Right answer #3 is : " + rightAnswer[2]);
+            System.out.println("Right answer #4 is : " + rightAnswer[3]);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
 
-        public void sendCategori(int categori, int playerIDPosition) {
-            try {
-                dataOutputStream.writeInt(playerIDPosition);
-                dataOutputStream.writeInt(categori);
+    public void sendCategori(int categori, int playerIDPosition) {
+        try {
+            dataOutputStream.writeInt(playerIDPosition);
+            dataOutputStream.writeInt(categori);
+            dataOutputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void sendPoints(int points, int playeridPosition) {
+        try {
+            if (playerID == 1) {
+                dataOutputStream.writeInt(playeridPosition);
+                dataOutputStream.writeInt(points);
                 dataOutputStream.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-        public void sendPoints(int points, int playeridPosition) {
-            try {
-                if (playerID == 1) {
+                //anledningen till detta är att pga av att när playerID 1 väljer kategori så hamnar det "skräp"
+                // i pipen hos playerID2 vilket gör att vi måste skicka dubbelt upp första turnen
+            } else if (playerID == 2) {
+                if (turnsMade == 1) {
+                    dataOutputStream.writeInt(playeridPosition);
+                    dataOutputStream.writeInt(points);
                     dataOutputStream.writeInt(playeridPosition);
                     dataOutputStream.writeInt(points);
                     dataOutputStream.flush();
-                    //anledningen till detta är att pga av att när playerID 1 väljer kategori så hamnar det "skräp"
-                    // i pipen hos playerID2 vilket gör att vi måste skicka dubbelt upp första turnen
-                } else if (playerID == 2) {
-                    if (turnsMade == 1) {
-                        dataOutputStream.writeInt(playeridPosition);
-                        dataOutputStream.writeInt(points);
-                        dataOutputStream.writeInt(playeridPosition);
-                        dataOutputStream.writeInt(points);
-                        dataOutputStream.flush();
-                    } else {
-                        dataOutputStream.writeInt(playeridPosition);
-                        dataOutputStream.writeInt(points);
-                        dataOutputStream.flush();
-                    }
+                } else {
+                    dataOutputStream.writeInt(playeridPosition);
+                    dataOutputStream.writeInt(points);
+                    dataOutputStream.flush();
                 }
-                System.out.println("points sent " + points + " " + playeridPosition);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-        }
-
-        public int receiveEnemyPoints() {
-            int EnemyPoints = -1; //-1 för att få den att fungera, fattar inte!
-            try {
-                EnemyPoints = dataInputStream.readInt();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return EnemyPoints;
-        }
-
-        public void closeConnection() { //ifall vi behöver lägga till "nytt spel" eller liknade... ersätt denna!
-            try {
-                socket.close();
-                System.out.println("---Connection Closed---");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            System.out.println("points sent " + points + " " + playeridPosition);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
+    public int receiveEnemyPoints() {
+        int EnemyPoints = -1; //-1 för att få den att fungera, fattar inte!
+        try {
+            EnemyPoints = dataInputStream.readInt();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return EnemyPoints;
+    }
+
+    public void closeConnection() { //ifall vi behöver lägga till "nytt spel" eller liknade... ersätt denna!
+        try {
+            socket.close();
+            System.out.println("---Connection Closed---");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+}
 
     public static void main(String[] args) {
         Player p = new Player(800, 200);
