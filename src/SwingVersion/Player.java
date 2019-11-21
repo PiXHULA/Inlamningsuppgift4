@@ -47,8 +47,13 @@ public class Player {
 
     public int totalPointsOfPlayer1 = 0;
     public int totalPointsOfPlayer2 = 0;
+
     public int roundPointsOfPlayer1 = 0;
     public int roundPointsOfPlayer2 = 0;
+    public int tempRoundPointsOfPlayer1 = 0;
+    public int tempRoundPointsofPlayer2 = 0;
+
+    public int stateOfRounds = 0;
 
     public Player(int w, int h) {
         width = w;
@@ -318,9 +323,10 @@ public class Player {
 
     public void updateTurn() {
         System.out.println("playerID: " + playerID + " is here3 " + "turnsMade " + turnsMade);
-       if (playerID == 2 && turnsMade == 1) {
-           checkRoundWinner();
-       }
+        if (playerID == 2 && turnsMade == 1) {
+            stateOfRounds = 1;
+            checkRoundWinner();
+        }
         enemyPoints = csc.receiveEnemyPoints();
         System.out.println("Your Enemy has " + enemyPoints + " points.");
         buttonsEnable = true;
@@ -333,21 +339,41 @@ public class Player {
     }
 
     private void checkRoundWinner() {
-        buttonsEnable = true;
 
         if (playerID == 1 && turnsMade == 1) {
             roundPointsOfPlayer1 = myPoints;
+            tempRoundPointsOfPlayer1 = roundPointsOfPlayer1;
+
             roundPointsOfPlayer2 = enemyPoints;
+            tempRoundPointsofPlayer2 = roundPointsOfPlayer2;
             System.out.println("Player 1 finishes this round with the score: " + roundPointsOfPlayer1);
             System.out.println("Player 2 finishes this round with the score: " + roundPointsOfPlayer2);
         }
         //Hur faaan få turnsMade 1 att ske en gång för Player2
-            if (playerID == 2 && turnsMade == 1) {
-                roundPointsOfPlayer1 = myPoints;
-                roundPointsOfPlayer2 = enemyPoints;
-                System.out.println("Player 1 finishes this round with the score: " + roundPointsOfPlayer1);
-                System.out.println("Player 2 finishes this round with the score: " + roundPointsOfPlayer2);
-            }
+        if (playerID == 2 && turnsMade == 1 && stateOfRounds == 1) {
+            roundPointsOfPlayer1 = myPoints;
+            tempRoundPointsOfPlayer1 = roundPointsOfPlayer1;
+
+            roundPointsOfPlayer2 = enemyPoints;
+            tempRoundPointsofPlayer2 = roundPointsOfPlayer2;
+            System.out.println("Player 1 finishes this round with the score: " + roundPointsOfPlayer1);
+            System.out.println("Player 2 finishes this round with the score: " + roundPointsOfPlayer2);
+            stateOfRounds = 0;
+        }
+
+        if (playerID == 1 && turnsMade == 2) {
+            roundPointsOfPlayer1 = myPoints - tempRoundPointsOfPlayer1;
+            roundPointsOfPlayer2 = myPoints - tempRoundPointsofPlayer2;
+            System.out.println("Player 1 finishes this round with the score: " + roundPointsOfPlayer1);
+            System.out.println("Player 2 finishes this round with the score: " + roundPointsOfPlayer2);
+        }
+
+        if (playerID == 2 && turnsMade == 2 && stateOfRounds == 0) {
+            roundPointsOfPlayer1 = myPoints - tempRoundPointsOfPlayer1;
+            roundPointsOfPlayer2 = myPoints - tempRoundPointsofPlayer2;
+            System.out.println("Player 1 finishes this round with the score: " + roundPointsOfPlayer1);
+            System.out.println("Player 2 finishes this round with the score: " + roundPointsOfPlayer2);
+        }
 
 
         roundPointsOfPlayer1 = 0;
@@ -356,6 +382,9 @@ public class Player {
 
     private void checkWinner() {
         buttonsEnable = false;
+
+        checkRoundWinner();
+
         if (myPoints > enemyPoints) {
             message.setText("YOU WON!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
         } else if (myPoints < enemyPoints) {
