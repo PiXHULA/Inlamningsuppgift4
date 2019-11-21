@@ -36,12 +36,17 @@ public class Player {
     private int player1counter = 0;
     private int player2counter = 0;
     private int playerNumber;
-    JButton historyButton = new JButton("Historia");
-    JButton sportButton = new JButton("Sport");
-    JButton filmButton = new JButton("Film");
-    JButton gamingButton = new JButton("Gaming");
+    private JButton historyButton = new JButton("Historia");
+    private JButton sportButton = new JButton("Sport");
+    private JButton filmButton = new JButton("Film");
+    private JButton gamingButton = new JButton("Gaming");
     private int categori;
-    JFrame startFrame;
+    private JFrame startFrame;
+    private JPanel panel;
+    private JTextArea scoreBord;
+
+    private JButton tempButton;
+
     private ClientSideConnection csc;
 
     public Player(int w, int h) {
@@ -50,6 +55,8 @@ public class Player {
         contentPane = new Container();
         message = new JTextArea();
         frame = new JFrame();
+        panel = new JPanel();
+        scoreBord = new JTextArea();
         labelQuestion = new JTextArea();
         b1 = new JButton("1");
         b2 = new JButton("2");
@@ -169,7 +176,14 @@ public class Player {
         frame.setTitle("Player #: " + playerID);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
-        contentPane.setLayout(new GridLayout(1, 5));
+        panel.setLayout(new BorderLayout());
+        scoreBord.append("ScoreBord");
+        scoreBord.setWrapStyleWord(true);
+        scoreBord.setLineWrap(true);
+        scoreBord.setEditable(false);
+        panel.add(scoreBord, BorderLayout.CENTER);
+        frame.add(panel, BorderLayout.EAST);
+        contentPane.setLayout(new FlowLayout());
         frame.add(labelQuestion, BorderLayout.CENTER);
         contentPane.add(message);
         message.setText("creating a simple turn-based game in java");
@@ -250,40 +264,20 @@ public class Player {
                 buttonsEnable = false;
                 toggleButtons();
 
-                if (playerID == 1) {
-                    labelQuestion.setText(questions[counter]);
-                    b1.setText(alt3[altcounter]);
-                    altcounter++;
-                    b2.setText(alt3[altcounter]);
-                    altcounter++;
-                    b3.setText(alt3[altcounter]);
-                    altcounter++;
-                    b4.setText(alt3[altcounter]);
-                    altcounter = 0;
-                    player1counter++;
-                    player1counter++;
-                } else {
-                    labelQuestion.setText(questions[counter]);
-                    b1.setText(alt4[altcounter]);
-                    altcounter++;
-                    b2.setText(alt4[altcounter]);
-                    altcounter++;
-                    b3.setText(alt4[altcounter]);
-                    altcounter++;
-                    b4.setText(alt4[altcounter]);
-                    altcounter = 0;
-                    player2counter++;
-                    player2counter++;
-                }
-
                 for (int i = 0; i <= 3; i++) {
                     if (bNum.equalsIgnoreCase(rightAnswer[i])) {
+                        b.setBackground(Color.green);
+                        tempButton = (JButton) ae.getSource();
                         myPoints++;
                     }
                 }
 
                 System.out.println("My points: " + myPoints);
                 csc.sendPoints(myPoints, playerNumber);
+                if(playerID == 2){
+                    scoreBord.append("\nTurn: " + turnsMade + "\n My points: " + myPoints +
+                            " My enemy Points: " + enemyPoints);
+                }
                 if (playerID == 2 && turnsMade == maxTurns) {
                     checkWinner();
                 } else {
@@ -297,6 +291,7 @@ public class Player {
                     t.start();
                 }
             }
+
         };
 
         b1.addActionListener(al);
@@ -305,6 +300,24 @@ public class Player {
         b4.addActionListener(al);
     }
 
+/*
+    public void changeButtonColor(){
+        JButton[]buttons = new JButton[]{b1,b2,b3,b4};
+        for (JButton button : buttons)
+            if(button.getText().equalsIgnoreCase(rightAnswer[0])
+        || button.getText().equalsIgnoreCase(rightAnswer[1])
+        || button.getText().equalsIgnoreCase(rightAnswer[2])
+                || button.getText().equalsIgnoreCase(rightAnswer[3])){
+            button.setBackground(Color.GREEN);
+            System.out.println("Färg bytt till grön");
+        }else{
+            button.setBackground(Color.RED);
+            System.out.println("Färg bytt till röd");
+        }
+    }
+
+ */
+
     public void toggleButtons() {
         b1.setEnabled(buttonsEnable);
         b2.setEnabled(buttonsEnable);
@@ -312,10 +325,56 @@ public class Player {
         b4.setEnabled(buttonsEnable);
     }
 
+    public void test() {
+
+        b1.setBackground(null);
+        b2.setBackground(null);
+        b3.setBackground(null);
+        b4.setBackground(null);
+
+        if (playerID == 1) {
+            labelQuestion.setText(questions[counter]);
+            b1.setText(alt3[altcounter]);
+            altcounter++;
+            b2.setText(alt3[altcounter]);
+            altcounter++;
+            b3.setText(alt3[altcounter]);
+            altcounter++;
+            b4.setText(alt3[altcounter]);
+            altcounter = 0;
+            player1counter++;
+            player1counter++;
+        } else if (playerID == 2 && turnsMade == 1) {
+            labelQuestion.setText(questions[counter]);
+            b1.setText(alt4[altcounter]);
+            altcounter++;
+            b2.setText(alt4[altcounter]);
+            altcounter++;
+            b3.setText(alt4[altcounter]);
+            altcounter++;
+            b4.setText(alt4[altcounter]);
+            altcounter = 0;
+            player2counter++;
+            player2counter++;
+        }
+    }
+
     public void updateTurn() {
-        System.out.println("playerID: " + playerID + " is here3 " + "turnsMade " + turnsMade);
         enemyPoints = csc.receiveEnemyPoints();
+        if(playerID == 1){
+            scoreBord.append("\nTurn: " + turnsMade + "\n My points: " + myPoints + " My enemy Points: " + enemyPoints);
+        }
         System.out.println("Your Enemy has " + enemyPoints + " points.");
+
+        try {
+            Thread.sleep(2000);
+            if(playerID == 1 && turnsMade == 2){
+                Thread.sleep(20000);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        test();
         buttonsEnable = true;
         if (playerID == 1 && turnsMade == maxTurns) {
             checkWinner();
@@ -329,10 +388,13 @@ public class Player {
         buttonsEnable = false;
         if (myPoints > enemyPoints) {
             message.setText("YOU WON!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
+            scoreBord.append("YOU WON!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
         } else if (myPoints < enemyPoints) {
             message.setText("YOU LOST!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
+            scoreBord.append("YOU LOST!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
         } else {
             message.setText("YOU TIED!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
+            scoreBord.append("YOU TIED!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
         }
     }
 
