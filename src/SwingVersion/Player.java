@@ -348,6 +348,7 @@ public class Player {
             tempRoundPointsofPlayer2 = roundPointsOfPlayer2;
             System.out.println("Player 1 finishes this round with the score: " + roundPointsOfPlayer1);
             System.out.println("Player 2 finishes this round with the score: " + roundPointsOfPlayer2);
+            stateOfRounds = 2;
         }
         //Hur faaan få turnsMade 1 att ske en gång för Player2
         if (playerID == 2 && turnsMade == 1 && stateOfRounds == 1) {
@@ -358,21 +359,23 @@ public class Player {
             tempRoundPointsofPlayer2 = roundPointsOfPlayer2;
             System.out.println("Player 1 finishes this round with the score: " + roundPointsOfPlayer1);
             System.out.println("Player 2 finishes this round with the score: " + roundPointsOfPlayer2);
+            stateOfRounds = 2;
+        }
+
+        if (playerID == 1 && turnsMade == 2 && stateOfRounds == 2) {
+            roundPointsOfPlayer1 = myPoints - tempRoundPointsOfPlayer1;
+            roundPointsOfPlayer2 = myPoints - tempRoundPointsofPlayer2;
+            System.out.println("Player 1 finishes this round with the score: " + roundPointsOfPlayer1);
+            System.out.println("Player 2 finishes this round with the score: " + roundPointsOfPlayer2);
             stateOfRounds = 0;
         }
 
-        if (playerID == 1 && turnsMade == 2) {
+        if (playerID == 2 && turnsMade == 2 && stateOfRounds == 2) {
             roundPointsOfPlayer1 = myPoints - tempRoundPointsOfPlayer1;
             roundPointsOfPlayer2 = myPoints - tempRoundPointsofPlayer2;
             System.out.println("Player 1 finishes this round with the score: " + roundPointsOfPlayer1);
             System.out.println("Player 2 finishes this round with the score: " + roundPointsOfPlayer2);
-        }
-
-        if (playerID == 2 && turnsMade == 2 && stateOfRounds == 0) {
-            roundPointsOfPlayer1 = myPoints - tempRoundPointsOfPlayer1;
-            roundPointsOfPlayer2 = myPoints - tempRoundPointsofPlayer2;
-            System.out.println("Player 1 finishes this round with the score: " + roundPointsOfPlayer1);
-            System.out.println("Player 2 finishes this round with the score: " + roundPointsOfPlayer2);
+            stateOfRounds = 0;
         }
 
 
