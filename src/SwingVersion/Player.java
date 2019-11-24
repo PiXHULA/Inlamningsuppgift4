@@ -44,6 +44,9 @@ public class Player {
     private JFrame startFrame;
     private JPanel panel;
     private JTextArea scoreboard;
+    private JLabel infoLabel;
+    private JLabel questionLabel;
+
 
     private JButton tempButton;
 
@@ -55,13 +58,18 @@ public class Player {
         contentPane = new Container();
         message = new JTextArea();
         frame = new JFrame();
+        frame.setLocationRelativeTo(null);
         panel = new JPanel();
         scoreboard = new JTextArea();
         labelQuestion = new JTextArea();
         b1 = new JButton("1");
+        b1.setSize(100, 150);
         b2 = new JButton("2");
+        b2.setSize(100, 150);
         b3 = new JButton("3");
+        b3.setSize(100, 150);
         b4 = new JButton("4");
+        b4.setSize(100, 150);
         values = new int[4];
         myPoints = 0;
         enemyPoints = 0;
@@ -73,13 +81,15 @@ public class Player {
         setUpStartButtons();
         if (playerID == 1) {
             startFrame = new JFrame();
-            startFrame.setSize(600, 150);
-            startFrame.setTitle("Player #: " + playerID);
+            startFrame.setSize(400, 600);
+            startFrame.setTitle("Player #" + playerID);
             startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            startFrame.setLocationRelativeTo(null);
             startFrame.setLayout(new BorderLayout());
             Container startContentPane = new Container();
-            startContentPane.setLayout(new GridLayout(1, 4));
+            startContentPane.setLayout(new GridLayout(2, 2));
             JTextArea infoArea = new JTextArea();
+            infoArea.setMargin(new Insets(200,160,150,20));
             startContentPane.add(historyButton);
             startContentPane.add(sportButton);
             startContentPane.add(filmButton);
@@ -95,12 +105,14 @@ public class Player {
         } else {
             questions[0] = "empty";
             startFrame = new JFrame();
-            startFrame.setSize(600, 150);
-            startFrame.setTitle("Player #: " + playerID);
+            startFrame.setSize(400, 600);
+            startFrame.setTitle("Player #" + playerID);
             startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            startFrame.setLocationRelativeTo(null);
             startFrame.setLayout(new BorderLayout());
             JTextArea infoArea = new JTextArea();
-            infoArea.setText("Spelare #2 väljer kategori, vänligen vänta!");
+            infoArea.setMargin(new Insets(250,90,150,20));
+            infoArea.setText("Spelare #1 väljer kategori, vänligen vänta!");
             startFrame.add(infoArea, BorderLayout.CENTER);
             infoArea.setWrapStyleWord(true);
             infoArea.setLineWrap(true);
@@ -173,8 +185,9 @@ public class Player {
     //gameView GUI
     public void setUpGUI() {
         frame.setSize(width, height);
-        frame.setTitle("Player #: " + playerID);
+        frame.setTitle("Player #" + playerID);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        startFrame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
         panel.setLayout(new BorderLayout());
         scoreboard.append("Scoreboard");
@@ -183,9 +196,10 @@ public class Player {
         scoreboard.setEditable(false);
         panel.add(scoreboard, BorderLayout.CENTER);
         frame.add(panel, BorderLayout.EAST);
-        contentPane.setLayout(new FlowLayout());
+        contentPane.setLayout(new BorderLayout());
         frame.add(labelQuestion, BorderLayout.CENTER);
-        contentPane.add(message);
+        Container buttonPane = new Container();
+        buttonPane.setLayout(new GridLayout(2,2));
         message.setText("creating a simple turn-based game in java");
         labelQuestion.setText("Here is wherer questions goes!");
         message.setWrapStyleWord(true);
@@ -194,10 +208,16 @@ public class Player {
         labelQuestion.setWrapStyleWord(true);
         labelQuestion.setLineWrap(true);
         labelQuestion.setEditable(false);
-        contentPane.add(b1);
-        contentPane.add(b2);
-        contentPane.add(b3);
-        contentPane.add(b4);
+        this.b1.setSize(100,150);
+        this.b2.setSize(100,150);
+        this.b3.setSize(100,150);
+        this.b4.setSize(100,150);
+        buttonPane.add(b1);
+        buttonPane.add(b2);
+        buttonPane.add(b3);
+        buttonPane.add(b4);
+        contentPane.add(buttonPane, BorderLayout.SOUTH);
+        contentPane.add(message,BorderLayout.NORTH);
         frame.add(contentPane, BorderLayout.SOUTH);
         frame.setVisible(true);
 
@@ -218,7 +238,7 @@ public class Player {
             buttonsEnable = true;
         } else {
             counter++;
-            //player2counter++;
+            player2counter++;
             message.setText("You are player #2. Wait for your turn.");
             labelQuestion.setText(questions[counter]);
             b1.setText(alt2[altcounter]);
@@ -346,8 +366,8 @@ public class Player {
             altcounter++;
             b4.setText(alt3[altcounter]);
             altcounter = 0;
-            //player1counter++; VARFÖR BEHÖVS PLAYER1COUNTER?
-            //player1counter++; VARFÖR BEHÖVS PLAYER1COUNTER?
+            player1counter++;// VARFÖR BEHÖVS PLAYER1COUNTER?
+            player1counter++;// VARFÖR BEHÖVS PLAYER1COUNTER?
         } else if (playerID == 2 && turnsMade == 1) {
             labelQuestion.setText(questions[counter]);
             b1.setText(alt4[altcounter]);
@@ -358,8 +378,8 @@ public class Player {
             altcounter++;
             b4.setText(alt4[altcounter]);
             altcounter = 0;
-            //player2counter++; VARFÖR BEHÖVS PLAYER1COUNTER?
-            //player2counter++; VARFÖR BEHÖVS PLAYER1COUNTER?
+            player2counter++; //VARFÖR BEHÖVS PLAYER1COUNTER?
+            player2counter++; //VARFÖR BEHÖVS PLAYER1COUNTER?
         }
     }
 
@@ -514,7 +534,7 @@ public class Player {
     }
 
     public static void main(String[] args) {
-        Player p = new Player(800, 200);
+        Player p = new Player(400, 600);
         p.connectToServer();
         p.setUpStartGUI();
     }
