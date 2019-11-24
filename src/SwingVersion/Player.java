@@ -43,7 +43,7 @@ public class Player {
     private int categori;
     private JFrame startFrame;
     private JPanel panel;
-    private JTextArea scoreBord;
+    private JTextArea scoreboard;
 
     private JButton tempButton;
 
@@ -56,7 +56,7 @@ public class Player {
         message = new JTextArea();
         frame = new JFrame();
         panel = new JPanel();
-        scoreBord = new JTextArea();
+        scoreboard = new JTextArea();
         labelQuestion = new JTextArea();
         b1 = new JButton("1");
         b2 = new JButton("2");
@@ -177,11 +177,11 @@ public class Player {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         panel.setLayout(new BorderLayout());
-        scoreBord.append("ScoreBord");
-        scoreBord.setWrapStyleWord(true);
-        scoreBord.setLineWrap(true);
-        scoreBord.setEditable(false);
-        panel.add(scoreBord, BorderLayout.CENTER);
+        scoreboard.append("Scoreboard");
+        scoreboard.setWrapStyleWord(true);
+        scoreboard.setLineWrap(true);
+        scoreboard.setEditable(false);
+        panel.add(scoreboard, BorderLayout.CENTER);
         frame.add(panel, BorderLayout.EAST);
         contentPane.setLayout(new FlowLayout());
         frame.add(labelQuestion, BorderLayout.CENTER);
@@ -218,7 +218,7 @@ public class Player {
             buttonsEnable = true;
         } else {
             counter++;
-            player2counter++;
+            //player2counter++;
             message.setText("You are player #2. Wait for your turn.");
             labelQuestion.setText(questions[counter]);
             b1.setText(alt2[altcounter]);
@@ -233,13 +233,13 @@ public class Player {
             altcounter = 0;
             otherPlayer = 1;
             buttonsEnable = false;
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    updateTurn();
-                }
-            });
-            t.start();
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                updateTurn();
+            }
+        });
+        t.start();
         }
         toggleButtons();
         frame.setVisible(true);
@@ -263,14 +263,15 @@ public class Player {
 
                 buttonsEnable = false;
                 toggleButtons();
+
                 checkCorrectButton(b, bNum, ae);
                 changeButtonColor();
 
                 System.out.println("My points: " + myPoints);
                 csc.sendPoints(myPoints, playerNumber);
                 if (playerID == 2) {
-                    scoreBord.append("\nTurn: " + turnsMade + "\n My points: " + myPoints +
-                            " My enemy Points: " + enemyPoints);
+                    scoreboard.append("\nRound: " + turnsMade + "\nMy points: " + myPoints +
+                            "\nMy enemy Points: " + enemyPoints);
                 }
                 if (playerID == 2 && turnsMade == maxTurns) {
                     checkWinner();
@@ -329,10 +330,11 @@ public class Player {
 
     public void test() {
 
-        b1.setBackground(null);
-        b2.setBackground(null);
-        b3.setBackground(null);
-        b4.setBackground(null);
+            b1.setBackground(null);
+            b2.setBackground(null);
+            b3.setBackground(null);
+            b4.setBackground(null);
+
 
         if (playerID == 1) {
             labelQuestion.setText(questions[counter]);
@@ -344,8 +346,8 @@ public class Player {
             altcounter++;
             b4.setText(alt3[altcounter]);
             altcounter = 0;
-            player1counter++;
-            player1counter++;
+            //player1counter++; VARFÖR BEHÖVS PLAYER1COUNTER?
+            //player1counter++; VARFÖR BEHÖVS PLAYER1COUNTER?
         } else if (playerID == 2 && turnsMade == 1) {
             labelQuestion.setText(questions[counter]);
             b1.setText(alt4[altcounter]);
@@ -356,15 +358,15 @@ public class Player {
             altcounter++;
             b4.setText(alt4[altcounter]);
             altcounter = 0;
-            player2counter++;
-            player2counter++;
+            //player2counter++; VARFÖR BEHÖVS PLAYER1COUNTER?
+            //player2counter++; VARFÖR BEHÖVS PLAYER1COUNTER?
         }
     }
 
     public void updateTurn() {
         enemyPoints = csc.receiveEnemyPoints();
         if (playerID == 1) {
-            scoreBord.append("\nTurn: " + turnsMade + "\n My points: " + myPoints + " My enemy Points: " + enemyPoints);
+            scoreboard.append("\nTurn: " + turnsMade + "\nMy points: " + myPoints + "\nMy enemy Points: " + enemyPoints);
         }
         System.out.println("Your Enemy has " + enemyPoints + " points.");
 
@@ -376,6 +378,7 @@ public class Player {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         test();
         buttonsEnable = true;
         if (playerID == 1 && turnsMade == maxTurns) {
@@ -390,13 +393,13 @@ public class Player {
         buttonsEnable = false;
         if (myPoints > enemyPoints) {
             message.setText("YOU WON!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
-            scoreBord.append("YOU WON!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
+            scoreboard.append("YOU WON!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
         } else if (myPoints < enemyPoints) {
             message.setText("YOU LOST!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
-            scoreBord.append("YOU LOST!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
+            scoreboard.append("YOU LOST!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
         } else {
             message.setText("YOU TIED!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
-            scoreBord.append("YOU TIED!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
+            scoreboard.append("YOU TIED!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
         }
     }
 
@@ -429,36 +432,18 @@ public class Player {
 
         public void getQuestion() {
             try {
-                questions[0] = dataInputStream.readUTF();
-                questions[1] = dataInputStream.readUTF();
-                questions[2] = dataInputStream.readUTF();
-                questions[3] = dataInputStream.readUTF();
-
-                alt1[0] = dataInputStream.readUTF();
-                alt2[0] = dataInputStream.readUTF();
-                alt3[0] = dataInputStream.readUTF();
-                alt4[0] = dataInputStream.readUTF();
-
-                alt1[1] = dataInputStream.readUTF();
-                alt2[1] = dataInputStream.readUTF();
-                alt3[1] = dataInputStream.readUTF();
-                alt4[1] = dataInputStream.readUTF();
-
-                alt1[2] = dataInputStream.readUTF();
-                alt2[2] = dataInputStream.readUTF();
-                alt3[2] = dataInputStream.readUTF();
-                alt4[2] = dataInputStream.readUTF();
-
-                alt1[3] = dataInputStream.readUTF();
-                alt2[3] = dataInputStream.readUTF();
-                alt3[3] = dataInputStream.readUTF();
-                alt4[3] = dataInputStream.readUTF();
-
-
-                rightAnswer[0] = dataInputStream.readUTF();
-                rightAnswer[1] = dataInputStream.readUTF();
-                rightAnswer[2] = dataInputStream.readUTF();
-                rightAnswer[3] = dataInputStream.readUTF();
+                for (int i = 0; i < 4; i++) {
+                    questions[i] = dataInputStream.readUTF();
+                }
+                for (int j = 0; j < 4; j++) {
+                    alt1[j] = dataInputStream.readUTF();
+                    alt2[j] = dataInputStream.readUTF();
+                    alt3[j] = dataInputStream.readUTF();
+                    alt4[j] = dataInputStream.readUTF();
+                }
+                for (int j = 0; j < 4; j++) {
+                    rightAnswer[j] = dataInputStream.readUTF();
+                }
 
                 System.out.println("Right answer #1 is : " + rightAnswer[0]);
                 System.out.println("Right answer #2 is : " + rightAnswer[1]);
