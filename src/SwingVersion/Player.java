@@ -350,11 +350,12 @@ public class Player {
 
     public void test() {
 
+        if(!(playerID == 1 && turnsMade == 2)) {
             b1.setBackground(null);
             b2.setBackground(null);
             b3.setBackground(null);
             b4.setBackground(null);
-
+        }
 
         if (playerID == 1) {
             labelQuestion.setText(questions[counter]);
@@ -392,9 +393,6 @@ public class Player {
 
         try {
             Thread.sleep(2000);
-            if (playerID == 1 && turnsMade == 2) {
-                Thread.sleep(3000);
-            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

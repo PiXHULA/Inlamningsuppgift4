@@ -146,7 +146,6 @@ public class GameServer {
 
                 //här är den konstanta sammankopplingen av två olika clienter samt poäng skickandet emellan
                 while (true) {
-
                     if (playerID == 1) {
                         int player1IDposition = dataInputStream.readInt();
                         int player1Points = dataInputStream.readInt();
