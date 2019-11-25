@@ -10,16 +10,14 @@ public class MultiUserServer extends Thread{
 
     private Socket clientSocket;
 
-    public MultiUserServer(Socket socketToClient) throws IOException{
+    public MultiUserServer(Socket socketToClient){
         this.clientSocket = socketToClient;
     }
 
     public void run() {
         try (
-                PrintWriter out = new PrintWriter(
-                        clientSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(clientSocket.getInputStream()));
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         ) {
             String inputLine, outPutLine;
 

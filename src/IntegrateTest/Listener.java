@@ -7,7 +7,7 @@ import java.net.Socket;
 public class Listener {
 
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(55555);
+        ServerSocket serverSocket = new ServerSocket(45454);
         while (true) {
             try {
                 final Socket socketToClient = serverSocket.accept();

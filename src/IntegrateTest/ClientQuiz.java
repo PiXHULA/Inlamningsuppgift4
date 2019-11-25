@@ -26,7 +26,7 @@ public class ClientQuiz extends Application{
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
     private ClientSideConnection csc;
-    private int port = 51734;
+    private int port = 45454;
     private int playerID;
     private int otherPlayer; //Control int so u can set "rules" later
     private int myPoints; // so you can store turn points for yourself
