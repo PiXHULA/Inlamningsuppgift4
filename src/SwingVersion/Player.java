@@ -33,8 +33,6 @@ public class Player {
     private String[] rightAnswer = new String[4];
     private int altcounter = 0;
     private int counter = 0;
-    private int player1counter = 0;
-    private int player2counter = 0;
     private int playerNumber;
     private JButton historyButton = new JButton("Historia");
     private JButton sportButton = new JButton("Sport");
@@ -46,7 +44,6 @@ public class Player {
     private JTextArea scoreboard;
     private JLabel infoLabel;
     private JLabel questionLabel;
-
 
     private JButton tempButton;
 
@@ -74,7 +71,6 @@ public class Player {
         myPoints = 0;
         enemyPoints = 0;
     }
-
 
     //välja kategori GUI
     public void setUpStartGUI() {
@@ -238,7 +234,6 @@ public class Player {
             buttonsEnable = true;
         } else {
             counter++;
-            player2counter++;
             message.setText("You are player #2. Wait for your turn.");
             labelQuestion.setText(questions[counter]);
             b1.setText(alt2[altcounter]);
@@ -306,7 +301,6 @@ public class Player {
                     t.start();
                 }
             }
-
         };
 
         b1.addActionListener(al);
@@ -367,8 +361,6 @@ public class Player {
             altcounter++;
             b4.setText(alt3[altcounter]);
             altcounter = 0;
-            player1counter++;// VARFÖR BEHÖVS PLAYER1COUNTER?
-            player1counter++;// VARFÖR BEHÖVS PLAYER1COUNTER?
         } else if (playerID == 2 && turnsMade == 1) {
             labelQuestion.setText(questions[counter]);
             b1.setText(alt4[altcounter]);
@@ -379,8 +371,6 @@ public class Player {
             altcounter++;
             b4.setText(alt4[altcounter]);
             altcounter = 0;
-            player2counter++; //VARFÖR BEHÖVS PLAYER1COUNTER?
-            player2counter++; //VARFÖR BEHÖVS PLAYER1COUNTER?
         }
     }
 
@@ -528,7 +518,6 @@ public class Player {
                 e.printStackTrace();
             }
         }
-
     }
 
     public static void main(String[] args) {

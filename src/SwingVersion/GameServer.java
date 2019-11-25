@@ -31,44 +31,6 @@ public class GameServer {
         maxTurns = 4;
         values = new int[4];
 
-        questions[0] = "Vilket år skapades Java?";
-        questions[1] = "när är Mahmud född?";
-        questions[2] = "Vilket år var bäst för Pedram?";
-        questions[3] = "Vem skapade Java?";
-
-        alt1[0] = "1995";
-        alt1[1] = "2000";
-        alt1[2] = "1972";
-        alt1[3] = "1984";
-
-        alt2[0] = "1980";
-        alt2[1] = "1968";
-        alt2[2] = "1973";
-        alt2[3] = "1976";
-
-        alt3[0] = "2003";
-        alt3[1] = "2005";
-        alt3[2] = "2007";
-        alt3[3] = "2001";
-
-        alt4[0] = "Ryan Gosling";
-        alt4[1] = "James Gosling";
-        alt4[2] = "Bruce Wayne";
-        alt4[3] = "Peter Parker";
-
-        rightAnswer[0] = "1995";
-        rightAnswer[1] = "1973";
-        rightAnswer[2] = "2003";
-        rightAnswer[3] = "James Gosling";
-
-        System.out.println("Checking Data...");
-
-        for (int i = 0; i < values.length; i++) {
-            System.out.println("Question # " + (i + 1) + " is " + questions[i]);
-        }
-
-        System.out.println("Data checked!");
-
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
@@ -165,9 +127,7 @@ public class GameServer {
                         System.out.println("Max Turns have been reached.");
                         break;
                     }
-
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
