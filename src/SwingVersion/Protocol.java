@@ -27,7 +27,7 @@ public class Protocol {
     private String[] sortedFilmAlts3;
     private String[] sortedFilmAlts4;
     private String[] filmAnswers = new String[1];
-    private  String[] filmQuestions = new String[1];
+    private String[] filmQuestions = new String[1];
     private String[] filmAlts1 = new String[1];
     private String[] filmAlts2 = new String[1];
     private String[] filmAlts3 = new String[1];
@@ -39,9 +39,9 @@ public class Protocol {
     private String[] sortedHistoryAlts2;
     private String[] sortedHistoryAlts3;
     private String[] sortedHistoryAlts4;
-    private  String[] historyAnswers = new String[1];
+    private String[] historyAnswers = new String[1];
     private String[] historyQuestions = new String[1];
-    private  String[] historyAlts1 = new String[1];
+    private String[] historyAlts1 = new String[1];
     private String[] historyAlts2 = new String[1];
     private String[] historyAlts3 = new String[1];
     private String[] historyAlts4 = new String[1];
@@ -51,13 +51,13 @@ public class Protocol {
     private String[] sortedSportAlts1;
     private String[] sortedSportAlts2;
     private String[] sortedSportAlts3;
-    private  String[] sortedSportAlts4;
+    private String[] sortedSportAlts4;
     private String[] sportAnswers = new String[1];
     private String[] sportQuestions = new String[1];
     private String[] sportAlts1 = new String[1];
     private String[] sportAlts2 = new String[1];
     private String[] sportAlts3 = new String[1];
-    private  String[] sportAlts4 = new String[1];
+    private String[] sportAlts4 = new String[1];
 
     private String tempAnswer = "";
     private String tempQuestion = "";
