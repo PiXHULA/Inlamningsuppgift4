@@ -1,110 +1,279 @@
 package JavaFXVersion;
 
-import java.io.*;
-import java.net.*;
+import SwingVersion.Protocol;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class GameServer {
 
     Protocol protocol = new Protocol();
     private ServerSocket serverSocket;
     private int numberOfPlayers;
-    private int port = 51734;
-    private ServerSideConnection player1;
-    private ServerSideConnection player2;
-    private ServerSideConnection player3;
-    private boolean maxPlayersForOneGame = false;
-    private int turn; //so the server can "count" what turn/question it is on
-    private int playerOnePoints = 0; // So the server can send the points to the other player
-    private int playerTwopoints = 0; // so the server can send the points to the other player
+    private int port = 51730;
+    private ServerSideConnection[] player = new ServerSideConnection[100];
+    private int turnsMade;
+    private int maxTurns;
+    private int playerIDPosition;
+    private int category;
 
     public GameServer() throws IOException {
+        System.out.println("---GAME SERVER---");
         numberOfPlayers = 0;
-        System.out.println("---Game Server Booting Up---");
+        turnsMade = 0;
+        maxTurns = 4;
+
         try {
             serverSocket = new ServerSocket(port);
-        } catch (IOException ex) {
-            System.out.println("IOException from GameServer Constructor");
-            ex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    //accepts 2 player for quiz competition and starts Threads for the players
     public void acceptConnection() {
         try {
             System.out.println("Waiting for connections...");
             while (true) {
-                Socket socket = serverSocket.accept();
-                numberOfPlayers++;
-                System.out.println("Player #" + numberOfPlayers + " has connected.");
-                ServerSideConnection ssc = new ServerSideConnection(socket, numberOfPlayers);
-                if (numberOfPlayers == 1) {
-                    player1 = ssc;
-                } else {
-                    player2 = ssc;
+                while (numberOfPlayers < 2) {
+                    Socket socket = serverSocket.accept();
+                    numberOfPlayers++;
+                    System.out.println("Player #" + numberOfPlayers + " has connected.");
+                    playerIDPosition++; //denna gör att varje client kan "tracka" sig själv och därmed sin partner
+                    if (numberOfPlayers == 1) {
+                        player[playerIDPosition] = new ServerSideConnection(socket, numberOfPlayers, playerIDPosition);
+                        System.out.println(playerIDPosition + " acceptConnection player1");
+                        player[playerIDPosition].start();
+                    } else {
+                        player[playerIDPosition] = new ServerSideConnection(socket, numberOfPlayers, playerIDPosition);
+                        System.out.println(playerIDPosition + " acceptConnection player2");
+                        player[playerIDPosition].start();
+                    }
                 }
-                if(numberOfPlayers == 2){
-                    numberOfPlayers = 0;
-                }
-                Thread thread = new Thread(ssc);
-                thread.start();
+                numberOfPlayers = 0;
+                System.out.println("We now have 2 players");
             }
-        } catch (IOException ex) {
-            System.out.println("IOException from acceptConnection");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException ex) {
             ex.printStackTrace();
         }
     }
 
-    //gives runnable object to both players and differentiate the two players
-    private class ServerSideConnection implements Runnable {
+    private class ServerSideConnection extends Thread {
+
         private Socket socket;
         private DataInputStream dataInputStream;
         private DataOutputStream dataOutputStream;
         private int playerID;
+        private int playerIDposition;
 
-        public ServerSideConnection(Socket socket, int id) {
-            this.socket = socket;
-            this.playerID = id;
+        public ServerSideConnection(Socket s, int ID, int PlayerIDPosition) {
+            socket = s;
+            playerID = ID;
+            playerIDposition = PlayerIDPosition;
             try {
                 dataInputStream = new DataInputStream(socket.getInputStream());
-                dataOutputStream = new DataOutputStream((socket.getOutputStream()));
-            } catch (IOException ex) {
-                System.out.println("IOException from ServerSideConnection constructor");
-                ex.printStackTrace();
+                dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
         @Override
         public void run() {
             try {
-                //state begin
                 dataOutputStream.writeInt(playerID);
-                dataOutputStream.writeUTF(protocol.getQuestion());
-                dataOutputStream.writeUTF(protocol.getAlt1());
-                dataOutputStream.writeUTF(protocol.getAlt2());
-                dataOutputStream.writeUTF(protocol.getAlt3());
-                dataOutputStream.writeUTF(protocol.getAlt4());
-                dataOutputStream.writeUTF(protocol.getAnswer());
+                dataOutputStream.writeInt(playerIDposition);
+                dataOutputStream.writeInt(maxTurns);
 
+                System.out.println("före read " + playerID + " " + category);
 
-                dataOutputStream.flush();
+                playerIDposition = dataInputStream.readInt();   //test
+                category = dataInputStream.readInt();
+
+                System.out.println("hej " + playerID + " " + category);
+                //här skickar playerID 1 in data för att välja kategori
+                if (playerID == 1) {
+                    if (category != 0) {
+                        System.out.println("getting request for <T> fil");
+                        sendQuestion(category, playerIDposition);
+                        category = 0;
+                    }
+                }
+
+                //här är den konstanta sammankopplingen av två olika clienter samt poäng skickandet emellan
                 while (true) {
                     if (playerID == 1) {
-                        playerOnePoints = dataInputStream.readInt();
-                        System.out.println("spelare 1 har " + playerOnePoints + " poäng");
-                        player2.sendPoints(playerOnePoints);
+                        int player1IDposition = dataInputStream.readInt();
+                        int player1Points = dataInputStream.readInt();
+                        System.out.println("player id position " + player1IDposition + " has sent data");
+                        System.out.println("Player 1 has " + player1Points + " points");
+                        player[player1IDposition + 1].sendPoints(player1Points);
+                    } else {
+                        int player2IDposition = dataInputStream.readInt();
+                        int player2Points = dataInputStream.readInt();
+                        System.out.println("player id position " + player2IDposition + " has sent data");
+                        System.out.println("player 2 " + player2IDposition + "has #" + player2Points + " points");
+                        player[player2IDposition - 1].sendPoints(player2Points);
                     }
-                    if (playerID == 2){
-                        playerTwopoints = dataInputStream.readInt();
-                        System.out.println("spelare 2 har " + playerTwopoints + " poäng");
-                        player1.sendPoints(playerTwopoints);
+
+                    turnsMade++;
+                    if (turnsMade == maxTurns) {
+                        System.out.println("Max Turns have been reached.");
+                        break;
                     }
-                    String question = protocol.question;
-                    byte[] questionByte = question.getBytes();
-                    dataOutputStream.write(questionByte);
                 }
-            } catch (IOException ex) {
-                System.out.println("IOException from run() SSC");
-                ex.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void sendQuestion(int categorieNumber, int playerposition) {
+            if (categorieNumber == 1) {
+                //Sends all history question to 2 specific players and so on and so on...
+                try {
+                    for (int i = 0; i < protocol.getSortedHistoryQuestions().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedHistoryQuestions()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedHistoryQuestions()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedHistoryAlts1().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedHistoryAlts1()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedHistoryAlts1()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedHistoryAlts2().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedHistoryAlts2()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedHistoryAlts2()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedHistoryAlts3().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedHistoryAlts3()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedHistoryAlts3()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedHistoryAlts4().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedHistoryAlts4()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedHistoryAlts4()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedHistoryAnswers().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedHistoryAnswers()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedHistoryAnswers()[i]);
+                    }
+                    dataOutputStream.flush();
+                    System.out.println("Sending history file...");
+                } catch (IOException ex) {
+                    System.out.println("IOException from sendQuestion history section");
+                    ex.printStackTrace();
+                }
+            } else if (categorieNumber == 2) {
+                //Sends all sport question to 2 specific players and so on and so on...
+                try {
+                    for (int i = 0; i < protocol.getSortedSportQuestions().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedSportQuestions()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedSportQuestions()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedSportAlts1().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedSportAlts1()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedSportAlts1()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedSportAlts2().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedSportAlts2()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedSportAlts2()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedSportAlts3().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedSportAlts3()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedSportAlts3()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedSportAlts4().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedSportAlts4()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedSportAlts4()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedSportAnswers().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedSportAnswers()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedSportAnswers()[i]);
+                    }
+                    dataOutputStream.flush();
+                    System.out.println("Sending film file...");
+                } catch (IOException ex) {
+                    System.out.println("IOException from sendQuestion film section");
+                    ex.printStackTrace();
+                }
+
+            } else if (categorieNumber == 3) {
+                //Sends all film question to 2 specific players and so on and so on...
+                try {
+                    for (int i = 0; i < protocol.getSortedFilmQuestions().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedFilmQuestions()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedFilmQuestions()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedFilmAlts1().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedFilmAlts1()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedFilmAlts1()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedFilmAlts2().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedFilmAlts2()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedFilmAlts2()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedFilmAlts3().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedFilmAlts3()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedFilmAlts3()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedFilmAlts4().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedFilmAlts4()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedFilmAlts4()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedFilmAnswers().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedFilmAnswers()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedFilmAnswers()[i]);
+                    }
+                    dataOutputStream.flush();
+                    System.out.println("Sending film file...");
+                } catch (IOException ex) {
+                    System.out.println("IOException from sendQuestion film section");
+                    ex.printStackTrace();
+                }
+            } else if (categorieNumber == 4) {
+                //Sends all gaming question to 2 specific players and so on and so on...
+                try {
+                    for (int i = 0; i < protocol.getSortedGamingQuestions().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedGamingQuestions()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedGamingQuestions()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedGamingAlts1().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedGamingAlts1()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedGamingAlts1()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedGamingAlts2().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedGamingAlts2()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedGamingAlts2()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedGamingAlts3().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedGamingAlts3()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedGamingAlts3()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedGamingAlts4().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedGamingAlts4()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedGamingAlts4()[i]);
+                    }
+                    for (int i = 0; i < protocol.getSortedGamingAnswers().length; i++) {
+                        player[playerposition].sendLine(protocol.getSortedGamingAnswers()[i]);
+                        player[playerposition + 1].sendLine(protocol.getSortedGamingAnswers()[i]);
+                    }
+                    dataOutputStream.flush();
+                    System.out.println("Sending gaming file...");
+                } catch (IOException ex) {
+                    System.out.println("IOException from sendQuestion gaming section");
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        public void sendLine(String sortedQuestion) {
+            try {
+                dataOutputStream.writeUTF(sortedQuestion);
+                dataOutputStream.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
@@ -112,15 +281,18 @@ public class GameServer {
             try {
                 dataOutputStream.writeInt(points);
                 dataOutputStream.flush();
-            } catch (IOException ex) {
-                System.out.println("IOException from sendPoints SSC");
-                ex.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
 
     public static void main(String[] args) throws IOException {
         GameServer gameServer = new GameServer();
-        gameServer.acceptConnection();
+        try {
+            gameServer.acceptConnection();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -47,7 +47,11 @@
 
 .label{
     -fx-font-weight: bold;
-    -fx-text-fill: white;
+    -fx-text-fill: black;
+}
+#questionLabel{
+    -fx-font-weight: bold;
+    -fx-text-fill: black;
 }
 
 /*TEXT AREAS*/

@@ -56,13 +56,9 @@ public class Player {
         scoreboard = new JTextArea();
         labelQuestion = new JTextArea();
         button1 = new JButton("1");
-        button1.setSize(100, 150);
         button2 = new JButton("2");
-        button2.setSize(100, 150);
         button3 = new JButton("3");
-        button3.setSize(100, 150);
         button4 = new JButton("4");
-        button4.setSize(100, 150);
         myPoints = 0;
         enemyPoints = 0;
     }
@@ -192,6 +188,7 @@ public class Player {
         contentPane.add(message,BorderLayout.NORTH);
         frame.add(contentPane, BorderLayout.SOUTH);
         frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
 
         if (playerID == 1) {
             message.setText("You are player #1. You go first!");
@@ -253,9 +250,9 @@ public class Player {
                 System.out.println("Turns made: " + turnsMade);
 
                 buttonsEnable = false;
-                toggleButtons();
 
-                checkCorrectButton(b, bNum, ae);
+                toggleButtons();
+                checkCorrectButton(b, bNum);
                 changeButtonColor();
 
                 System.out.println("My points: " + myPoints);
@@ -285,7 +282,7 @@ public class Player {
         button4.addActionListener(al);
     }
 
-    public void checkCorrectButton(JButton b, String answer, ActionEvent ae) {
+    public void checkCorrectButton(JButton b, String answer) {
         int temp = 0;
         for (int i = 0; i <= 3; i++) {
             if (answer.equalsIgnoreCase(rightAnswer[i]))
@@ -293,11 +290,9 @@ public class Player {
         }
         if (temp > 0) {
             b.setBackground(Color.green);
-            tempButton = (JButton) ae.getSource();
             myPoints++;
         } else {
             b.setBackground(Color.red);
-            tempButton = (JButton) ae.getSource();
         }
     }
 
@@ -318,14 +313,9 @@ public class Player {
         button4.setEnabled(buttonsEnable);
     }
 
-    public void test() {
+    public void setRoundTwo() {
 
-        if(!(playerID == 1 && turnsMade == 2)) {
-            button1.setBackground(null);
-            button2.setBackground(null);
-            button3.setBackground(null);
-            button4.setBackground(null);
-        }
+        resetButtonColors();
 
         if (playerID == 1) {
             labelQuestion.setText(questions[counter]);
@@ -350,6 +340,15 @@ public class Player {
         }
     }
 
+    public void resetButtonColors() {
+        if(!(playerID == 1 && turnsMade == 2)) {
+            button1.setBackground(null);
+            button2.setBackground(null);
+            button3.setBackground(null);
+            button4.setBackground(null);
+        }
+    }
+
     public void updateTurn() {
         enemyPoints = csc.receiveEnemyPoints();
         if (playerID == 1) {
@@ -358,7 +357,7 @@ public class Player {
         }
         System.out.println("Your Enemy has " + enemyPoints + " points.");
 
-        test();
+        setRoundTwo();
         buttonsEnable = true;
         message.setText("It is your turn now");
         if (playerID == 1 && turnsMade == maxTurns) {
@@ -423,12 +422,8 @@ public class Player {
                 }
                 for (int j = 0; j < 4; j++) {
                     rightAnswer[j] = dataInputStream.readUTF();
+                    System.out.println("Right answer #" + (j + 1) + " is : " + rightAnswer[j]);
                 }
-
-                System.out.println("Right answer #1 is : " + rightAnswer[0]);
-                System.out.println("Right answer #2 is : " + rightAnswer[1]);
-                System.out.println("Right answer #3 is : " + rightAnswer[2]);
-                System.out.println("Right answer #4 is : " + rightAnswer[3]);
             } catch (IOException e) {
                 e.printStackTrace();
             }
