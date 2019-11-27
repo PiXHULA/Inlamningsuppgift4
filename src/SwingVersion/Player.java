@@ -37,7 +37,7 @@ public class Player {
     private JButton sportButton = new JButton("Sport");
     private JButton filmButton = new JButton("Film");
     private JButton gamingButton = new JButton("Gaming");
-    private int categori;
+    private int category;
     private JFrame startFrame;
     private JPanel panel;
     private JTextArea scoreboard;
@@ -130,18 +130,18 @@ public class Player {
             public void actionPerformed(ActionEvent ae) {
                 if (ae.getSource().equals(historyButton)) {
                     System.out.println("Categori selected: History");
-                    categori = 1;
+                    category = 1;
                 } else if (ae.getSource().equals(sportButton)) {
                     System.out.println("Categori selected: Sport");
-                    categori = 2;
+                    category = 2;
                 } else if (ae.getSource().equals(filmButton)) {
                     System.out.println("Categori selected: Film");
-                    categori = 3;
+                    category = 3;
                 } else if (ae.getSource().equals(gamingButton)) {
                     System.out.println("Categori selected: Gaming");
-                    categori = 4;
+                    category = 4;
                 }
-                csc.sendCategori(categori, playerNumber);
+                csc.sendCategori(category, playerNumber);
                 startFrame.dispose();
                 csc.getQuestion();
                 setUpGameViewGUI();

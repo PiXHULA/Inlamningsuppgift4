@@ -13,7 +13,7 @@ public class GameServer {
     private int turnsMade;
     private int maxTurns;
     private int playerIDPosition = 0;
-    private int categori = 0;
+    private int category = 0;
 
     public GameServer() throws IOException {
         System.out.println("---GAME SERVER---");
@@ -85,14 +85,14 @@ public class GameServer {
                 dataOutputStream.writeInt(maxTurns);
 
                 playerIDposition = dataInputStream.readInt();
-                categori = dataInputStream.readInt();
+                category = dataInputStream.readInt();
 
                 //här skickar playerID 1 in data för att välja kategori
                 if (playerID == 1) {
-                    if (categori != 0) {
+                    if (category != 0) {
                         System.out.println("getting request for <T> fil");
-                        sendQuestion(categori, playerIDposition);
-                        categori = 0;
+                        sendQuestion(category, playerIDposition);
+                        category = 0;
                     }
                 }
 
