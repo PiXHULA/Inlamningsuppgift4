@@ -19,7 +19,6 @@ public class Player {
     private JButton b4;
     private int playerID;
     private int otherPlayer;
-    private int[] values;
     private int maxTurns;
     private int turnsMade;
     private int myPoints;
@@ -67,7 +66,6 @@ public class Player {
         b3.setSize(100, 150);
         b4 = new JButton("4");
         b4.setSize(100, 150);
-        values = new int[4];
         myPoints = 0;
         enemyPoints = 0;
     }
@@ -380,12 +378,6 @@ public class Player {
             scoreboard.append("\nTurn: " + turnsMade + "\nMy points: " + myPoints + "\nMy enemy Points: " + enemyPoints);
         }
         System.out.println("Your Enemy has " + enemyPoints + " points.");
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
         test();
         buttonsEnable = true;
