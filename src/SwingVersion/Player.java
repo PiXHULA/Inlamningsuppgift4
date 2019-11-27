@@ -359,25 +359,25 @@ public class Player {
 
         test();
         buttonsEnable = true;
+        message.setText("It is your turn now");
         if (playerID == 1 && turnsMade == maxTurns) {
             checkWinner();
         } else {
             buttonsEnable = true;
         }
-        message.setText("It is your turn now");
         toggleButtons();
     }
 
     private void checkWinner() {
         buttonsEnable = false;
         if (myPoints > enemyPoints) {
-            message.setText("YOU WON!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
+            message.setText("");
             scoreboard.append("YOU WON!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
         } else if (myPoints < enemyPoints) {
-            message.setText("YOU LOST!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
+            message.setText("");
             scoreboard.append("YOU LOST!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
         } else {
-            message.setText("YOU TIED!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
+            message.setText("");
             scoreboard.append("YOU TIED!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
         }
     }
