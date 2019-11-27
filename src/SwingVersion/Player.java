@@ -41,9 +41,6 @@ public class Player {
     private JFrame startFrame;
     private JPanel panel;
     private JTextArea scoreboard;
-    private JLabel infoLabel;
-    private JLabel questionLabel;
-
     private JButton tempButton;
 
     private ClientSideConnection csc;

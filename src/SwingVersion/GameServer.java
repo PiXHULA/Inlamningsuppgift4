@@ -5,7 +5,6 @@ import java.net.*;
 
 public class GameServer {
 
-    //Protocol protocol = new Protocol();
     Protocol protocol = new Protocol();
     private ServerSocket serverSocket;
     private int numberOfPlayers;
@@ -13,12 +12,6 @@ public class GameServer {
     private ServerSideConnection[] player = new ServerSideConnection[100];
     private int turnsMade;
     private int maxTurns;
-    private String[] questions = new String[4];
-    private String[] alt1 = new String[4];
-    private String[] alt2 = new String[4];
-    private String[] alt3 = new String[4];
-    private String[] alt4 = new String[4];
-    private String[] rightAnswer = new String[4];
     private int playerIDPosition = 0;
     private int categori = 0;
 
