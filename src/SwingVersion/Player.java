@@ -13,13 +13,12 @@ public class Player {
     private JFrame frame;
     private JTextArea message;
     private JTextArea labelQuestion;
-    private JButton b1;
-    private JButton b2;
-    private JButton b3;
-    private JButton b4;
+    private JButton button1;
+    private JButton button2;
+    private JButton button3;
+    private JButton button4;
     private int playerID;
     private int otherPlayer;
-    private int[] values;
     private int maxTurns;
     private int turnsMade;
     private int myPoints;
@@ -38,13 +37,10 @@ public class Player {
     private JButton sportButton = new JButton("Sport");
     private JButton filmButton = new JButton("Film");
     private JButton gamingButton = new JButton("Gaming");
-    private int categori;
+    private int category;
     private JFrame startFrame;
     private JPanel panel;
     private JTextArea scoreboard;
-    private JLabel infoLabel;
-    private JLabel questionLabel;
-
     private JButton tempButton;
 
     private ClientSideConnection csc;
@@ -59,22 +55,21 @@ public class Player {
         panel = new JPanel();
         scoreboard = new JTextArea();
         labelQuestion = new JTextArea();
-        b1 = new JButton("1");
-        b1.setSize(100, 150);
-        b2 = new JButton("2");
-        b2.setSize(100, 150);
-        b3 = new JButton("3");
-        b3.setSize(100, 150);
-        b4 = new JButton("4");
-        b4.setSize(100, 150);
-        values = new int[4];
+        button1 = new JButton("1");
+        button1.setSize(100, 150);
+        button2 = new JButton("2");
+        button2.setSize(100, 150);
+        button3 = new JButton("3");
+        button3.setSize(100, 150);
+        button4 = new JButton("4");
+        button4.setSize(100, 150);
         myPoints = 0;
         enemyPoints = 0;
     }
 
     //välja kategori GUI
-    public void setUpStartGUI() {
-        setUpStartButtons();
+    public void setUpChooseCategoryGUI() {
+        setUpChooseCategoryButtons();
         if (playerID == 1) {
             startFrame = new JFrame();
             startFrame.setSize(400, 600);
@@ -122,54 +117,35 @@ public class Player {
                     break;
                 }
             }
-            setUpGUI();
-            setUpButtons();
+            setUpGameViewGUI();
+            setUpGameViewButtons();
         }
     }
 
     //Välja kategori knappars funktioner
-    public void setUpStartButtons() {
+    public void setUpChooseCategoryButtons() {
         ActionListener actionListener = new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
                 if (ae.getSource().equals(historyButton)) {
                     System.out.println("Categori selected: History");
-                    categori = 1;
-                    System.out.println(categori);
-                    csc.sendCategori(categori, playerNumber);
-                    startFrame.dispose();
-                    csc.getQuestion();
-                    setUpGUI();
-                    setUpButtons();
+                    category = 1;
                 } else if (ae.getSource().equals(sportButton)) {
                     System.out.println("Categori selected: Sport");
-                    categori = 2;
-                    System.out.println(categori);
-                    csc.sendCategori(categori, playerNumber);
-                    startFrame.dispose();
-                    csc.getQuestion();
-                    setUpGUI();
-                    setUpButtons();
+                    category = 2;
                 } else if (ae.getSource().equals(filmButton)) {
                     System.out.println("Categori selected: Film");
-                    categori = 3;
-                    System.out.println(categori);
-                    csc.sendCategori(categori, playerNumber);
-                    startFrame.dispose();
-                    csc.getQuestion();
-                    setUpGUI();
-                    setUpButtons();
+                    category = 3;
                 } else if (ae.getSource().equals(gamingButton)) {
                     System.out.println("Categori selected: Gaming");
-                    categori = 4;
-                    System.out.println(categori);
-                    csc.sendCategori(categori, playerNumber);
-                    startFrame.dispose();
-                    csc.getQuestion();
-                    setUpGUI();
-                    setUpButtons();
+                    category = 4;
                 }
+                csc.sendCategori(category, playerNumber);
+                startFrame.dispose();
+                csc.getQuestion();
+                setUpGameViewGUI();
+                setUpGameViewButtons();
             }
         };
         historyButton.addActionListener(actionListener);
@@ -179,7 +155,7 @@ public class Player {
     }
 
     //gameView GUI
-    public void setUpGUI() {
+    public void setUpGameViewGUI() {
         frame.setSize(width, height);
         frame.setTitle("Player #" + playerID);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -204,14 +180,14 @@ public class Player {
         labelQuestion.setWrapStyleWord(true);
         labelQuestion.setLineWrap(true);
         labelQuestion.setEditable(false);
-        this.b1.setSize(100,150);
-        this.b2.setSize(100,150);
-        this.b3.setSize(100,150);
-        this.b4.setSize(100,150);
-        buttonPane.add(b1);
-        buttonPane.add(b2);
-        buttonPane.add(b3);
-        buttonPane.add(b4);
+        this.button1.setSize(100,150);
+        this.button2.setSize(100,150);
+        this.button3.setSize(100,150);
+        this.button4.setSize(100,150);
+        buttonPane.add(button1);
+        buttonPane.add(button2);
+        buttonPane.add(button3);
+        buttonPane.add(button4);
         contentPane.add(buttonPane, BorderLayout.SOUTH);
         contentPane.add(message,BorderLayout.NORTH);
         frame.add(contentPane, BorderLayout.SOUTH);
@@ -220,13 +196,13 @@ public class Player {
         if (playerID == 1) {
             message.setText("You are player #1. You go first!");
             labelQuestion.setText(questions[counter]);
-            b1.setText(alt1[altcounter]);
+            button1.setText(alt1[altcounter]);
             altcounter++;
-            b2.setText(alt1[altcounter]);
+            button2.setText(alt1[altcounter]);
             altcounter++;
-            b3.setText(alt1[altcounter]);
+            button3.setText(alt1[altcounter]);
             altcounter++;
-            b4.setText(alt1[altcounter]);
+            button4.setText(alt1[altcounter]);
             counter++;
             counter++;
             altcounter = 0;
@@ -236,13 +212,13 @@ public class Player {
             counter++;
             message.setText("You are player #2. Wait for your turn.");
             labelQuestion.setText(questions[counter]);
-            b1.setText(alt2[altcounter]);
+            button1.setText(alt2[altcounter]);
             altcounter++;
-            b2.setText(alt2[altcounter]);
+            button2.setText(alt2[altcounter]);
             altcounter++;
-            b3.setText(alt2[altcounter]);
+            button3.setText(alt2[altcounter]);
             altcounter++;
-            b4.setText(alt2[altcounter]);
+            button4.setText(alt2[altcounter]);
             counter++;
             counter++;
             altcounter = 0;
@@ -265,7 +241,7 @@ public class Player {
     }
 
     //gameView knappars funktioner
-    public void setUpButtons() {
+    public void setUpGameViewButtons() {
         ActionListener al = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -303,10 +279,10 @@ public class Player {
             }
         };
 
-        b1.addActionListener(al);
-        b2.addActionListener(al);
-        b3.addActionListener(al);
-        b4.addActionListener(al);
+        button1.addActionListener(al);
+        button2.addActionListener(al);
+        button3.addActionListener(al);
+        button4.addActionListener(al);
     }
 
     public void checkCorrectButton(JButton b, String answer, ActionEvent ae) {
@@ -326,7 +302,7 @@ public class Player {
     }
 
     public void changeButtonColor() {
-        JButton[] buttons = new JButton[]{b1, b2, b3, b4};
+        JButton[] buttons = new JButton[]{button1, button2, button3, button4};
         for (JButton button : buttons)
             if (button.getText().equalsIgnoreCase(rightAnswer[0])
                     || button.getText().equalsIgnoreCase(rightAnswer[1])
@@ -336,40 +312,40 @@ public class Player {
     }
 
     public void toggleButtons() {
-        b1.setEnabled(buttonsEnable);
-        b2.setEnabled(buttonsEnable);
-        b3.setEnabled(buttonsEnable);
-        b4.setEnabled(buttonsEnable);
+        button1.setEnabled(buttonsEnable);
+        button2.setEnabled(buttonsEnable);
+        button3.setEnabled(buttonsEnable);
+        button4.setEnabled(buttonsEnable);
     }
 
     public void test() {
 
         if(!(playerID == 1 && turnsMade == 2)) {
-            b1.setBackground(null);
-            b2.setBackground(null);
-            b3.setBackground(null);
-            b4.setBackground(null);
+            button1.setBackground(null);
+            button2.setBackground(null);
+            button3.setBackground(null);
+            button4.setBackground(null);
         }
 
         if (playerID == 1) {
             labelQuestion.setText(questions[counter]);
-            b1.setText(alt3[altcounter]);
+            button1.setText(alt3[altcounter]);
             altcounter++;
-            b2.setText(alt3[altcounter]);
+            button2.setText(alt3[altcounter]);
             altcounter++;
-            b3.setText(alt3[altcounter]);
+            button3.setText(alt3[altcounter]);
             altcounter++;
-            b4.setText(alt3[altcounter]);
+            button4.setText(alt3[altcounter]);
             altcounter = 0;
         } else if (playerID == 2 && turnsMade == 1) {
             labelQuestion.setText(questions[counter]);
-            b1.setText(alt4[altcounter]);
+            button1.setText(alt4[altcounter]);
             altcounter++;
-            b2.setText(alt4[altcounter]);
+            button2.setText(alt4[altcounter]);
             altcounter++;
-            b3.setText(alt4[altcounter]);
+            button3.setText(alt4[altcounter]);
             altcounter++;
-            b4.setText(alt4[altcounter]);
+            button4.setText(alt4[altcounter]);
             altcounter = 0;
         }
     }
@@ -381,12 +357,6 @@ public class Player {
         }
         System.out.println("Your Enemy has " + enemyPoints + " points.");
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         test();
         buttonsEnable = true;
         if (playerID == 1 && turnsMade == maxTurns) {
@@ -394,6 +364,7 @@ public class Player {
         } else {
             buttonsEnable = true;
         }
+        message.setText("It is your turn now");
         toggleButtons();
     }
 
@@ -523,6 +494,6 @@ public class Player {
     public static void main(String[] args) {
         Player p = new Player(400, 600);
         p.connectToServer();
-        p.setUpStartGUI();
+        p.setUpChooseCategoryGUI();
     }
 }
