@@ -261,8 +261,8 @@ public class Player {
                 System.out.println("My points: " + myPoints);
                 csc.sendPoints(myPoints, playerNumber);
                 if (playerID == 2) {
-                    scoreboard.append("\nRound: " + turnsMade + "\nMy points: " + myPoints +
-                            "\nMy enemy Points: " + enemyPoints);
+                    scoreboard.append("\n\nRound: " + turnsMade +
+                            "\nPlayer #1: " + myPoints + "\nPlayer #2: " + enemyPoints);
                 }
                 if (playerID == 2 && turnsMade == maxTurns) {
                     checkWinner();
@@ -353,7 +353,8 @@ public class Player {
     public void updateTurn() {
         enemyPoints = csc.receiveEnemyPoints();
         if (playerID == 1) {
-            scoreboard.append("\nTurn: " + turnsMade + "\nMy points: " + myPoints + "\nMy enemy Points: " + enemyPoints);
+            scoreboard.append("\n\nRound: " + turnsMade +
+                    "\nPlayer #1: " + myPoints + "\nPlayer #2: " + enemyPoints);
         }
         System.out.println("Your Enemy has " + enemyPoints + " points.");
 
@@ -371,14 +372,14 @@ public class Player {
     private void checkWinner() {
         buttonsEnable = false;
         if (myPoints > enemyPoints) {
-            message.setText("");
-            scoreboard.append("YOU WON!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
+            message.setText("Game finished");
+            scoreboard.append("\n\nYOU WON!");
         } else if (myPoints < enemyPoints) {
-            message.setText("");
-            scoreboard.append("YOU LOST!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
+            message.setText("Game finished");
+            scoreboard.append("\n\nYOU LOST!");
         } else {
-            message.setText("");
-            scoreboard.append("YOU TIED!\nYOU: " + myPoints + " | Enemy: " + enemyPoints);
+            message.setText("Game finished");
+            scoreboard.append("\n\nYOU TIED!");
         }
     }
 
