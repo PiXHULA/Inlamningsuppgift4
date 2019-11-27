@@ -426,12 +426,8 @@ public class Player {
                 }
                 for (int j = 0; j < 4; j++) {
                     rightAnswer[j] = dataInputStream.readUTF();
+                    System.out.println("Right answer #" + (j + 1) + " is : " + rightAnswer[j]);
                 }
-
-                System.out.println("Right answer #1 is : " + rightAnswer[0]);
-                System.out.println("Right answer #2 is : " + rightAnswer[1]);
-                System.out.println("Right answer #3 is : " + rightAnswer[2]);
-                System.out.println("Right answer #4 is : " + rightAnswer[3]);
             } catch (IOException e) {
                 e.printStackTrace();
             }
