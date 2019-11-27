@@ -7,81 +7,79 @@ import java.util.*;
 
 public class Protocol {
 
-    String[] sortedGamingQuestions;
-    String[] sortedGamingAnswers;
-    String[] sortedGamingAlts1;
-    String[] sortedGamingAlts2;
-    String[] sortedGamingAlts3;
-    String[] sortedGamingAlts4;
-    String[] gamingAnswers = new String[1];
-    String[] gamingQuestions = new String[1];
-    String[] gamingAlts1 = new String[1];
-    String[] gamingAlts2 = new String[1];
-    String[] gamingAlts3 = new String[1];
-    String[] gamingAlts4 = new String[1];
+    private String[] sortedGamingQuestions;
+    private String[] sortedGamingAnswers;
+    private String[] sortedGamingAlts1;
+    private String[] sortedGamingAlts2;
+    private String[] sortedGamingAlts3;
+    private String[] sortedGamingAlts4;
+    private String[] gamingAnswers = new String[1];
+    private String[] gamingQuestions = new String[1];
+    private String[] gamingAlts1 = new String[1];
+    private String[] gamingAlts2 = new String[1];
+    private String[] gamingAlts3 = new String[1];
+    private String[] gamingAlts4 = new String[1];
 
-    String[] sortedFilmQuestions;
-    String[] sortedFilmAnswers;
-    String[] sortedFilmAlts1;
-    String[] sortedFilmAlts2;
-    String[] sortedFilmAlts3;
-    String[] sortedFilmAlts4;
-    String[] filmAnswers = new String[1];
-    String[] filmQuestions = new String[1];
-    String[] filmAlts1 = new String[1];
-    String[] filmAlts2 = new String[1];
-    String[] filmAlts3 = new String[1];
-    String[] filmAlts4 = new String[1];
+    private String[] sortedFilmQuestions;
+    private String[] sortedFilmAnswers;
+    private String[] sortedFilmAlts1;
+    private String[] sortedFilmAlts2;
+    private String[] sortedFilmAlts3;
+    private String[] sortedFilmAlts4;
+    private String[] filmAnswers = new String[1];
+    private  String[] filmQuestions = new String[1];
+    private String[] filmAlts1 = new String[1];
+    private String[] filmAlts2 = new String[1];
+    private String[] filmAlts3 = new String[1];
+    private String[] filmAlts4 = new String[1];
 
-    String[] sortedHistoryQuestions;
-    String[] sortedHistoryAnswers;
-    String[] sortedHistoryAlts1;
-    String[] sortedHistoryAlts2;
-    String[] sortedHistoryAlts3;
-    String[] sortedHistoryAlts4;
-    String[] historyAnswers = new String[1];
-    String[] historyQuestions = new String[1];
-    String[] historyAlts1 = new String[1];
-    String[] historyAlts2 = new String[1];
-    String[] historyAlts3 = new String[1];
-    String[] historyAlts4 = new String[1];
+    private String[] sortedHistoryQuestions;
+    private String[] sortedHistoryAnswers;
+    private String[] sortedHistoryAlts1;
+    private String[] sortedHistoryAlts2;
+    private String[] sortedHistoryAlts3;
+    private String[] sortedHistoryAlts4;
+    private  String[] historyAnswers = new String[1];
+    private String[] historyQuestions = new String[1];
+    private  String[] historyAlts1 = new String[1];
+    private String[] historyAlts2 = new String[1];
+    private String[] historyAlts3 = new String[1];
+    private String[] historyAlts4 = new String[1];
 
-    String[] sortedSportQuestions;
-    String[] sortedSportAnswers;
-    String[] sortedSportAlts1;
-    String[] sortedSportAlts2;
-    String[] sortedSportAlts3;
-    String[] sortedSportAlts4;
-    String[] sportAnswers = new String[1];
-    String[] sportQuestions = new String[1];
-    String[] sportAlts1 = new String[1];
-    String[] sportAlts2 = new String[1];
-    String[] sportAlts3 = new String[1];
-    String[] sportAlts4 = new String[1];
+    private String[] sortedSportQuestions;
+    private String[] sortedSportAnswers;
+    private String[] sortedSportAlts1;
+    private String[] sortedSportAlts2;
+    private String[] sortedSportAlts3;
+    private  String[] sortedSportAlts4;
+    private String[] sportAnswers = new String[1];
+    private String[] sportQuestions = new String[1];
+    private String[] sportAlts1 = new String[1];
+    private String[] sportAlts2 = new String[1];
+    private String[] sportAlts3 = new String[1];
+    private  String[] sportAlts4 = new String[1];
 
-    String tempAnswer = "";
-    String tempQuestion = "";
-    String tempAlt1 = "";
-    String tempAlt2 = "";
-    String tempAlt3 = "";
-    String tempAlt4 = "";
+    private String tempAnswer = "";
+    private String tempQuestion = "";
+    private String tempAlt1 = "";
+    private String tempAlt2 = "";
+    private String tempAlt3 = "";
+    private String tempAlt4 = "";
 
+    private Properties p = new Properties();
 
-
-    Properties p = new Properties();
-
-    String[] properties = {
+    private String[] properties = {
                     "src\\SwingVersion\\Properties\\Gaming.properties",
                     "src\\SwingVersion\\Properties\\History.properties",
                     "src\\SwingVersion\\Properties\\Sport.properties",
                     "src\\SwingVersion\\Properties\\Film.properties"};
 
-    String question;
-    String alt1;
-    String alt2;
-    String alt3;
-    String alt4;
-    String correct;
+    private String question;
+    private String alt1;
+    private String alt2;
+    private String alt3;
+    private String alt4;
+    private String correct;
 
     public String[] getSortedGamingQuestions() {
         return sortedGamingQuestions;
@@ -179,11 +177,11 @@ public class Protocol {
         return sortedSportAlts4;
     }
 
-    public Protocol() throws IOException {
+    public Protocol() {
         propertyFileIntoQuiz();
     }
 
-    public void propertyFileIntoQuiz() {
+    private void propertyFileIntoQuiz() {
 
         for (String property : properties) {
 
@@ -345,7 +343,7 @@ public class Protocol {
         }
     }
 
-    public String[] removeEmptyElementsInArray(String[] unsortedArray) {
+    private String[] removeEmptyElementsInArray(String[] unsortedArray) {
 
         String[] tempString = unsortedArray[0].split("\"");
         List<String> tempList = new ArrayList<String>(Arrays.asList(tempString));
@@ -354,8 +352,8 @@ public class Protocol {
 
         return sortedArray;
     }
-    
-    public void emptyTempVariables(){
+
+    private void emptyTempVariables(){
         tempAnswer = "";
         tempQuestion = "";
         tempAlt1 = "";
@@ -364,7 +362,7 @@ public class Protocol {
         tempAlt4 = "";
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new Protocol();
     }
 }
