@@ -131,40 +131,21 @@ public class Player {
                 if (ae.getSource().equals(historyButton)) {
                     System.out.println("Categori selected: History");
                     categori = 1;
-                    System.out.println(categori);
-                    csc.sendCategori(categori, playerNumber);
-                    startFrame.dispose();
-                    csc.getQuestion();
-                    setUpGameViewGUI();
-                    setUpGameViewButtons();
                 } else if (ae.getSource().equals(sportButton)) {
                     System.out.println("Categori selected: Sport");
                     categori = 2;
-                    System.out.println(categori);
-                    csc.sendCategori(categori, playerNumber);
-                    startFrame.dispose();
-                    csc.getQuestion();
-                    setUpGameViewGUI();
-                    setUpGameViewButtons();
                 } else if (ae.getSource().equals(filmButton)) {
                     System.out.println("Categori selected: Film");
                     categori = 3;
-                    System.out.println(categori);
-                    csc.sendCategori(categori, playerNumber);
-                    startFrame.dispose();
-                    csc.getQuestion();
-                    setUpGameViewGUI();
-                    setUpGameViewButtons();
                 } else if (ae.getSource().equals(gamingButton)) {
                     System.out.println("Categori selected: Gaming");
                     categori = 4;
-                    System.out.println(categori);
-                    csc.sendCategori(categori, playerNumber);
-                    startFrame.dispose();
-                    csc.getQuestion();
-                    setUpGameViewGUI();
-                    setUpGameViewButtons();
                 }
+                csc.sendCategori(categori, playerNumber);
+                startFrame.dispose();
+                csc.getQuestion();
+                setUpGameViewGUI();
+                setUpGameViewButtons();
             }
         };
         historyButton.addActionListener(actionListener);
@@ -383,6 +364,7 @@ public class Player {
         } else {
             buttonsEnable = true;
         }
+        message.setText("It is your turn now");
         toggleButtons();
     }
 
